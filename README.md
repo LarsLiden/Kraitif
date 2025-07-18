@@ -44,7 +44,11 @@ print(f"Examples: {', '.join(spiritual_quest.examples)}")
 
 - `story_types.py` - Main implementation of story types and subtypes
 - `demo.py` - Demonstration script showing all story types
-- `test_story_types.py` - Basic tests for the implementation
+- `app.py` - Flask web application providing a web interface
+- `launch.py` - Launch script for the Flask application
+- `templates/` - HTML templates for the web interface
+- `static/` - CSS and static files for the web interface
+- `tests/test_story_types.py` - Basic tests for the implementation
 
 ## Running the Demo
 
@@ -52,10 +56,18 @@ print(f"Examples: {', '.join(spiritual_quest.examples)}")
 python3 demo.py
 ```
 
+## Running the Flask Web Interface
+
+```bash
+python3 launch.py
+```
+
+Then open your web browser to [http://localhost:5000](http://localhost:5000)
+
 ## Running Tests
 
 ```bash
-python3 test_story_types.py
+python3 tests/test_story_types.py
 ```
 
 ## Features
@@ -67,3 +79,6 @@ python3 test_story_types.py
 - Case-insensitive lookups
 - Comprehensive test coverage
 - Clean, object-oriented design using dataclasses
+- **Flask web interface with black background theme**
+- **Interactive navigation between story types and subtypes**
+- **Responsive design for mobile and desktop**
