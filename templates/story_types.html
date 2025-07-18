@@ -26,15 +26,9 @@
             </div>
             {% endif %}
             
-            {% if story_type.key_theme %}
-            <div class="story-type-characteristics">
-                <strong>Key Theme:</strong> {{ story_type.key_theme }}
-            </div>
-            {% endif %}
-            
             {% if story_type.emotional_arc %}
             <div class="story-type-characteristics">
-                <strong>Emotional Arc:</strong> {{ story_type.emotional_arc }}
+                <strong>Emotional Arc:</strong> {{ story_type.emotional_arc | arrow_format }}
             </div>
             {% endif %}
             
@@ -45,7 +39,7 @@
             {% endif %}
             
             <div class="story-type-characteristics">
-                <strong>Subtypes:</strong> {{ story_type.subtypes | length }} available
+                <strong>Subtypes:</strong> {% for subtype in story_type.subtypes %}{{ subtype.name }}{% if not loop.last %}, {% endif %}{% endfor %}
             </div>
         </div>
     </div>
