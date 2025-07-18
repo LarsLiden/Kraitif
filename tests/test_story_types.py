@@ -8,7 +8,7 @@ This script provides basic validation tests for the story types implementation.
 import sys
 import os
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from story_types import StoryTypeRegistry, StoryType, StorySubType
+from story_types import StoryTypeRegistry, StoryType, StorySubType, ArchetypeRegistry, Archetype
 
 
 def test_story_type_registry():
@@ -157,6 +157,66 @@ def test_story_type_class():
     print("✓ StoryType class tests passed")
 
 
+def test_archetype_registry():
+    """Test the ArchetypeRegistry functionality."""
+    print("Testing ArchetypeRegistry...")
+    
+    registry = ArchetypeRegistry()
+    
+    # Test that archetypes are loaded
+    archetypes = registry.get_all_archetypes()
+    assert len(archetypes) > 0, f"Expected archetypes to be loaded, got {len(archetypes)}"
+    
+    # Test that we have expected number of archetypes (should be around 108)
+    assert len(archetypes) >= 100, f"Expected at least 100 archetypes, got {len(archetypes)}"
+    
+    # Test lookup by name
+    chosen_one = registry.get_archetype("Chosen One")
+    assert chosen_one is not None, "Could not find Chosen One archetype"
+    assert chosen_one.name == "Chosen One", f"Expected 'Chosen One', got '{chosen_one.name}'"
+    
+    # Test case-insensitive lookup
+    chosen_one2 = registry.get_archetype("chosen one")
+    assert chosen_one2 is not None, "Case-insensitive lookup failed"
+    assert chosen_one2.name == "Chosen One", "Case-insensitive lookup returned wrong archetype"
+    
+    # Test lookup with underscores
+    chosen_one3 = registry.get_archetype("chosen_one")
+    assert chosen_one3 is not None, "Underscore lookup failed"
+    
+    # Test search functionality
+    hero_archetypes = registry.search_archetypes("hero")
+    assert len(hero_archetypes) > 0, "Should find hero-related archetypes"
+    
+    # Test list archetype names
+    names = registry.list_archetype_names()
+    assert len(names) == len(archetypes), "Names list should match archetypes count"
+    assert "Chosen One" in names, "Should find Chosen One in names list"
+    
+    print("✓ ArchetypeRegistry tests passed")
+
+
+def test_archetype_class():
+    """Test the Archetype class."""
+    print("Testing Archetype class...")
+    
+    # Create an archetype
+    archetype = Archetype(
+        name="Test Archetype",
+        description="A test archetype for validation"
+    )
+    
+    assert archetype.name == "Test Archetype"
+    assert archetype.description == "A test archetype for validation"
+    
+    # Test string representation
+    str_repr = str(archetype)
+    assert "Test Archetype" in str_repr
+    assert "A test archetype for validation" in str_repr
+    
+    print("✓ Archetype class tests passed")
+
+
 def run_all_tests():
     """Run all tests."""
     print("=== Running Story Types Tests ===\n")
@@ -166,6 +226,8 @@ def run_all_tests():
         test_story_subtypes()
         test_story_subtype_class()
         test_story_type_class()
+        test_archetype_registry()
+        test_archetype_class()
         
         print("\n✅ All tests passed!")
         return True
