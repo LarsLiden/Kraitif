@@ -43,11 +43,23 @@ h3 {
     margin-bottom: 20px;
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
     cursor: pointer;
+    display: flex;
+    gap: 20px;
 }
 
 .story-type-card:hover {
     border-color: #555555;
     box-shadow: 0 4px 8px rgba(255, 255, 255, 0.1);
+}
+
+.story-type-left {
+    flex: 1;
+    min-width: 0;
+}
+
+.story-type-right {
+    flex: 1;
+    min-width: 0;
 }
 
 .story-type-title {
@@ -160,5 +172,14 @@ h3 {
     
     .story-type-card, .subtype-card {
         padding: 15px;
+    }
+    
+    .story-type-card {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .story-type-left, .story-type-right {
+        flex: none;
     }
 }
