@@ -57,7 +57,6 @@ class StoryType:
     def __str__(self) -> str:
         return f"{self.name}: {self.description}"
     
-    # Backward compatibility properties
     @property
     def narrative_elements(self) -> Optional[str]:
         """Get narrative elements from characteristics."""
@@ -82,226 +81,21 @@ class StoryType:
 class StoryTypeRegistry:
     """Registry for all story types."""
     
-    def __init__(self, data_file: Optional[str] = None):
-        """Initialize registry with optional data file path."""
-        if data_file is None:
-            # Use default data file in the same directory
-            data_file = os.path.join(os.path.dirname(__file__), "story_types_data.json")
+    def __init__(self):
+        """Initialize registry with story types from JSON data."""
+        # Use default data file in the same directory
+        data_file = os.path.join(os.path.dirname(__file__), "story_types_data.json")
         
         self._story_types = {}
         self._load_from_json(data_file)
     
     def _load_from_json(self, file_path: str) -> None:
         """Load story types from JSON file."""
-        try:
-            with open(file_path, 'r', encoding='utf-8') as f:
-                data = json.load(f)
-            
-            for story_type_data in data['story_types']:
-                # Create subtypes
-                subtypes = []
-                for subtype_data in story_type_data.get('subtypes', []):
-                    subtype = StorySubType(
-                        name=subtype_data['name'],
-                        description=subtype_data['description'],
-                        examples=subtype_data.get('examples', [])
-                    )
-                    subtypes.append(subtype)
-                
-                # Create story type
-                story_type = StoryType(
-                    name=story_type_data['name'],
-                    description=story_type_data['description'],
-                    examples=story_type_data.get('examples', []),
-                    subtypes=subtypes,
-                    characteristics=story_type_data.get('characteristics', {})
-                )
-                
-                # Store with normalized key
-                key = story_type_data['name'].lower().replace(" ", "_")
-                self._story_types[key] = story_type
-                
-        except FileNotFoundError:
-            # If file doesn't exist, fall back to hardcoded data
-            self._load_default_data()
-        except Exception as e:
-            print(f"Error loading story types data: {e}")
-            self._load_default_data()
-    
-    def _load_default_data(self) -> None:
-        """Load default hardcoded data as fallback."""
-        # Create story types with hardcoded data
-        story_types_data = [
-            {
-                "name": "Overcoming the Monster",
-                "description": "Hero faces a great evil or threat",
-                "characteristics": {
-                    "narrative_elements": "Anticipation → Dream → Frustration → Nightmare → Thrilling Escape"
-                },
-                "subtypes": [
-                    {
-                        "name": "Predator",
-                        "description": "The monster actively hunts or terrorizes",
-                        "examples": ["Jaws", "Alien"]
-                    },
-                    {
-                        "name": "Holdfast",
-                        "description": "The monster guards something precious",
-                        "examples": ["The Hobbit's Smaug"]
-                    },
-                    {
-                        "name": "Avenger",
-                        "description": "The monster retaliates for past wrongs",
-                        "examples": ["Dracula"]
-                    }
-                ]
-            },
-            {
-                "name": "Rags to Riches",
-                "description": "Protagonist rises from humble beginnings to greatness",
-                "characteristics": {
-                    "key_theme": "Inner transformation is more important than material gain"
-                },
-                "subtypes": [
-                    {
-                        "name": "Pure Ascent",
-                        "description": "The hero rises steadily",
-                        "examples": ["Cinderella"]
-                    },
-                    {
-                        "name": "Fall and Redemption",
-                        "description": "Gains are lost before true growth",
-                        "examples": ["The Prince and the Pauper"]
-                    },
-                    {
-                        "name": "False Riches",
-                        "description": "Superficial success masks inner emptiness",
-                        "examples": ["The Great Gatsby"]
-                    }
-                ]
-            },
-            {
-                "name": "The Quest",
-                "description": "A journey with companions, trials, and a goal",
-                "characteristics": {
-                    "common_elements": ["Companions", "trials", "temptations", "symbolic landscapes"]
-                },
-                "subtypes": [
-                    {
-                        "name": "Object Quest",
-                        "description": "Seeking a treasure or artifact",
-                        "examples": ["Indiana Jones"]
-                    },
-                    {
-                        "name": "Person Quest",
-                        "description": "Rescuing or finding someone",
-                        "examples": ["Finding Nemo"]
-                    },
-                    {
-                        "name": "Spiritual Quest",
-                        "description": "Seeking enlightenment or truth",
-                        "examples": ["The Divine Comedy"]
-                    }
-                ]
-            },
-            {
-                "name": "Voyage and Return",
-                "description": "Hero enters a strange world and returns transformed",
-                "characteristics": {
-                    "emotional_arc": "Naïveté → Danger → Escape → Wisdom"
-                },
-                "subtypes": [
-                    {
-                        "name": "Fantasy Realm",
-                        "description": "Magical or surreal world",
-                        "examples": ["Alice in Wonderland"]
-                    },
-                    {
-                        "name": "Time Travel or Sci-Fi",
-                        "description": "Unfamiliar future or past",
-                        "examples": ["Back to the Future"]
-                    },
-                    {
-                        "name": "Psychological Journey",
-                        "description": "Internal transformation",
-                        "examples": ["Brideshead Revisited"]
-                    }
-                ]
-            },
-            {
-                "name": "Comedy",
-                "description": "Confusion and miscommunication resolved in harmony",
-                "characteristics": {},
-                "subtypes": [
-                    {
-                        "name": "Romantic Comedy",
-                        "description": "Misunderstandings resolved in love",
-                        "examples": ["Much Ado About Nothing"]
-                    },
-                    {
-                        "name": "Social Comedy",
-                        "description": "Satire of norms and class",
-                        "examples": ["The Importance of Being Earnest"]
-                    },
-                    {
-                        "name": "Farce",
-                        "description": "Exaggerated chaos and absurdity",
-                        "examples": ["The Big Lebowski"]
-                    }
-                ]
-            },
-            {
-                "name": "Tragedy",
-                "description": "A fatal flaw leads to downfall",
-                "characteristics": {
-                    "emotional_arc": "Rise → Fall → Catharsis"
-                },
-                "subtypes": [
-                    {
-                        "name": "Fatal Flaw",
-                        "description": "Hubris or obsession leads to downfall",
-                        "examples": ["Macbeth"]
-                    },
-                    {
-                        "name": "Innocent Victim",
-                        "description": "External forces destroy the hero",
-                        "examples": ["Romeo and Juliet"]
-                    },
-                    {
-                        "name": "Corruption Arc",
-                        "description": "Moral decay leads to collapse",
-                        "examples": ["Citizen Kane"]
-                    }
-                ]
-            },
-            {
-                "name": "Rebirth",
-                "description": "Hero is redeemed or transformed",
-                "characteristics": {
-                    "key_theme": "A symbolic 'death' followed by renewal"
-                },
-                "subtypes": [
-                    {
-                        "name": "Seasonal Rebirth",
-                        "description": "Tied to cycles of nature or holidays",
-                        "examples": ["A Christmas Carol"]
-                    },
-                    {
-                        "name": "Romantic Rebirth",
-                        "description": "Love transforms the character",
-                        "examples": ["Beauty and the Beast"]
-                    },
-                    {
-                        "name": "Existential Rebirth",
-                        "description": "Awakening from despair or nihilism",
-                        "examples": ["Groundhog Day"]
-                    }
-                ]
-            }
-        ]
+        with open(file_path, 'r', encoding='utf-8') as f:
+            data = json.load(f)
         
-        # Create story types from hardcoded data
-        for story_type_data in story_types_data:
+        for story_type_data in data['story_types']:
+            # Create subtypes
             subtypes = []
             for subtype_data in story_type_data.get('subtypes', []):
                 subtype = StorySubType(
@@ -311,13 +105,16 @@ class StoryTypeRegistry:
                 )
                 subtypes.append(subtype)
             
+            # Create story type
             story_type = StoryType(
                 name=story_type_data['name'],
                 description=story_type_data['description'],
+                examples=story_type_data.get('examples', []),
                 subtypes=subtypes,
                 characteristics=story_type_data.get('characteristics', {})
             )
             
+            # Store with normalized key
             key = story_type_data['name'].lower().replace(" ", "_")
             self._story_types[key] = story_type
     
