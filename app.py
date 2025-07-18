@@ -8,6 +8,7 @@ and their subtypes.
 
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 from story_types import StoryTypeRegistry
+from story import Story
 
 app = Flask(__name__)
 app.secret_key = 'kraitif_story_selection_key'  # For session management
@@ -22,6 +23,29 @@ def arrow_format(arc_list):
     if not arc_list or not isinstance(arc_list, list):
         return ""
     return " → ".join(arc_list)
+
+
+def get_story_from_session():
+    """Get or create a Story object from session data."""
+    story = Story()
+    if 'story_data' in session:
+        story_data = session['story_data']
+        story.story_type_name = story_data.get('story_type_name')
+        story.subtype_name = story_data.get('subtype_name')
+        story.key_theme = story_data.get('key_theme')
+        story.core_arc = story_data.get('core_arc')
+    return story
+
+
+def save_story_to_session(story):
+    """Save Story object to session."""
+    session['story_data'] = {
+        'story_type_name': story.story_type_name,
+        'subtype_name': story.subtype_name,
+        'key_theme': story.key_theme,
+        'core_arc': story.core_arc
+    }
+    session.modified = True
 
 
 @app.route('/')
@@ -52,7 +76,11 @@ def subtype_detail(story_type_name, subtype_name):
     if not subtype:
         return redirect(url_for('story_type_detail', story_type_name=story_type_name))
     
-    return render_template('subtype_detail.html', story_type=story_type, subtype=subtype)
+    # Get story selections
+    story = get_story_from_session()
+    saved_selections = story.get_story_type_selection(story_type_name, subtype_name)
+    
+    return render_template('subtype_detail.html', story_type=story_type, subtype=subtype, saved_selections=saved_selections)
 
 
 @app.route('/subtype/<story_type_name>/<subtype_name>/update', methods=['POST'])
@@ -66,22 +94,17 @@ def update_story_selection(story_type_name, subtype_name):
     if not subtype:
         return redirect(url_for('story_type_detail', story_type_name=story_type_name))
     
-    # Initialize session storage for this subtype if not exists
-    session_key = f"{story_type_name}_{subtype_name}"
-    if 'story_selections' not in session:
-        session['story_selections'] = {}
+    # Get or create story from session
+    story = get_story_from_session()
     
-    # Store the selected values
-    selections = {}
-    if 'key_theme' in request.form:
-        selections['key_theme'] = request.form['key_theme']
-    if 'key_moment' in request.form:
-        selections['key_moment'] = request.form['key_moment']
-    if 'core_arc' in request.form:
-        selections['core_arc'] = request.form['core_arc']
+    # Update story selections using Story class
+    key_theme = request.form.get('key_theme')
+    core_arc = request.form.get('core_arc')
     
-    session['story_selections'][session_key] = selections
-    session.modified = True
+    story.set_story_type_selection(story_type_name, subtype_name, key_theme, core_arc)
+    
+    # Save story back to session
+    save_story_to_session(story)
     
     flash('Your selections have been saved!', 'success')
     return redirect(url_for('subtype_detail', story_type_name=story_type_name, subtype_name=subtype_name))

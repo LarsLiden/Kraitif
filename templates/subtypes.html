@@ -42,6 +42,19 @@
 </div>
 {% endif %}
 
+{% if story_type.key_moment %}
+<div class="section">
+    <div class="section-title">Key Moments</div>
+    <div class="section-content">
+        <ul style="margin: 0; padding-left: 20px;">
+            {% for moment in story_type.key_moment %}
+            <li>{{ moment }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+{% endif %}
+
 {% if story_type.common_elements %}
 <div class="section">
     <div class="section-title">Common Elements</div>

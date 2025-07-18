@@ -31,8 +31,6 @@
 
 <!-- Selectable story elements form -->
 <form method="POST" action="{{ url_for('update_story_selection', story_type_name=story_type.name, subtype_name=subtype.name) }}" class="story-selection-form">
-    {% set session_key = story_type.name + "_" + subtype.name %}
-    {% set saved_selections = session.get('story_selections', {}).get(session_key, {}) %}
     
     {% if story_type.key_theme %}
     <div class="selection-section">
@@ -43,21 +41,6 @@
                 <input type="radio" name="key_theme" value="{{ theme }}" 
                     {% if saved_selections.get('key_theme') == theme or (not saved_selections.get('key_theme') and loop.first) %}checked{% endif %}>
                 <span class="radio-text">{{ theme }}</span>
-            </label>
-            {% endfor %}
-        </div>
-    </div>
-    {% endif %}
-
-    {% if story_type.key_moment %}
-    <div class="selection-section">
-        <div class="section-title">Key Moment</div>
-        <div class="radio-group">
-            {% for moment in story_type.key_moment %}
-            <label class="radio-label">
-                <input type="radio" name="key_moment" value="{{ moment }}" 
-                    {% if saved_selections.get('key_moment') == moment or (not saved_selections.get('key_moment') and loop.first) %}checked{% endif %}>
-                <span class="radio-text">{{ moment }}</span>
             </label>
             {% endfor %}
         </div>
