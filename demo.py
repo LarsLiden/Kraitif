@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 """
-Demonstration of Story Types and SubTypes
+Demonstration of Story Types and SubTypes, plus Archetypes
 
-This script demonstrates how to use the story types and subtypes classes.
+This script demonstrates how to use the story types, subtypes, and archetypes classes.
 """
 
-from story_types import StoryTypeRegistry
+from story_types import StoryTypeRegistry, ArchetypeRegistry
 
 
 def main():
@@ -65,6 +65,36 @@ def main():
     tragedy = registry.get_story_type("Tragedy")
     if tragedy:
         print(f"\nTragedy emotional arc: {tragedy.emotional_arc}")
+    
+    # === NEW ARCHETYPE DEMO ===
+    print("\n=== Character Archetypes Demo ===")
+    
+    # Create archetype registry
+    archetype_registry = ArchetypeRegistry()
+    
+    # Show archetype statistics
+    all_archetypes = archetype_registry.get_all_archetypes()
+    print(f"\nTotal archetypes available: {len(all_archetypes)}")
+    
+    # Show some example archetypes
+    print("\nSample Character Archetypes:")
+    sample_names = ["Chosen One", "Wise Mentor", "Anti-Hero", "Femme Fatale", "Reluctant Hero"]
+    for name in sample_names:
+        archetype = archetype_registry.get_archetype(name)
+        if archetype:
+            print(f"  🎭 {archetype}")
+    
+    # Demonstrate search functionality
+    print("\n=== Archetype Search Demo ===")
+    hero_archetypes = archetype_registry.search_archetypes("hero")
+    print(f"Found {len(hero_archetypes)} hero-related archetypes:")
+    for archetype in hero_archetypes[:5]:  # Show first 5
+        print(f"  - {archetype.name}: {archetype.description}")
+    
+    detective_archetypes = archetype_registry.search_archetypes("detective")
+    print(f"\nFound {len(detective_archetypes)} detective-related archetypes:")
+    for archetype in detective_archetypes:
+        print(f"  - {archetype.name}: {archetype.description}")
     
     print("\n=== Demo Complete ===")
 
