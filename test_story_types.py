@@ -59,6 +59,8 @@ def test_story_subtypes():
     # Test Overcoming the Monster subtypes
     monster = registry.get_story_type("Overcoming the Monster")
     assert len(monster.subtypes) == 3, f"Expected 3 subtypes for Overcoming the Monster, got {len(monster.subtypes)}"
+    assert len(monster.examples) >= 1, "Overcoming the Monster should have examples"
+    assert "Beowulf" in monster.examples or "Jaws" in monster.examples, "Should have Beowulf or Jaws as examples"
     
     predator = monster.get_subtype("Predator")
     assert predator is not None, "Could not find Predator subtype"
@@ -67,27 +69,33 @@ def test_story_subtypes():
     # Test Rags to Riches subtypes
     rags = registry.get_story_type("Rags to Riches")
     assert len(rags.subtypes) == 3, f"Expected 3 subtypes for Rags to Riches, got {len(rags.subtypes)}"
+    assert len(rags.examples) >= 1, "Rags to Riches should have examples"
     assert rags.key_theme == "Inner transformation is more important than material gain"
     
     # Test The Quest subtypes
     quest = registry.get_story_type("The Quest")
     assert len(quest.subtypes) == 3, f"Expected 3 subtypes for The Quest, got {len(quest.subtypes)}"
+    assert len(quest.examples) >= 1, "The Quest should have examples"
     assert "Companions" in quest.common_elements, "Companions should be in Quest common elements"
     
     # Test Voyage and Return
     voyage = registry.get_story_type("Voyage and Return")
+    assert len(voyage.examples) >= 1, "Voyage and Return should have examples"
     assert voyage.emotional_arc == "Naïveté → Danger → Escape → Wisdom"
     
     # Test Comedy subtypes
     comedy = registry.get_story_type("Comedy")
     assert len(comedy.subtypes) == 3, f"Expected 3 subtypes for Comedy, got {len(comedy.subtypes)}"
+    assert len(comedy.examples) >= 1, "Comedy should have examples"
     
     # Test Tragedy subtypes  
     tragedy = registry.get_story_type("Tragedy")
+    assert len(tragedy.examples) >= 1, "Tragedy should have examples"
     assert tragedy.emotional_arc == "Rise → Fall → Catharsis"
     
     # Test Rebirth subtypes
     rebirth = registry.get_story_type("Rebirth")
+    assert len(rebirth.examples) >= 1, "Rebirth should have examples"
     assert rebirth.key_theme == "A symbolic 'death' followed by renewal"
     
     print("✓ Story SubTypes tests passed")
@@ -124,8 +132,14 @@ def test_story_type_class():
     # Create a story type
     story_type = StoryType(
         name="Test Story Type",
-        description="A test story type"
+        description="A test story type",
+        examples=["Example Work 1", "Example Work 2"]
     )
+    
+    # Test examples
+    assert len(story_type.examples) == 2
+    assert "Example Work 1" in story_type.examples
+    assert "Example Work 2" in story_type.examples
     
     # Add a subtype
     subtype = StorySubType("Test Sub", "Test description")

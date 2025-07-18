@@ -39,6 +39,7 @@ class StoryType:
     """Base class for all story types."""
     name: str
     description: str
+    examples: List[str] = field(default_factory=list)
     subtypes: List[StorySubType] = field(default_factory=list)
     characteristics: Dict[str, Any] = field(default_factory=dict)
     
@@ -111,6 +112,7 @@ class StoryTypeRegistry:
                 story_type = StoryType(
                     name=story_type_data['name'],
                     description=story_type_data['description'],
+                    examples=story_type_data.get('examples', []),
                     subtypes=subtypes,
                     characteristics=story_type_data.get('characteristics', {})
                 )

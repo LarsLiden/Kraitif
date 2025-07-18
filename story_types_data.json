@@ -3,6 +3,7 @@
     {
       "name": "Overcoming the Monster",
       "description": "Hero faces a great evil or threat",
+      "examples": ["Beowulf", "Jaws"],
       "characteristics": {
         "narrative_elements": "Anticipation → Dream → Frustration → Nightmare → Thrilling Escape"
       },
@@ -27,6 +28,7 @@
     {
       "name": "Rags to Riches",
       "description": "Protagonist rises from humble beginnings to greatness",
+      "examples": ["Cinderella", "Great Expectations"],
       "characteristics": {
         "key_theme": "Inner transformation is more important than material gain"
       },
@@ -51,6 +53,7 @@
     {
       "name": "The Quest",
       "description": "A journey with companions, trials, and a goal",
+      "examples": ["Lord of the Rings", "Indiana Jones"],
       "characteristics": {
         "common_elements": ["Companions", "trials", "temptations", "symbolic landscapes"]
       },
@@ -75,6 +78,7 @@
     {
       "name": "Voyage and Return",
       "description": "Hero enters a strange world and returns transformed",
+      "examples": ["Alice in Wonderland", "The Wizard of Oz"],
       "characteristics": {
         "emotional_arc": "Naïveté → Danger → Escape → Wisdom"
       },
@@ -99,6 +103,7 @@
     {
       "name": "Comedy",
       "description": "Confusion and miscommunication resolved in harmony",
+      "examples": ["Much Ado About Nothing", "Crazy Rich Asians"],
       "characteristics": {},
       "subtypes": [
         {
@@ -121,6 +126,7 @@
     {
       "name": "Tragedy",
       "description": "A fatal flaw leads to downfall",
+      "examples": ["Macbeth", "Requiem for a Dream"],
       "characteristics": {
         "emotional_arc": "Rise → Fall → Catharsis"
       },
@@ -145,6 +151,7 @@
     {
       "name": "Rebirth",
       "description": "Hero is redeemed or transformed",
+      "examples": ["A Christmas Carol", "Beauty and the Beast"],
       "characteristics": {
         "key_theme": "A symbolic 'death' followed by renewal"
       },

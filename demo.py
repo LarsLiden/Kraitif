@@ -26,6 +26,9 @@ def main():
         print(f"📚 {story_type.name}")
         print(f"   Description: {story_type.description}")
         
+        if story_type.examples:
+            print(f"   Examples: {', '.join(story_type.examples)}")
+        
         if story_type.narrative_elements:
             print(f"   Narrative Elements: {story_type.narrative_elements}")
         
