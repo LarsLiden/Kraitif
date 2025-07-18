@@ -41,7 +41,13 @@ class StoryType:
     description: str
     examples: List[str] = field(default_factory=list)
     subtypes: List[StorySubType] = field(default_factory=list)
-    characteristics: Dict[str, Any] = field(default_factory=dict)
+    narrative_rhythm: str = ""
+    key_theme: List[str] = field(default_factory=list)
+    emotional_arc: List[str] = field(default_factory=list)
+    key_moment: List[str] = field(default_factory=list)
+    core_arc: List[str] = field(default_factory=list)
+    common_elements: List[str] = field(default_factory=list)
+    selectable_fields: List[str] = field(default_factory=list)
     
     def add_subtype(self, subtype: StorySubType) -> None:
         """Add a subtype to this story type."""
@@ -56,26 +62,6 @@ class StoryType:
     
     def __str__(self) -> str:
         return f"{self.name}: {self.description}"
-    
-    @property
-    def narrative_elements(self) -> Optional[str]:
-        """Get narrative elements from characteristics."""
-        return self.characteristics.get("narrative_elements")
-    
-    @property
-    def key_theme(self) -> Optional[str]:
-        """Get key theme from characteristics."""
-        return self.characteristics.get("key_theme")
-    
-    @property
-    def emotional_arc(self) -> Optional[str]:
-        """Get emotional arc from characteristics."""
-        return self.characteristics.get("emotional_arc")
-    
-    @property
-    def common_elements(self) -> List[str]:
-        """Get common elements from characteristics."""
-        return self.characteristics.get("common_elements", [])
 
 
 
@@ -87,7 +73,7 @@ class StoryTypeRegistry:
     def __init__(self):
         """Initialize registry with story types from JSON data."""
         # Use default data file in the data directory
-        data_file = os.path.join(os.path.dirname(__file__), "data", "story_types_data.json")
+        data_file = os.path.join(os.path.dirname(__file__), "data", "story_types.json")
         
         self._story_types = {}
         self._load_from_json(data_file)
@@ -114,7 +100,13 @@ class StoryTypeRegistry:
                 description=story_type_data['description'],
                 examples=story_type_data.get('examples', []),
                 subtypes=subtypes,
-                characteristics=story_type_data.get('characteristics', {})
+                narrative_rhythm=story_type_data.get('narrative_rhythm', ''),
+                key_theme=story_type_data.get('key_theme', []),
+                emotional_arc=story_type_data.get('emotional_arc', []),
+                key_moment=story_type_data.get('key_moment', []),
+                core_arc=story_type_data.get('core_arc', []),
+                common_elements=story_type_data.get('common_elements', []),
+                selectable_fields=story_type_data.get('selectable_fields', [])
             )
             
             # Store with normalized key
