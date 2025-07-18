@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}{{ subtype.name }} - {{ story_type.name }}{% endblock %}
+
+{% block content %}
+<div class="breadcrumb">
+    <a href="{{ url_for('index') }}">Story Types</a> > 
+    <a href="{{ url_for('story_type_detail', story_type_name=story_type.name) }}">{{ story_type.name }}</a> > 
+    {{ subtype.name }}
+</div>
+
+<h1>{{ subtype.name }}</h1>
+<h2>{{ story_type.name }} Subtype</h2>
+
+<div class="section">
+    <div class="section-title">Description</div>
+    <div class="section-content">{{ subtype.description }}</div>
+</div>
+
+{% if subtype.examples %}
+<div class="section">
+    <div class="section-title">Examples</div>
+    <div class="section-content">{{ subtype.examples | join(', ') }}</div>
+</div>
+{% endif %}
+
+<div class="section">
+    <div class="section-title">Parent Story Type</div>
+    <div class="section-content">{{ story_type.description }}</div>
+</div>
+
+<a href="{{ url_for('story_type_detail', story_type_name=story_type.name) }}" class="back-link">← Back to {{ story_type.name }}</a>
+{% endblock %}

@@ -64,18 +64,19 @@ print(f"Archetype Description: {chosen_one.description}")
 
 ## Files
 
-- `story_types.py` - Main implementation of story types, subtypes, and archetypes
-- `demo.py` - Demonstration script showing all story types and archetypes
-- `tests/test_story_types.py` - Comprehensive tests for the implementation
-- `data/` - Folder containing data files:
-  - `story_types_data.json` - Story types and subtypes data
-  - `archetypes.jsonl` - Character archetypes data
-
 ## Running the Demo
 
 ```bash
 python3 demo.py
 ```
+
+## Running the Flask Web Interface
+
+```bash
+python3 launch.py
+```
+
+Then open your web browser to [http://localhost:5000](http://localhost:5000)
 
 ## Running Tests
 
@@ -93,3 +94,6 @@ python3 tests/test_story_types.py
 - Archetype search functionality
 - Comprehensive test coverage
 - Clean, object-oriented design using dataclasses
+- **Flask web interface with black background theme**
+- **Interactive navigation between story types and subtypes**
+- **Responsive design for mobile and desktop**

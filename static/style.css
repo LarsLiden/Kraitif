@@ -1,0 +1,164 @@
+/* Black background CSS for Story Types application */
+body {
+    background-color: #000000;
+    color: #ffffff;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 20px;
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 30px;
+    color: #ffffff;
+    font-size: 2.5em;
+    text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.1);
+}
+
+h2 {
+    color: #ffffff;
+    margin-top: 30px;
+    margin-bottom: 15px;
+    font-size: 1.8em;
+}
+
+h3 {
+    color: #cccccc;
+    margin-bottom: 10px;
+    font-size: 1.4em;
+}
+
+.story-type-card {
+    background-color: #1a1a1a;
+    border: 2px solid #333333;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+}
+
+.story-type-card:hover {
+    border-color: #555555;
+    box-shadow: 0 4px 8px rgba(255, 255, 255, 0.1);
+}
+
+.story-type-title {
+    font-size: 1.6em;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #ffffff;
+}
+
+.story-type-description {
+    margin-bottom: 15px;
+    color: #cccccc;
+}
+
+.story-type-examples {
+    margin-bottom: 15px;
+    color: #aaaaaa;
+}
+
+.story-type-characteristics {
+    color: #999999;
+    font-style: italic;
+}
+
+.subtype-card {
+    background-color: #2a2a2a;
+    border: 1px solid #444444;
+    border-radius: 6px;
+    padding: 15px;
+    margin-bottom: 15px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+}
+
+.subtype-card:hover {
+    border-color: #666666;
+    box-shadow: 0 2px 4px rgba(255, 255, 255, 0.1);
+}
+
+.subtype-title {
+    font-size: 1.3em;
+    font-weight: bold;
+    margin-bottom: 8px;
+    color: #ffffff;
+}
+
+.subtype-description {
+    margin-bottom: 10px;
+    color: #cccccc;
+}
+
+.subtype-examples {
+    color: #aaaaaa;
+}
+
+.back-link {
+    display: inline-block;
+    margin-bottom: 20px;
+    padding: 10px 20px;
+    background-color: #333333;
+    color: #ffffff;
+    text-decoration: none;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+}
+
+.back-link:hover {
+    background-color: #555555;
+}
+
+.breadcrumb {
+    margin-bottom: 20px;
+    color: #888888;
+}
+
+.breadcrumb a {
+    color: #cccccc;
+    text-decoration: none;
+}
+
+.breadcrumb a:hover {
+    color: #ffffff;
+    text-decoration: underline;
+}
+
+.section {
+    margin-bottom: 25px;
+}
+
+.section-title {
+    font-size: 1.2em;
+    font-weight: bold;
+    margin-bottom: 8px;
+    color: #dddddd;
+}
+
+.section-content {
+    color: #bbbbbb;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .container {
+        padding: 0 10px;
+    }
+    
+    h1 {
+        font-size: 2em;
+    }
+    
+    .story-type-card, .subtype-card {
+        padding: 15px;
+    }
+}
