@@ -8,7 +8,7 @@ This script provides basic validation tests for the story types implementation.
 import sys
 import os
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from story_types import StoryTypeRegistry, StoryType, StorySubType, ArchetypeRegistry, Archetype
+from story_types import StoryTypeRegistry, StoryType, StorySubType, ArchetypeRegistry, Archetype, GenreRegistry, Genre, SubGenre, GenreEnum, SubGenreEnum
 
 
 def test_story_type_registry():
@@ -217,6 +217,172 @@ def test_archetype_class():
     print("✓ Archetype class tests passed")
 
 
+def test_genre_registry():
+    """Test the GenreRegistry functionality."""
+    print("Testing GenreRegistry...")
+    
+    registry = GenreRegistry()
+    
+    # Test that all 15 genres are available
+    genres = registry.get_all_genres()
+    assert len(genres) == 15, f"Expected 15 genres, got {len(genres)}"
+    
+    # Test that genre names are correct
+    expected_names = [
+        "Fantasy", "Science Fiction", "Western", "Mystery", "Thriller", 
+        "Horror", "Romance", "Comedy", "Drama", "Adventure", 
+        "Historical", "Crime", "Action", "Documentary", "Musical"
+    ]
+    
+    actual_names = registry.list_genres()
+    for name in expected_names:
+        assert name in actual_names, f"Missing genre: {name}"
+    
+    # Test lookup by name
+    fantasy = registry.get_genre("Fantasy")
+    assert fantasy is not None, "Could not find Fantasy genre"
+    assert fantasy.name == "Fantasy", f"Expected 'Fantasy', got '{fantasy.name}'"
+    
+    # Test case-insensitive lookup
+    fantasy2 = registry.get_genre("fantasy")
+    assert fantasy2 is not None, "Case-insensitive lookup failed"
+    
+    # Test lookup with underscores
+    sci_fi = registry.get_genre("science_fiction")
+    assert sci_fi is not None, "Underscore lookup failed"
+    
+    print("✓ GenreRegistry tests passed")
+
+
+def test_genre_subgenres():
+    """Test that each genre has the correct sub-genres."""
+    print("Testing Genre SubGenres...")
+    
+    registry = GenreRegistry()
+    
+    # Test Fantasy sub-genres
+    fantasy = registry.get_genre("Fantasy")
+    assert len(fantasy.subgenres) == 7, f"Expected 7 sub-genres for Fantasy, got {len(fantasy.subgenres)}"
+    
+    high_fantasy = fantasy.get_subgenre("High Fantasy")
+    assert high_fantasy is not None, "Could not find High Fantasy sub-genre"
+    assert "The Lord of the Rings" in high_fantasy.examples, "The Lord of the Rings should be in High Fantasy examples"
+    assert "Chosen One" in high_fantasy.archetypes, "Chosen One should be in High Fantasy archetypes"
+    
+    # Test Science Fiction sub-genres
+    sci_fi = registry.get_genre("Science Fiction")
+    assert len(sci_fi.subgenres) == 6, f"Expected 6 sub-genres for Science Fiction, got {len(sci_fi.subgenres)}"
+    
+    cyberpunk = sci_fi.get_subgenre("Cyberpunk")
+    assert cyberpunk is not None, "Could not find Cyberpunk sub-genre"
+    assert "Blade Runner" in cyberpunk.examples, "Blade Runner should be in Cyberpunk examples"
+    
+    # Test Western sub-genres
+    western = registry.get_genre("Western")
+    assert len(western.subgenres) == 4, f"Expected 4 sub-genres for Western, got {len(western.subgenres)}"
+    
+    # Test Mystery sub-genres
+    mystery = registry.get_genre("Mystery")
+    assert len(mystery.subgenres) == 4, f"Expected 4 sub-genres for Mystery, got {len(mystery.subgenres)}"
+    
+    # Test Horror sub-genres
+    horror = registry.get_genre("Horror")
+    assert len(horror.subgenres) == 5, f"Expected 5 sub-genres for Horror, got {len(horror.subgenres)}"
+    
+    print("✓ Genre SubGenres tests passed")
+
+
+def test_subgenre_class():
+    """Test the SubGenre class."""
+    print("Testing SubGenre class...")
+    
+    # Create a sub-genre
+    subgenre = SubGenre(
+        name="Test SubGenre",
+        archetypes=["Hero", "Villain"],
+        plot="Good vs Evil",
+        examples=["Example 1", "Example 2"]
+    )
+    
+    assert subgenre.name == "Test SubGenre"
+    assert subgenre.plot == "Good vs Evil"
+    assert len(subgenre.archetypes) == 2
+    assert len(subgenre.examples) == 2
+    assert "Hero" in subgenre.archetypes
+    assert "Example 1" in subgenre.examples
+    
+    # Test string representation
+    str_repr = str(subgenre)
+    assert "Test SubGenre" in str_repr
+    assert "Good vs Evil" in str_repr
+    
+    print("✓ SubGenre class tests passed")
+
+
+def test_genre_class():
+    """Test the Genre class."""
+    print("Testing Genre class...")
+    
+    # Create a genre
+    genre = Genre(name="Test Genre")
+    
+    assert genre.name == "Test Genre"
+    assert len(genre.subgenres) == 0
+    
+    # Add a sub-genre
+    subgenre = SubGenre(name="Test Sub", plot="Test plot")
+    genre.add_subgenre(subgenre)
+    
+    assert len(genre.subgenres) == 1
+    assert genre.get_subgenre("Test Sub") is not None
+    assert genre.get_subgenre("nonexistent") is None
+    
+    # Test case-insensitive lookup
+    assert genre.get_subgenre("test sub") is not None
+    
+    # Test string representation
+    str_repr = str(genre)
+    assert "Test Genre" in str_repr
+    assert "1 sub-genres" in str_repr
+    
+    print("✓ Genre class tests passed")
+
+
+def test_genre_enum():
+    """Test the GenreEnum."""
+    print("Testing GenreEnum...")
+    
+    # Test that all expected genres are present
+    assert GenreEnum.FANTASY.value == "Fantasy"
+    assert GenreEnum.SCIENCE_FICTION.value == "Science Fiction"
+    assert GenreEnum.HORROR.value == "Horror"
+    assert GenreEnum.ROMANCE.value == "Romance"
+    assert GenreEnum.DOCUMENTARY.value == "Documentary"
+    
+    # Test that we have the correct number of genres
+    genres = list(GenreEnum)
+    assert len(genres) == 15, f"Expected 15 genres in enum, got {len(genres)}"
+    
+    print("✓ GenreEnum tests passed")
+
+
+def test_subgenre_enum():
+    """Test the SubGenreEnum."""
+    print("Testing SubGenreEnum...")
+    
+    # Test that some expected sub-genres are present
+    assert SubGenreEnum.HIGH_FANTASY.value == "High Fantasy"
+    assert SubGenreEnum.CYBERPUNK.value == "Cyberpunk"
+    assert SubGenreEnum.CLASSIC_WESTERN.value == "Classic Western"
+    assert SubGenreEnum.PSYCHOLOGICAL_HORROR.value == "Psychological Horror"
+    
+    # Test that we have a reasonable number of sub-genres
+    subgenres = list(SubGenreEnum)
+    assert len(subgenres) > 60, f"Expected more than 60 sub-genres in enum, got {len(subgenres)}"
+    
+    print("✓ SubGenreEnum tests passed")
+
+
 def run_all_tests():
     """Run all tests."""
     print("=== Running Story Types Tests ===\n")
@@ -228,6 +394,12 @@ def run_all_tests():
         test_story_type_class()
         test_archetype_registry()
         test_archetype_class()
+        test_genre_registry()
+        test_genre_subgenres()
+        test_subgenre_class()
+        test_genre_class()
+        test_genre_enum()
+        test_subgenre_enum()
         
         print("\n✅ All tests passed!")
         return True
