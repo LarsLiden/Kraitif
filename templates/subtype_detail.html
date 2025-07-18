@@ -29,5 +29,41 @@
     <div class="section-content">{{ story_type.description }}</div>
 </div>
 
+<!-- Selectable story elements form -->
+<form method="POST" action="{{ url_for('update_story_selection', story_type_name=story_type.name, subtype_name=subtype.name) }}" class="story-selection-form">
+    
+    {% if story_type.key_theme %}
+    <div class="selection-section">
+        <div class="section-title">Key Theme</div>
+        <div class="radio-group">
+            {% for theme in story_type.key_theme %}
+            <label class="radio-label">
+                <input type="radio" name="key_theme" value="{{ theme }}" 
+                    {% if saved_selections.get('key_theme') == theme or (not saved_selections.get('key_theme') and loop.first) %}checked{% endif %}>
+                <span class="radio-text">{{ theme }}</span>
+            </label>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    {% if story_type.core_arc %}
+    <div class="selection-section">
+        <div class="section-title">Core Arc</div>
+        <div class="radio-group">
+            {% for arc in story_type.core_arc %}
+            <label class="radio-label">
+                <input type="radio" name="core_arc" value="{{ arc }}" 
+                    {% if saved_selections.get('core_arc') == arc or (not saved_selections.get('core_arc') and loop.first) %}checked{% endif %}>
+                <span class="radio-text">{{ arc }}</span>
+            </label>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <button type="submit" class="submit-button">Save Selections</button>
+</form>
+
 <a href="{{ url_for('story_type_detail', story_type_name=story_type.name) }}" class="back-link">← Back to {{ story_type.name }}</a>
 {% endblock %}
