@@ -1,0 +1,487 @@
+{
+  "genres": [
+    {
+      "name": "Fantasy",
+      "subgenres": [
+        {
+          "name": "High Fantasy",
+          "archetypes": ["Chosen One", "Wise Mentor", "Loyal Companion"],
+          "plot": "Hero’s Journey, Realm Restoration",
+          "examples": ["The Lord of the Rings", "Wheel of Time"]
+        },
+        {
+          "name": "Urban Fantasy",
+          "archetypes": ["Hidden Mage", "Skeptic Detective", "Fae Trickster"],
+          "plot": "Dual Worlds, Secret Societies",
+          "examples": ["The Dresden Files", "Shadowhunters"]
+        },
+        {
+          "name": "Dark Fantasy",
+          "archetypes": ["Anti-Hero", "Cursed Warrior", "Sinister Advisor"],
+          "plot": "Moral Fall, Descent into Madness",
+          "examples": ["The Witcher", "The Broken Empire"]
+        },
+        {
+          "name": "Mythic Fantasy",
+          "archetypes": ["Demi-God", "Sacred Guardian", "Mortal Prophet"],
+          "plot": "Trials by Gods, Prophecy Unfolds",
+          "examples": ["American Gods", "Percy Jackson"]
+        },
+        {
+          "name": "Fairy Tale Retelling",
+          "archetypes": ["Reimagined Princess", "Wicked Stepmother"],
+          "plot": "Folklore Twists, Emancipation Arc",
+          "examples": ["Wicked", "Ella Enchanted"]
+        },
+        {
+          "name": "Portal Fantasy",
+          "archetypes": ["Ordinary Youth", "Sentient Realm", "Gatekeeper"],
+          "plot": "Accidental Arrival, World Discovery",
+          "examples": ["Narnia", "Alice in Wonderland"]
+        },
+        {
+          "name": "Sword & Sorcery",
+          "archetypes": ["Brash Hero", "Tower Wizard", "Seductive Rogue"],
+          "plot": "Treasure Hunt, Monster Conquest",
+          "examples": ["Conan the Barbarian", "Elric of Melniboné"]
+        }
+      ]
+    },
+    {
+      "name": "Science Fiction",
+      "subgenres": [
+        {
+          "name": "Hard Sci-Fi",
+          "archetypes": ["Rational Scientist", "AI Companion"],
+          "plot": "Discovery, Tech Ethics",
+          "examples": ["The Martian", "Foundation"]
+        },
+        {
+          "name": "Cyberpunk",
+          "archetypes": ["Hacker Rebel", "Streetwise Mercenary"],
+          "plot": "Oppression, Identity Crises",
+          "examples": ["Blade Runner", "Neuromancer"]
+        },
+        {
+          "name": "Space Opera",
+          "archetypes": ["Starship Captain", "Galactic Tyrant"],
+          "plot": "Interstellar Conflict, Family Legacy",
+          "examples": ["Star Wars", "Dune"]
+        },
+        {
+          "name": "Time Travel",
+          "archetypes": ["Time Wanderer", "Timeline Enforcer"],
+          "plot": "Paradox Loop, Temporal War",
+          "examples": ["Tenet", "Outlander"]
+        },
+        {
+          "name": "Genetic/AI Sci-Fi",
+          "archetypes": ["Enhanced Human", "Rogue AI"],
+          "plot": "Creation Rebellion, Evolution Ethics",
+          "examples": ["Gattaca", "Ex Machina"]
+        },
+        {
+          "name": "Techno-Dystopia",
+          "archetypes": ["Resistance Leader", "Monitored Citizen"],
+          "plot": "Escape, System Subversion",
+          "examples": ["Black Mirror", "Fahrenheit 451"]
+        }
+      ]
+    },
+    {
+      "name": "Western",
+      "subgenres": [
+        {
+          "name": "Classic Western",
+          "archetypes": ["Gunslinger", "Outlaw", "Town Sheriff"],
+          "plot": "Frontier Justice, Revenge",
+          "examples": ["High Noon", "Shane"]
+        },
+        {
+          "name": "Revisionist",
+          "archetypes": ["Flawed Hero", "Disillusioned War Vet"],
+          "plot": "Justice Reconsidered",
+          "examples": ["Unforgiven", "The Searchers"]
+        },
+        {
+          "name": "Neo-Western",
+          "archetypes": ["Rancher", "Urban Cop", "Lone Avenger"],
+          "plot": "Isolation, Modern Morality",
+          "examples": ["No Country for Old Men", "Hell or High Water"]
+        },
+        {
+          "name": "Sci-Fi Western",
+          "archetypes": ["Mech Wrangler", "Space Sheriff"],
+          "plot": "Tech Frontier, Alien Encounters",
+          "examples": ["Firefly", "Cowboys & Aliens"]
+        }
+      ]
+    },
+    {
+      "name": "Mystery",
+      "subgenres": [
+        {
+          "name": "Cozy Mystery",
+          "archetypes": ["Quirky Sleuth", "Nosy Neighbor"],
+          "plot": "Clues & Gossip, Whimsical Tone",
+          "examples": ["Murder, She Wrote", "Only Murders in the Building"]
+        },
+        {
+          "name": "Noir Detective",
+          "archetypes": ["Cynical PI", "Femme Fatale"],
+          "plot": "Corruption, Betrayal",
+          "examples": ["Chinatown", "The Big Sleep"]
+        },
+        {
+          "name": "Procedural",
+          "archetypes": ["Forensics Expert", "Rookie Cop"],
+          "plot": "Evidence-Based Unfolding",
+          "examples": ["CSI", "Law & Order"]
+        },
+        {
+          "name": "Locked Room",
+          "archetypes": ["Isolated Guests", "Silent Witness"],
+          "plot": "Impossible Crime, Mental Deduction",
+          "examples": ["Knives Out", "And Then There Were None"]
+        }
+      ]
+    },
+    {
+      "name": "Thriller",
+      "subgenres": [
+        {
+          "name": "Psychological",
+          "archetypes": ["Unstable Protagonist", "Manipulative Partner"],
+          "plot": "Mental Unraveling, Trust Issues",
+          "examples": ["Gone Girl", "Black Swan"]
+        },
+        {
+          "name": "Crime Thriller",
+          "archetypes": ["Fugitive", "Framed Innocent"],
+          "plot": "Manhunt, Suspicion",
+          "examples": ["Zodiac", "Prisoners"]
+        },
+        {
+          "name": "Political",
+          "archetypes": ["Whistleblower", "Corrupt Official"],
+          "plot": "Espionage, Risk to Democracy",
+          "examples": ["The Constant Gardener", "House of Cards"]
+        },
+        {
+          "name": "Tech/Cyber",
+          "archetypes": ["Hacker Hero", "System Architect"],
+          "plot": "Digital Conflict, Identity Theft",
+          "examples": ["Mr. Robot", "Snowden"]
+        }
+      ]
+    },
+    {
+      "name": "Horror",
+      "subgenres": [
+        {
+          "name": "Psychological Horror",
+          "archetypes": ["Fragile Mind", "Unseen Force"],
+          "plot": "Madness Descent, Reality Distortion",
+          "examples": ["Hereditary", "The Babadook"]
+        },
+        {
+          "name": "Supernatural Horror",
+          "archetypes": ["Ghost Hunter", "Cursed Child"],
+          "plot": "Possession, Haunting Rituals",
+          "examples": ["The Conjuring", "Insidious"]
+        },
+        {
+          "name": "Slasher",
+          "archetypes": ["Final Girl", "Masked Killer"],
+          "plot": "Chase, Survival, Revenge",
+          "examples": ["Halloween", "Scream"]
+        },
+        {
+          "name": "Body Horror",
+          "archetypes": ["Mad Scientist", "Mutated Victim"],
+          "plot": "Physical Transformation, Viral Terror",
+          "examples": ["The Fly", "Tusk"]
+        },
+        {
+          "name": "Cosmic Horror",
+          "archetypes": ["Cultist", "Unknowing Researcher"],
+          "plot": "Existential Dread, Reality Collapse",
+          "examples": ["The Mist", "Annihilation"]
+        }
+      ]
+    },
+    {
+      "name": "Romance",
+      "subgenres": [
+        {
+          "name": "Historical Romance",
+          "archetypes": ["Governess", "Noble Love Interest"],
+          "plot": "Class Divide, Forbidden Love",
+          "examples": ["Pride & Prejudice", "Jane Eyre"]
+        },
+        {
+          "name": "Romantic Comedy",
+          "archetypes": ["Bumbling Lover", "Sarcastic Best Friend"],
+          "plot": "Miscommunication, Happy Accident",
+          "examples": ["Notting Hill", "The Notebook"]
+        },
+        {
+          "name": "Fantasy Romance",
+          "archetypes": ["Magical Soulmates", "Cursed Lovers"],
+          "plot": "Destiny vs Will, Realms in Conflict",
+          "examples": ["Stardust", "A Court of Thorns and Roses"]
+        },
+        {
+          "name": "Tragic Romance",
+          "archetypes": ["Ill-Fated Lovers", "Stoic Companion"],
+          "plot": "Loss, Memory, Longing",
+          "examples": ["Titanic", "Atonement"]
+        },
+        {
+          "name": "Enemies to Lovers",
+          "archetypes": ["Rival Heirs", "Competitive Leads"],
+          "plot": "Antagonism Turned Affection",
+          "examples": ["Bridgerton", "The Hating Game"]
+        }
+      ]
+    },
+    {
+      "name": "Comedy",
+      "subgenres": [
+        {
+          "name": "Slapstick",
+          "archetypes": ["Lovable Fool", "Clumsy Hero"],
+          "plot": "Escalating Mishaps, Visual Gags",
+          "examples": ["Airplane!", "Dumb and Dumber"]
+        },
+        {
+          "name": "Satire",
+          "archetypes": ["Naïve Politician", "Scheming Advisor"],
+          "plot": "Exposing Absurdities, Mock Institutions",
+          "examples": ["Dr. Strangelove", "Don't Look Up"]
+        },
+        {
+          "name": "Dark Comedy",
+          "archetypes": ["Deadpan Protagonist", "Morbid Sidekick"],
+          "plot": "Grim Humor, Taboo Situations",
+          "examples": ["In Bruges", "The Death of Stalin"]
+        },
+        {
+          "name": "Romantic Comedy",
+          "archetypes": ["Hopeless Romantic", "Unaware Crush"],
+          "plot": "Love Entanglements, Comic Timing",
+          "examples": ["Crazy Rich Asians", "10 Things I Hate About You"]
+        }
+      ]
+    },
+    {
+      "name": "Drama",
+      "subgenres": [
+        {
+          "name": "Family Drama",
+          "archetypes": ["Estranged Sibling", "Aging Parent"],
+          "plot": "Secrets Revealed, Reconciliation",
+          "examples": ["The Farewell", "August: Osage County"]
+        },
+        {
+          "name": "Legal Drama",
+          "archetypes": ["Idealist Lawyer", "Shady Client"],
+          "plot": "Trial, Truth vs Justice",
+          "examples": ["A Few Good Men", "The Trial of the Chicago 7"]
+        },
+        {
+          "name": "Coming-of-Age",
+          "archetypes": ["Awkward Teen", "Guiding Elder"],
+          "plot": "Growth, Self-Discovery",
+          "examples": ["Lady Bird", "Boyhood"]
+        },
+        {
+          "name": "Tragedy",
+          "archetypes": ["Broken Couple", "Haunted Survivor"],
+          "plot": "Grief, Inner Reconstruction",
+          "examples": ["Manchester by the Sea", "Requiem for a Dream"]
+        }
+      ]
+    },
+    {
+      "name": "Adventure",
+      "subgenres": [
+        {
+          "name": "Survival",
+          "archetypes": ["Lone Explorer", "Nature Itself"],
+          "plot": "Endurance, Mental Strength",
+          "examples": ["The Revenant", "Cast Away"]
+        },
+        {
+          "name": "Treasure Hunt",
+          "archetypes": ["Academic", "Mercenary", "Local Guide"],
+          "plot": "Puzzles, Booby Traps, Rivalry",
+          "examples": ["Indiana Jones", "National Treasure"]
+        },
+        {
+          "name": "Expedition",
+          "archetypes": ["Curious Leader", "Skeptical Crew"],
+          "plot": "Journey into the Unknown, Revelation",
+          "examples": ["Life of Pi", "The Lost City of Z"]
+        },
+        {
+          "name": "Swashbuckling",
+          "archetypes": ["Charismatic Pirate", "Rival Captain"],
+          "plot": "Swordfights, Daring Rescues",
+          "examples": ["Pirates of the Caribbean", "The Three Musketeers"]
+        }
+      ]
+    },
+    {
+      "name": "Historical",
+      "subgenres": [
+        {
+          "name": "War-Time",
+          "archetypes": ["Soldier", "Civilian Witness"],
+          "plot": "Morality Under Fire, Sacrifice",
+          "examples": ["Saving Private Ryan", "Dunkirk"]
+        },
+        {
+          "name": "Biographical",
+          "archetypes": ["Visionary", "Skeptic", "Confidant"],
+          "plot": "Rise, Fall, Legacy",
+          "examples": ["Schindler’s List", "The Iron Lady"]
+        },
+        {
+          "name": "Period Piece",
+          "archetypes": ["Governess", "Royalty"],
+          "plot": "Social Constraint, Romance, Status",
+          "examples": ["Downton Abbey", "The Crown"]
+        },
+        {
+          "name": "Alt-History",
+          "archetypes": ["Resistance Fighter", "Twisted Ruler"],
+          "plot": "Divergent Timeline, Power Shift",
+          "examples": ["The Man in the High Castle", "Inglourious Basterds"]
+        }
+      ]
+    },
+    {
+      "name": "Crime",
+      "subgenres": [
+        {
+          "name": "Heist",
+          "archetypes": ["Mastermind", "Safecracker", "Inside Man"],
+          "plot": "Plan Gone Wrong, Double Crosses",
+          "examples": ["Ocean’s Eleven", "Inside Man"]
+        },
+        {
+          "name": "Mob Drama",
+          "archetypes": ["Don", "Traitor", "Enforcer"],
+          "plot": "Loyalty, Family Feuds, Crime Empire",
+          "examples": ["The Godfather", "The Sopranos"]
+        },
+        {
+          "name": "Serial Crimes",
+          "archetypes": ["Profiler", "Detective", "Psychopath"],
+          "plot": "Cat & Mouse, Psychological Warfare",
+          "examples": ["Mindhunter", "Se7en"]
+        },
+        {
+          "name": "Courtroom",
+          "archetypes": ["DA", "Defense Lawyer", "Accused"],
+          "plot": "Truth Under Pressure, Legal Tricks",
+          "examples": ["Primal Fear", "12 Angry Men"]
+        }
+      ]
+    },
+    {
+      "name": "Action",
+      "subgenres": [
+        {
+          "name": "Spy Thriller",
+          "archetypes": ["Agent", "Double Agent", "Tech Expert"],
+          "plot": "Espionage, Betrayal, Global Stakes",
+          "examples": ["James Bond", "Mission: Impossible"]
+        },
+        {
+          "name": "Martial Arts",
+          "archetypes": ["Quiet Fighter", "Rival Champion"],
+          "plot": "Honor, Tournament, Revenge",
+          "examples": ["Ip Man", "The Raid"]
+        },
+        {
+          "name": "Superhero",
+          "archetypes": ["Caped Crusader", "Redeemed Villain"],
+          "plot": "Power vs Responsibility, Sacrifice for the Greater Good",
+          "examples": ["Spider-Man", "The Dark Knight"]
+        },
+        {
+          "name": "Disaster",
+          "archetypes": ["Pilot", "Scientist", "Separated Parent"],
+          "plot": "Survival under Chaos, Race Against Time",
+          "examples": ["2012", "San Andreas"]
+        },
+        {
+          "name": "Military Ops",
+          "archetypes": ["Squad Leader", "Rookie Soldier", "Strategist"],
+          "plot": "Mission Execution, Brotherhood, Sacrifice",
+          "examples": ["Black Hawk Down", "Lone Survivor"]
+        }
+      ]
+    },
+    {
+      "name": "Documentary",
+      "subgenres": [
+        {
+          "name": "Nature & Science",
+          "archetypes": ["Explorer", "Biologist"],
+          "plot": "Awe, Education, Preservation",
+          "examples": ["Planet Earth", "Cosmos"]
+        },
+        {
+          "name": "Social Issues",
+          "archetypes": ["Activist", "Community Leader", "Impassioned Witness"],
+          "plot": "Awareness, Injustice, Reform",
+          "examples": ["13th", "The Social Dilemma"]
+        },
+        {
+          "name": "Biography",
+          "archetypes": ["Artist", "Visionary", "Struggler"],
+          "plot": "Life Journey, Impact, Legacy",
+          "examples": ["Amy", "Won’t You Be My Neighbor?"]
+        },
+        {
+          "name": "Exploration",
+          "archetypes": ["Climber", "Survivor", "Guide"],
+          "plot": "Endurance, Challenge, Discovery",
+          "examples": ["Free Solo", "The Rescue"]
+        }
+      ]
+    },
+    {
+      "name": "Musical",
+      "subgenres": [
+        {
+          "name": "Classic Broadway Style",
+          "archetypes": ["Aspiring Performer", "Mentor Musician"],
+          "plot": "Stage Dream, Artistic Passion",
+          "examples": ["West Side Story", "Cabaret"]
+        },
+        {
+          "name": "Modern Pop Musical",
+          "archetypes": ["Rising Star", "Rival Performer", "Romantic Interest"],
+          "plot": "Breakthrough, Conflict & Harmony",
+          "examples": ["The Greatest Showman", "La La Land"]
+        },
+        {
+          "name": "Animated Musical",
+          "archetypes": ["Hopeful Youth", "Elder Guide", "Animal Sidekick"],
+          "plot": "Family Journey, Self-Discovery, Magic of Song",
+          "examples": ["Encanto", "Frozen"]
+        },
+        {
+          "name": "Historical Musical",
+          "archetypes": ["Revolutionary", "Philosopher", "Tragic Ally"],
+          "plot": "Politics, Legacy, Rhythmic Retelling",
+          "examples": ["Hamilton", "Les Misérables"]
+        }
+      ]
+    }
+  ]
+}
