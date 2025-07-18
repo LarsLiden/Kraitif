@@ -1,0 +1,163 @@
+{% extends "base.html" %}
+
+{% block title %}{{ story.title }} - Kraitif{% endblock %}
+
+{% block content %}
+<div class="header-section">
+    <h1>{{ story.title }}</h1>
+    {% if story.description %}
+    <p class="story-description">{{ story.description }}</p>
+    {% endif %}
+</div>
+
+<div class="main-actions">
+    <a href="{{ url_for('edit_story', story_index=story_index) }}" class="btn btn-primary">Edit Story</a>
+    <a href="{{ url_for('list_stories') }}" class="btn btn-secondary">← Back to Stories</a>
+</div>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      <div class="alert alert-{{ category }}">{{ message }}</div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+
+<div class="story-details">
+    <div class="completion-section">
+        <h2>Story Completion</h2>
+        <div class="completion-bar-large">
+            <div class="completion-fill" style="width: {{ story.completion_percentage }}%"></div>
+        </div>
+        <div class="completion-text-large">{{ "%.0f"|format(story.completion_percentage) }}% complete</div>
+        {% if not story.is_complete %}
+        <div class="completion-message">
+            <p>Your story is not yet complete. Consider adding the following:</p>
+            <ul>
+                {% if not story.title %}<li>Title</li>{% endif %}
+                {% if not story.description %}<li>Description</li>{% endif %}
+                {% if not story.genre %}<li>Genre</li>{% endif %}
+                {% if not story.sub_genre %}<li>Sub-genre</li>{% endif %}
+                {% if not story.story_type %}<li>Story Type</li>{% endif %}
+                {% if not story.story_subtype %}<li>Story Subtype</li>{% endif %}
+                {% if not story.archetypes %}<li>At least one archetype</li>{% endif %}
+            </ul>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="story-info-grid">
+        <div class="info-section">
+            <h3>Genre Information</h3>
+            {% if story.genre %}
+            <div class="info-item">
+                <span class="info-label">Genre:</span>
+                <span class="info-value">{{ story.genre.name }}</span>
+            </div>
+            {% if story.sub_genre %}
+            <div class="info-item">
+                <span class="info-label">Sub-genre:</span>
+                <span class="info-value">{{ story.sub_genre.name }}</span>
+            </div>
+            {% if story.sub_genre.plot %}
+            <div class="info-item">
+                <span class="info-label">Plot Style:</span>
+                <span class="info-value">{{ story.sub_genre.plot }}</span>
+            </div>
+            {% endif %}
+            {% if story.sub_genre.examples %}
+            <div class="info-item">
+                <span class="info-label">Examples:</span>
+                <span class="info-value">{{ story.sub_genre.examples | join(', ') }}</span>
+            </div>
+            {% endif %}
+            {% endif %}
+            {% else %}
+            <div class="info-empty">No genre selected</div>
+            {% endif %}
+        </div>
+
+        <div class="info-section">
+            <h3>Story Type Information</h3>
+            {% if story.story_type %}
+            <div class="info-item">
+                <span class="info-label">Story Type:</span>
+                <span class="info-value">{{ story.story_type.name }}</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Description:</span>
+                <span class="info-value">{{ story.story_type.description }}</span>
+            </div>
+            {% if story.story_subtype %}
+            <div class="info-item">
+                <span class="info-label">Subtype:</span>
+                <span class="info-value">{{ story.story_subtype.name }}</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Subtype Description:</span>
+                <span class="info-value">{{ story.story_subtype.description }}</span>
+            </div>
+            {% endif %}
+            {% if story.story_type.key_theme %}
+            <div class="info-item">
+                <span class="info-label">Key Theme:</span>
+                <span class="info-value">{{ story.story_type.key_theme }}</span>
+            </div>
+            {% endif %}
+            {% if story.story_type.emotional_arc %}
+            <div class="info-item">
+                <span class="info-label">Emotional Arc:</span>
+                <span class="info-value">{{ story.story_type.emotional_arc }}</span>
+            </div>
+            {% endif %}
+            {% else %}
+            <div class="info-empty">No story type selected</div>
+            {% endif %}
+        </div>
+    </div>
+
+    {% if story.archetypes %}
+    <div class="archetypes-section">
+        <h3>Character Archetypes</h3>
+        <div class="archetypes-grid">
+            {% for archetype in story.archetypes %}
+            <div class="archetype-card">
+                <div class="archetype-name">{{ archetype.name }}</div>
+                <div class="archetype-description">{{ archetype.description }}</div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    {% if story.notes %}
+    <div class="notes-section">
+        <h3>Notes</h3>
+        <div class="notes-content">{{ story.notes }}</div>
+    </div>
+    {% endif %}
+
+    <div class="metadata-section">
+        <h3>Metadata</h3>
+        <div class="metadata-grid">
+            <div class="metadata-item">
+                <span class="metadata-label">Created:</span>
+                <span class="metadata-value">{{ story.created_at.strftime('%B %d, %Y at %I:%M %p') }}</span>
+            </div>
+            {% if story.tags %}
+            <div class="metadata-item">
+                <span class="metadata-label">Tags:</span>
+                <span class="metadata-value">{{ story.tags | join(', ') }}</span>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="danger-zone">
+        <h3>Danger Zone</h3>
+        <form method="POST" action="{{ url_for('delete_story', story_index=story_index) }}" onsubmit="return confirm('Are you sure you want to delete this story? This action cannot be undone.')">
+            <button type="submit" class="btn btn-danger">Delete Story</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

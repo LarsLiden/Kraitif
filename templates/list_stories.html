@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+
+{% block title %}My Stories - Kraitif{% endblock %}
+
+{% block content %}
+<div class="header-section">
+    <h1>My Stories</h1>
+    <p class="subtitle">Manage and view your created stories</p>
+</div>
+
+<div class="main-actions">
+    <a href="{{ url_for('create_story') }}" class="btn btn-primary">Create New Story</a>
+    <a href="{{ url_for('index') }}" class="btn btn-secondary">← Back to Home</a>
+</div>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      <div class="alert alert-{{ category }}">{{ message }}</div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+
+{% if stories %}
+<div class="stories-section">
+    <div class="stories-grid">
+        {% for story in stories %}
+        <div class="story-card">
+            <div class="story-header">
+                <div class="story-title">{{ story.title }}</div>
+                <div class="story-actions">
+                    <a href="{{ url_for('view_story', story_index=loop.index0) }}" class="btn btn-small">View</a>
+                    <a href="{{ url_for('edit_story', story_index=loop.index0) }}" class="btn btn-small">Edit</a>
+                </div>
+            </div>
+            
+            {% if story.description %}
+            <div class="story-description">{{ story.description[:150] }}{% if story.description|length > 150 %}...{% endif %}</div>
+            {% endif %}
+            
+            {% if story.genre %}
+            <div class="story-meta">
+                <span class="meta-label">Genre:</span>
+                <span class="meta-value">{{ story.genre.name }}</span>
+                {% if story.sub_genre %}
+                <span class="meta-separator">•</span>
+                <span class="meta-value">{{ story.sub_genre.name }}</span>
+                {% endif %}
+            </div>
+            {% endif %}
+            
+            {% if story.story_type %}
+            <div class="story-meta">
+                <span class="meta-label">Story Type:</span>
+                <span class="meta-value">{{ story.story_type.name }}</span>
+                {% if story.story_subtype %}
+                <span class="meta-separator">•</span>
+                <span class="meta-value">{{ story.story_subtype.name }}</span>
+                {% endif %}
+            </div>
+            {% endif %}
+            
+            {% if story.archetypes %}
+            <div class="story-archetypes">
+                <span class="meta-label">Archetypes:</span>
+                <span class="meta-value">{{ story.archetypes[:3] | map(attribute='name') | join(', ') }}</span>
+                {% if story.archetypes|length > 3 %}
+                <span class="archetype-count">+{{ story.archetypes|length - 3 }} more</span>
+                {% endif %}
+            </div>
+            {% endif %}
+            
+            <div class="story-completion">
+                <div class="completion-bar">
+                    <div class="completion-fill" style="width: {{ story.completion_percentage }}%"></div>
+                </div>
+                <span class="completion-text">{{ "%.0f"|format(story.completion_percentage) }}% complete</span>
+            </div>
+            
+            <div class="story-date">
+                Created: {{ story.created_at.strftime('%B %d, %Y') }}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% else %}
+<div class="empty-state">
+    <h2>No Stories Yet</h2>
+    <p>You haven't created any stories yet. Start by creating your first story!</p>
+    <a href="{{ url_for('create_story') }}" class="btn btn-primary">Create Your First Story</a>
+</div>
+{% endif %}
+{% endblock %}
