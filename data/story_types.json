@@ -1,0 +1,198 @@
+[
+  {
+    "plot": "Overcoming the Monster",
+    "description": "Hero faces a great evil or powerful antagonist that threatens a community or personal survival.",
+    "narrative_rhythm": "Anticipation, Dream, Frustration, Nightmare, Thrilling Escape",
+    "key_theme": [
+      "Courage and perseverance triumph over fear and oppression.",
+      "Confronting one’s deepest fears leads to transformation.",
+      "Monsters are often reflections of inner demons or societal threats."
+    ],
+    "emotional_arc": ["Fear", "Desperation", "Resolve", "Victory"],
+    "key_moment": [
+      "The final confrontation where the hero defeats or escapes the monster.",
+      "The moment when fear turns into decisive action.",
+      "The realization that the monster is not invincible."
+    ],
+    "core_arc": [
+      "Ordinary person becomes empowered through challenge.",
+      "Self-belief forged in conflict.",
+      "Standing against evil renews identity and purpose."
+    ],
+    "common_elements": [
+      "Threatening adversary",
+      "Isolated setting",
+      "Buildup of tension",
+      "Final escape or battle"
+    ],
+    "selectable_fields": ["key_theme", "key_moment", "core_arc"]
+  },
+  {
+    "plot": "Rags to Riches",
+    "description": "Protagonist rises from humble beginnings to prominence, often undergoing deep internal growth.",
+    "narrative_rhythm": "Initial Poverty, Discovery, Temptation, Crisis, Fulfillment",
+    "key_theme": [
+      "True worth comes from character, not wealth or status.",
+      "Success is hollow without self-awareness and humility.",
+      "Growth comes through adversity, not privilege."
+    ],
+    "emotional_arc": ["Hope", "Struggle", "Doubt", "Transformation"],
+    "key_moment": [
+      "Moment of realization where internal growth surpasses external success.",
+      "Rejection of shallow reward in favor of personal integrity.",
+      "Breakthrough from despair into self-acceptance."
+    ],
+    "core_arc": [
+      "Innocence tested by opportunity.",
+      "Awakening through hardship.",
+      "Growth rewarded by destiny."
+    ],
+    "common_elements": [
+      "Undervalued hero",
+      "Rise to prominence",
+      "Moral challenge",
+      "Personal reckoning"
+    ],
+    "selectable_fields": ["key_theme", "key_moment", "core_arc"]
+  },
+  {
+    "plot": "The Quest",
+    "description": "A hero embarks on a journey with companions to achieve a vital goal, encountering trials and temptations.",
+    "narrative_rhythm": "Call to Action, Journey, Trials, Crisis, Achievement",
+    "key_theme": [
+      "Growth occurs through shared adventure and sacrifice.",
+      "Every obstacle is a mirror to the hero’s development.",
+      "The journey is as important as the destination."
+    ],
+    "emotional_arc": ["Determination", "Adversity", "Bonding", "Triumph"],
+    "key_moment": [
+      "Sacrificial or heroic act that secures the goal after major trials.",
+      "Turning point where the hero chooses others over self.",
+      "Moment of revelation at the journey’s end."
+    ],
+    "core_arc": [
+      "Hero discovers strength through perseverance.",
+      "Trust forged under pressure.",
+      "Completion through unity."
+    ],
+    "common_elements": [
+      "Sacred goal",
+      "Loyal companions",
+      "Physical and moral challenges",
+      "Returning transformed"
+    ],
+    "selectable_fields": ["key_theme", "key_moment", "core_arc"]
+  },
+  {
+    "plot": "Voyage and Return",
+    "description": "Hero enters an unfamiliar world, faces adversity, and returns home wiser and transformed.",
+    "narrative_rhythm": "Departure, Wonder, Danger, Escape, Enlightenment",
+    "key_theme": [
+      "The world’s strangeness teaches the hero self-awareness and wisdom.",
+      "Personal transformation requires stepping into the unknown.",
+      "Survival leads to reflection and rebirth."
+    ],
+    "emotional_arc": ["Curiosity", "Fear", "Struggle", "Renewal"],
+    "key_moment": [
+      "The homecoming, when the hero reflects on how they've changed.",
+      "Escape from danger triggers internal growth.",
+      "A final test defines what the journey meant."
+    ],
+    "core_arc": [
+      "Naïve explorer becomes insightful.",
+      "External experience prompts internal clarity.",
+      "Curiosity evolves into understanding."
+    ],
+    "common_elements": [
+      "Strange world",
+      "Disorientation",
+      "Life-threatening escape",
+      "Gained wisdom"
+    ],
+    "selectable_fields": ["key_theme", "key_moment", "core_arc"]
+  },
+  {
+    "plot": "Comedy",
+    "description": "A light-hearted story revolving around confusion, disguise, and miscommunication, resolved in harmony.",
+    "narrative_rhythm": "Mistaken Identity, Escalating Confusion, Comic Reversal, Resolution",
+    "key_theme": [
+      "Chaos gives way to understanding and joyful reunion.",
+      "Truth restores harmony after absurd deception.",
+      "Laughter reveals clarity in human relationships."
+    ],
+    "emotional_arc": ["Frustration", "Laughter", "Surprise", "Delight"],
+    "key_moment": [
+      "Revelation that untangles the confusion and restores harmony.",
+      "Group recognition of mistaken assumptions.",
+      "A union or celebration that resets social balance."
+    ],
+    "core_arc": [
+      "Disorder unraveled through wit.",
+      "Authenticity replaces pretense.",
+      "Misunderstandings resolved through humility."
+    ],
+    "common_elements": [
+      "Mistaken assumptions",
+      "Disguises",
+      "Romantic entanglements",
+      "Festive ending"
+    ],
+    "selectable_fields": ["key_theme", "key_moment", "core_arc"]
+  },
+  {
+    "plot": "Tragedy",
+    "description": "A protagonist with a fatal flaw experiences rise and inevitable downfall, provoking audience catharsis.",
+    "narrative_rhythm": "Ambition, Success, Decline, Crisis, Collapse",
+    "key_theme": [
+      "Human flaws and hubris lead to irreversible consequences.",
+      "The more one rises, the farther there is to fall.",
+      "Blindness to truth is the seed of destruction."
+    ],
+    "emotional_arc": ["Pride", "Shame", "Despair", "Catharsis"],
+    "key_moment": [
+      "Collapse or loss that exposes the protagonist’s tragic flaw.",
+      "An irreversible choice seals their fate.",
+      "Moment of self-awareness that comes too late."
+    ],
+    "core_arc": [
+      "Hero’s virtue becomes vice.",
+      "Blind ambition leads to ruin.",
+      "Fate and flaw converge in downfall."
+    ],
+    "common_elements": [
+      "Fatal flaw",
+      "Tempting success",
+      "Betrayal",
+      "Irreversible consequence"
+    ],
+    "selectable_fields": ["key_theme", "key_moment", "core_arc"]
+  },
+  {
+    "plot": "Rebirth",
+    "description": "Hero experiences a symbolic death or spiritual crisis and is restored through transformation.",
+    "narrative_rhythm": "Stagnation, Fall, Awakening, Redemption, Renewal",
+    "key_theme": [
+      "Even the lost can rediscover purpose and hope.",
+      "Compassion can reignite the human spirit.",
+      "Transformation begins with self-awareness."
+    ],
+    "emotional_arc": ["Apathy", "Darkness", "Epiphany", "Rejuvenation"],
+    "key_moment": [
+      "Moment of awakening that breaks isolation.",
+      "Act of kindness that inspires renewal.",
+      "Epiphany during confrontation with past mistakes."
+    ],
+    "core_arc": [
+      "From brokenness to restored identity.",
+      "Redemption through empathy.",
+      "Transformation through internal clarity."
+    ],
+    "common_elements": [
+      "Moral decay",
+      "Ghost of former self",
+      "Outsider intervention",
+      "Emergence with new outlook"
+    ],
+    "selectable_fields": ["key_theme", "key_moment", "core_arc"]
+  }
+]
