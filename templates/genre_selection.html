@@ -44,7 +44,7 @@
                 </div>
             </div>
             
-            <button type="submit" class="submit-button">Continue to Sub-Genre Selection</button>
+            <button type="submit" class="submit-button" style="display: none;">Continue to Sub-Genre Selection</button>
         </form>
     </div>
 </div>
@@ -52,4 +52,21 @@
 {% if story.story_type_name and story.subtype_name %}
 <a href="{{ url_for('subtype_detail', story_type_name=story.story_type_name, subtype_name=story.subtype_name) }}" class="back-link">← Back to {{ story.subtype_name }}</a>
 {% endif %}
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Auto-submit form when genre radio button is selected
+    const radioButtons = document.querySelectorAll('input[name="genre"]');
+    radioButtons.forEach(radio => {
+        radio.addEventListener('change', function() {
+            if (this.checked) {
+                // Small delay to show the selection before submitting
+                setTimeout(() => {
+                    document.querySelector('.story-selection-form').submit();
+                }, 200);
+            }
+        });
+    });
+});
+</script>
 {% endblock %}
