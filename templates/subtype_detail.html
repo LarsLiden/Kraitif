@@ -29,48 +29,14 @@
     <div class="section-content">{{ story_type.description }}</div>
 </div>
 
-<!-- Selectable story elements form -->
-<form method="POST" action="{{ url_for('update_story_selection', story_type_name=story_type.name, subtype_name=subtype.name) }}" class="story-selection-form" id="story-selection-form">
-    
-    {% if story_type.key_theme %}
-    <div class="selection-section">
-        <div class="section-title">Key Theme</div>
-        <div class="radio-group">
-            {% for theme in story_type.key_theme %}
-            <label class="radio-label">
-                <input type="radio" name="key_theme" value="{{ theme }}" class="auto-save-radio"
-                    {% if saved_selections.get('key_theme') == theme or (not saved_selections.get('key_theme') and loop.first) %}checked{% endif %}>
-                <span class="radio-text">{{ theme }}</span>
-            </label>
-            {% endfor %}
-        </div>
-    </div>
-    {% endif %}
-
-    {% if story_type.core_arc %}
-    <div class="selection-section">
-        <div class="section-title">Core Arc</div>
-        <div class="radio-group">
-            {% for arc in story_type.core_arc %}
-            <label class="radio-label">
-                <input type="radio" name="core_arc" value="{{ arc }}" class="auto-save-radio"
-                    {% if saved_selections.get('core_arc') == arc or (not saved_selections.get('core_arc') and loop.first) %}checked{% endif %}>
-                <span class="radio-text">{{ arc }}</span>
-            </label>
-            {% endfor %}
-        </div>
-    </div>
-    {% endif %}
-</form>
-
-<!-- Show complete story information if all selections are made -->
-{% if saved_selections.get('key_theme') and saved_selections.get('core_arc') %}
+<!-- Show current selections and next step -->
+{% if story.key_theme and story.core_arc %}
 <div class="section">
     <div class="section-title">Your Current Selections</div>
     <div class="section-content">
         <strong>Story Type:</strong> {{ story_type.name }} - {{ subtype.name }}<br>
-        <strong>Key Theme:</strong> {{ saved_selections.get('key_theme') }}<br>
-        <strong>Core Arc:</strong> {{ saved_selections.get('core_arc') }}
+        <strong>Key Theme:</strong> {{ story.key_theme }}<br>
+        <strong>Core Arc:</strong> {{ story.core_arc }}
         {% if saved_selections.get('genre_name') %}
         <br><strong>Genre:</strong> {{ saved_selections.get('genre_name') }}
         {% endif %}
@@ -93,42 +59,18 @@
     </div>
     {% endif %}
 </div>
-{% endif %}
-
-<script>
-// Auto-save functionality for radio buttons
-document.addEventListener('DOMContentLoaded', function() {
-    const form = document.getElementById('story-selection-form');
-    const radioButtons = document.querySelectorAll('.auto-save-radio');
+{% else %}
+<div class="section">
+    <div class="section-title">Next Steps</div>
+    <div class="section-content">
+        <p>Now that you've selected your story type and subtype, it's time to define the specific elements that will make your story unique.</p>
+    </div>
     
-    radioButtons.forEach(function(radio) {
-        radio.addEventListener('change', function() {
-            // Create FormData object with current form data
-            const formData = new FormData(form);
-            
-            // Send AJAX request to save selections
-            fetch(form.action, {
-                method: 'POST',
-                body: formData,
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest'
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    console.log('Selection saved automatically');
-                } else {
-                    console.error('Error saving selection:', data.error);
-                }
-            })
-            .catch(error => {
-                console.error('Error saving selection:', error);
-            });
-        });
-    });
-});
-</script>
+    <div class="next-step">
+        <a href="{{ url_for('key_theme_selection') }}" class="submit-button">Continue to Key Theme Selection →</a>
+    </div>
+</div>
+{% endif %}
 
 <a href="{{ url_for('story_type_detail', story_type_name=story_type.name) }}" class="back-link">← Back to {{ story_type.name }}</a>
 {% endblock %}
