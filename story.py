@@ -4,6 +4,7 @@ Story Implementation
 This module implements a Story object that backs user choices like genre and sub-genre.
 """
 
+import json
 from typing import Optional, Dict, Any
 from genre import Genre, SubGenre, GenreRegistry
 
@@ -75,3 +76,39 @@ class Story:
         if self.story_type_name and self.subtype_name:
             parts.append(f"Story Type: {self.story_type_name} - {self.subtype_name}")
         return " | ".join(parts) if parts else "Story with no selections"
+    
+    def to_json(self) -> str:
+        """Serialize story to JSON string."""
+        data = {
+            'story_type_name': self.story_type_name,
+            'subtype_name': self.subtype_name,
+            'key_theme': self.key_theme,
+            'core_arc': self.core_arc,
+            'genre_name': self.genre.name if self.genre else None,
+            'sub_genre_name': self.sub_genre.name if self.sub_genre else None
+        }
+        return json.dumps(data, indent=2)
+    
+    def from_json(self, json_str: str) -> bool:
+        """Load story from JSON string. Returns True if successful."""
+        try:
+            data = json.loads(json_str)
+            
+            # Load story type data
+            self.story_type_name = data.get('story_type_name')
+            self.subtype_name = data.get('subtype_name')
+            self.key_theme = data.get('key_theme')
+            self.core_arc = data.get('core_arc')
+            
+            # Load genre data
+            genre_name = data.get('genre_name')
+            if genre_name:
+                self.set_genre(genre_name)
+                
+            sub_genre_name = data.get('sub_genre_name')
+            if sub_genre_name:
+                self.set_sub_genre(sub_genre_name)
+                
+            return True
+        except (json.JSONDecodeError, KeyError, TypeError):
+            return False
