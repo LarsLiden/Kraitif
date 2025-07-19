@@ -1,0 +1,229 @@
+{
+  "styles": [
+    {
+      "name": "Concise",
+      "description": "Minimalist, efficient, no wasted words",
+      "characteristics": [
+        "Brief, direct sentences",
+        "Minimal adjectives and adverbs",
+        "Focus on action and dialogue",
+        "Clear, unadorned prose"
+      ],
+      "examples": [
+        "Ernest Hemingway",
+        "Raymond Carver",
+        "Elmore Leonard"
+      ]
+    },
+    {
+      "name": "Lyrical",
+      "description": "Musical, poetic, flowing rhythm",
+      "characteristics": [
+        "Melodic sentence structure",
+        "Rich use of imagery",
+        "Rhythmic prose",
+        "Emotional resonance"
+      ],
+      "examples": [
+        "Toni Morrison",
+        "Gabriel García Márquez",
+        "Virginia Woolf"
+      ]
+    },
+    {
+      "name": "Analytical",
+      "description": "Logical, structured, evidence-based",
+      "characteristics": [
+        "Clear thesis and arguments",
+        "Systematic organization",
+        "Evidence-based reasoning",
+        "Objective tone"
+      ],
+      "examples": [
+        "George Orwell",
+        "Academic writing",
+        "Technical documentation"
+      ]
+    },
+    {
+      "name": "Whimsical",
+      "description": "Playful, imaginative, quirky",
+      "characteristics": [
+        "Unexpected metaphors",
+        "Humor and wit",
+        "Creative wordplay",
+        "Imaginative scenarios"
+      ],
+      "examples": [
+        "Roald Dahl",
+        "Douglas Adams",
+        "Terry Pratchett"
+      ]
+    },
+    {
+      "name": "Descriptive",
+      "description": "Rich sensory detail, vivid imagery",
+      "characteristics": [
+        "Detailed sensory descriptions",
+        "Vivid imagery",
+        "Atmospheric writing",
+        "Immersive environments"
+      ],
+      "examples": [
+        "Virginia Woolf",
+        "Travel writing",
+        "Nature writing"
+      ]
+    },
+    {
+      "name": "Conversational",
+      "description": "Informal, chatty, direct-to-reader",
+      "characteristics": [
+        "Informal tone",
+        "Direct address to reader",
+        "Colloquial language",
+        "Personal anecdotes"
+      ],
+      "examples": [
+        "Blog posts",
+        "Memoirs",
+        "Personal essays"
+      ]
+    },
+    {
+      "name": "Philosophical",
+      "description": "Abstract, reflective, probing big ideas",
+      "characteristics": [
+        "Abstract concepts",
+        "Deep reflection",
+        "Existential themes",
+        "Complex ideas"
+      ],
+      "examples": [
+        "Albert Camus",
+        "Fyodor Dostoevsky",
+        "Philosophy texts"
+      ]
+    },
+    {
+      "name": "Satirical",
+      "description": "Ironic, mocking, socially critical",
+      "characteristics": [
+        "Irony and sarcasm",
+        "Social criticism",
+        "Wit and humor",
+        "Exposing flaws"
+      ],
+      "examples": [
+        "Jonathan Swift",
+        "Kurt Vonnegut",
+        "Satirical journalism"
+      ]
+    },
+    {
+      "name": "Suspenseful",
+      "description": "Tension-building, cliffhangers, pacing",
+      "characteristics": [
+        "Building tension",
+        "Strategic pacing",
+        "Cliffhangers",
+        "Foreshadowing"
+      ],
+      "examples": [
+        "Thrillers",
+        "Horror novels",
+        "Mystery fiction"
+      ]
+    },
+    {
+      "name": "Romantic",
+      "description": "Emotionally expressive, idealistic",
+      "characteristics": [
+        "Emotional expression",
+        "Idealistic themes",
+        "Passionate language",
+        "Focus on relationships"
+      ],
+      "examples": [
+        "Brontë sisters",
+        "Romance novels",
+        "Love poetry"
+      ]
+    },
+    {
+      "name": "Detached",
+      "description": "Objective, clinical, emotionally distant",
+      "characteristics": [
+        "Objective perspective",
+        "Clinical tone",
+        "Emotional distance",
+        "Factual presentation"
+      ],
+      "examples": [
+        "Cormac McCarthy",
+        "Franz Kafka",
+        "Scientific writing"
+      ]
+    },
+    {
+      "name": "Experimental",
+      "description": "Nonlinear, fragmented, rule-breaking",
+      "characteristics": [
+        "Nonlinear structure",
+        "Fragmented narrative",
+        "Unconventional format",
+        "Breaking conventions"
+      ],
+      "examples": [
+        "James Joyce",
+        "Postmodern fiction",
+        "Avant-garde literature"
+      ]
+    },
+    {
+      "name": "Journalistic",
+      "description": "Factual, timely, inverted pyramid structure",
+      "characteristics": [
+        "Factual reporting",
+        "Inverted pyramid structure",
+        "Clear, concise language",
+        "Timeliness and relevance"
+      ],
+      "examples": [
+        "News articles",
+        "Investigative journalism",
+        "Press releases"
+      ]
+    },
+    {
+      "name": "Reflective",
+      "description": "Introspective, personal, meditative",
+      "characteristics": [
+        "Personal introspection",
+        "Meditative quality",
+        "Self-examination",
+        "Contemplative tone"
+      ],
+      "examples": [
+        "Memoirs",
+        "Personal essays",
+        "Reflective journals"
+      ]
+    },
+    {
+      "name": "Persuasive",
+      "description": "Argument-driven, rhetorical, call-to-action",
+      "characteristics": [
+        "Strong arguments",
+        "Rhetorical techniques",
+        "Call to action",
+        "Convincing evidence"
+      ],
+      "examples": [
+        "Speeches",
+        "Opinion editorials",
+        "Persuasive essays"
+      ]
+    }
+  ]
+}
