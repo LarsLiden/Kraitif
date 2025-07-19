@@ -30,7 +30,7 @@
 </div>
 
 <!-- Selectable story elements form -->
-<form method="POST" action="{{ url_for('update_story_selection', story_type_name=story_type.name, subtype_name=subtype.name) }}" class="story-selection-form">
+<form method="POST" action="{{ url_for('update_story_selection', story_type_name=story_type.name, subtype_name=subtype.name) }}" class="story-selection-form" id="story-selection-form">
     
     {% if story_type.key_theme %}
     <div class="selection-section">
@@ -38,7 +38,7 @@
         <div class="radio-group">
             {% for theme in story_type.key_theme %}
             <label class="radio-label">
-                <input type="radio" name="key_theme" value="{{ theme }}" 
+                <input type="radio" name="key_theme" value="{{ theme }}" class="auto-save-radio"
                     {% if saved_selections.get('key_theme') == theme or (not saved_selections.get('key_theme') and loop.first) %}checked{% endif %}>
                 <span class="radio-text">{{ theme }}</span>
             </label>
@@ -53,7 +53,7 @@
         <div class="radio-group">
             {% for arc in story_type.core_arc %}
             <label class="radio-label">
-                <input type="radio" name="core_arc" value="{{ arc }}" 
+                <input type="radio" name="core_arc" value="{{ arc }}" class="auto-save-radio"
                     {% if saved_selections.get('core_arc') == arc or (not saved_selections.get('core_arc') and loop.first) %}checked{% endif %}>
                 <span class="radio-text">{{ arc }}</span>
             </label>
@@ -61,9 +61,42 @@
         </div>
     </div>
     {% endif %}
-
-    <button type="submit" class="submit-button">Save Selections</button>
 </form>
+
+<script>
+// Auto-save functionality for radio buttons
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('story-selection-form');
+    const radioButtons = document.querySelectorAll('.auto-save-radio');
+    
+    radioButtons.forEach(function(radio) {
+        radio.addEventListener('change', function() {
+            // Create FormData object with current form data
+            const formData = new FormData(form);
+            
+            // Send AJAX request to save selections
+            fetch(form.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    console.log('Selection saved automatically');
+                } else {
+                    console.error('Error saving selection:', data.error);
+                }
+            })
+            .catch(error => {
+                console.error('Error saving selection:', error);
+            });
+        });
+    });
+});
+</script>
 
 <a href="{{ url_for('story_type_detail', story_type_name=story_type.name) }}" class="back-link">← Back to {{ story_type.name }}</a>
 {% endblock %}
