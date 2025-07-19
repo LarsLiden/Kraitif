@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block title %}Select Sub-Genre{% endblock %}
+
+{% block content %}
+<div class="breadcrumb">
+    <a href="{{ url_for('index') }}">Story Types</a> > 
+    <a href="{{ url_for('story_type_detail', story_type_name=story.story_type_name) }}">{{ story.story_type_name }}</a> > 
+    <a href="{{ url_for('subtype_detail', story_type_name=story.story_type_name, subtype_name=story.subtype_name) }}">{{ story.subtype_name }}</a> > 
+    <a href="{{ url_for('genre_selection') }}">Genre Selection</a> >
+    Sub-Genre Selection
+</div>
+
+<h1>Select a Sub-Genre</h1>
+<h2>Step 4: Choose your {{ story.genre.name }} sub-genre</h2>
+
+{% if story.key_theme and story.core_arc and story.genre %}
+<div class="section">
+    <div class="section-title">Your Story So Far</div>
+    <div class="section-content">
+        <strong>Story Type:</strong> {{ story.story_type_name }} - {{ story.subtype_name }}<br>
+        <strong>Key Theme:</strong> {{ story.key_theme }}<br>
+        <strong>Core Arc:</strong> {{ story.core_arc }}<br>
+        <strong>Genre:</strong> {{ story.genre.name }}
+    </div>
+</div>
+{% endif %}
+
+<div class="section">
+    <div class="section-title">Available {{ story.genre.name }} Sub-Genres</div>
+    <div class="section-content">
+        <form method="POST" action="{{ url_for('update_subgenre_selection') }}" class="story-selection-form">
+            <div class="selection-section">
+                <div class="radio-group">
+                    {% for sub_genre in sub_genres %}
+                    <label class="radio-label">
+                        <input type="radio" name="sub_genre" value="{{ sub_genre.name }}" 
+                            {% if story.sub_genre and story.sub_genre.name == sub_genre.name %}checked{% endif %}
+                            {% if not story.sub_genre and loop.first %}checked{% endif %}>
+                        <span class="radio-text">
+                            <strong>{{ sub_genre.name }}</strong>
+                            {% if sub_genre.plot %}
+                            <div class="subgenre-plot">{{ sub_genre.plot }}</div>
+                            {% endif %}
+                            {% if sub_genre.examples %}
+                            <div class="subgenre-examples">Examples: {{ sub_genre.examples | join(', ') }}</div>
+                            {% endif %}
+                        </span>
+                    </label>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <button type="submit" class="submit-button">Complete Story Selection</button>
+        </form>
+    </div>
+</div>
+
+<a href="{{ url_for('genre_selection') }}" class="back-link">← Back to Genre Selection</a>
+{% endblock %}

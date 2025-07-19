@@ -331,3 +331,49 @@ h3 {
         flex: none;
     }
 }
+
+/* Genre and Sub-genre selection specific styles */
+.genre-info {
+    color: #888888;
+    font-size: 0.85em;
+    font-weight: normal;
+}
+
+.subgenre-plot {
+    font-size: 0.85em;
+    color: #aaaaaa;
+    margin-top: 5px;
+    font-style: italic;
+}
+
+.subgenre-examples {
+    font-size: 0.8em;
+    color: #888888;
+    margin-top: 3px;
+}
+
+.next-step {
+    margin-top: 15px;
+    text-align: center;
+}
+
+.next-step .submit-button {
+    background-color: #2d5a2d;
+    border-color: #4CAF50;
+    font-weight: bold;
+}
+
+.next-step .submit-button:hover {
+    background-color: #4CAF50;
+}
+
+.completion-message {
+    text-align: center;
+    margin-top: 15px;
+    padding: 15px;
+    background-color: #1a3d1a;
+    border: 1px solid #4CAF50;
+    border-radius: 8px;
+    color: #90EE90;
+    font-size: 1.1em;
+}
