@@ -8,6 +8,12 @@
 </head>
 <body>
     <div class="container">
+        <div class="save-load-controls">
+            <a href="{{ url_for('save_story') }}" class="btn btn-save">📥 Save Story</a>
+            <label for="load-file" class="btn btn-load">📤 Load Story</label>
+            <input type="file" id="load-file" accept=".json" style="display: none;">
+        </div>
+        
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
                 <div class="flash-messages">
@@ -19,5 +25,27 @@
         {% endwith %}
         {% block content %}{% endblock %}
     </div>
+    
+    <script>
+        document.getElementById('load-file').addEventListener('change', function(e) {
+            if (e.target.files.length > 0) {
+                const formData = new FormData();
+                formData.append('file', e.target.files[0]);
+                
+                fetch('{{ url_for("load_story") }}', {
+                    method: 'POST',
+                    body: formData
+                }).then(response => {
+                    if (response.ok) {
+                        window.location.reload();
+                    } else {
+                        alert('Error loading file');
+                    }
+                }).catch(error => {
+                    alert('Error loading file');
+                });
+            }
+        });
+    </script>
 </body>
 </html>

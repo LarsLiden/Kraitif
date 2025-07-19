@@ -6,7 +6,7 @@ This Flask app provides a web interface to explore the seven classical story typ
 and their subtypes.
 """
 
-from flask import Flask, render_template, request, redirect, url_for, session, flash
+from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify, make_response
 from story_types import StoryTypeRegistry
 from story import Story
 
@@ -108,6 +108,48 @@ def update_story_selection(story_type_name, subtype_name):
     
     flash('Your selections have been saved!', 'success')
     return redirect(url_for('subtype_detail', story_type_name=story_type_name, subtype_name=subtype_name))
+
+
+@app.route('/save')
+def save_story():
+    """Save current story to JSON file."""
+    story = get_story_from_session()
+    json_data = story.to_json()
+    
+    response = make_response(json_data)
+    response.headers['Content-Type'] = 'application/json'
+    response.headers['Content-Disposition'] = 'attachment; filename=kraitif_story.json'
+    
+    return response
+
+
+@app.route('/load', methods=['POST'])
+def load_story():
+    """Load story from uploaded JSON file."""
+    if 'file' not in request.files:
+        flash('No file selected', 'error')
+        return redirect(url_for('index'))
+    
+    file = request.files['file']
+    if file.filename == '':
+        flash('No file selected', 'error')
+        return redirect(url_for('index'))
+    
+    if file and file.filename.endswith('.json'):
+        try:
+            content = file.read().decode('utf-8')
+            story = Story()
+            if story.from_json(content):
+                save_story_to_session(story)
+                flash('Story loaded successfully!', 'success')
+            else:
+                flash('Invalid story file format', 'error')
+        except Exception as e:
+            flash('Error loading file', 'error')
+    else:
+        flash('Please select a JSON file', 'error')
+    
+    return redirect(url_for('index'))
 
 
 if __name__ == '__main__':
