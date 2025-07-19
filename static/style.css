@@ -17,13 +17,13 @@ body {
 h1 {
     text-align: center;
     margin-bottom: 30px;
-    color: #ffffff;
+    color: #4CAF50; /* Green for main headings */
     font-size: 2.5em;
-    text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.1);
+    text-shadow: 2px 2px 4px rgba(76, 175, 80, 0.2);
 }
 
 h2 {
-    color: #ffffff;
+    color: #64B5F6; /* Blue for secondary headings */
     margin-top: 30px;
     margin-bottom: 15px;
     font-size: 1.8em;
@@ -66,7 +66,7 @@ h3 {
     font-size: 1.6em;
     font-weight: bold;
     margin-bottom: 10px;
-    color: #ffffff;
+    color: #4CAF50; /* Green for story type titles */
 }
 
 .story-type-description {
@@ -79,9 +79,18 @@ h3 {
     color: #aaaaaa;
 }
 
+.story-type-examples strong {
+    color: #FFB74D; /* Orange for "Examples:" labels */
+}
+
 .story-type-characteristics {
     color: #999999;
     font-style: italic;
+}
+
+.story-type-characteristics strong {
+    color: #81C784; /* Light green for characteristic labels */
+    font-style: normal;
 }
 
 .subtype-card {
@@ -103,7 +112,7 @@ h3 {
     font-size: 1.3em;
     font-weight: bold;
     margin-bottom: 8px;
-    color: #ffffff;
+    color: #4CAF50; /* Green for subtype titles */
 }
 
 .subtype-description {
@@ -113,6 +122,10 @@ h3 {
 
 .subtype-examples {
     color: #aaaaaa;
+}
+
+.subtype-examples strong {
+    color: #FFB74D; /* Orange for "Examples:" labels */
 }
 
 .back-link {
@@ -153,7 +166,7 @@ h3 {
     font-size: 1.2em;
     font-weight: bold;
     margin-bottom: 8px;
-    color: #dddddd;
+    color: #64B5F6; /* Blue for section titles */
 }
 
 .section-content {

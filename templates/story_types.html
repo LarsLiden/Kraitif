@@ -11,14 +11,14 @@
         <div class="story-type-left">
             <div class="story-type-title">{{ story_type.name }}</div>
             <div class="story-type-description">{{ story_type.description }}</div>
-        </div>
-        
-        <div class="story-type-right">
             {% if story_type.examples %}
             <div class="story-type-examples">
                 <strong>Examples:</strong> {{ story_type.examples | join(', ') }}
             </div>
             {% endif %}
+        </div>
+        
+        <div class="story-type-right">
             
             {% if story_type.narrative_elements %}
             <div class="story-type-characteristics">
