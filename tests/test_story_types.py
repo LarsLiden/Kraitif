@@ -11,6 +11,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from story_types import StoryTypeRegistry, StoryType, StorySubType
 from archetype import ArchetypeRegistry, Archetype
 from genre import GenreRegistry, Genre, SubGenre, GenreEnum, SubGenreEnum
+from style import StyleRegistry, Style, StyleEnum
 
 
 def test_story_type_registry():
@@ -385,6 +386,134 @@ def test_subgenre_enum():
     print("✓ SubGenreEnum tests passed")
 
 
+def test_style_registry():
+    """Test the StyleRegistry functionality."""
+    print("Testing StyleRegistry...")
+    
+    registry = StyleRegistry()
+    
+    # Test that all 15 styles are available
+    styles = registry.get_all_styles()
+    assert len(styles) == 15, f"Expected 15 styles, got {len(styles)}"
+    
+    # Test that style names are correct
+    expected_names = [
+        "Concise", "Lyrical", "Analytical", "Whimsical", "Descriptive",
+        "Conversational", "Philosophical", "Satirical", "Suspenseful", 
+        "Romantic", "Detached", "Experimental", "Journalistic", 
+        "Reflective", "Persuasive"
+    ]
+    
+    actual_names = registry.list_styles()
+    for name in expected_names:
+        assert name in actual_names, f"Missing style: {name}"
+    
+    # Test lookup by name
+    concise = registry.get_style("Concise")
+    assert concise is not None, "Could not find Concise style"
+    assert concise.name == "Concise", f"Expected 'Concise', got '{concise.name}'"
+    
+    # Test case-insensitive lookup
+    concise2 = registry.get_style("concise")
+    assert concise2 is not None, "Case-insensitive lookup failed"
+    
+    # Test lookup with underscores
+    concise3 = registry.get_style("concise")
+    assert concise3 is not None, "Underscore lookup failed"
+    
+    print("✓ StyleRegistry tests passed")
+
+
+def test_style_properties():
+    """Test that each style has the correct properties."""
+    print("Testing Style Properties...")
+    
+    registry = StyleRegistry()
+    
+    # Test Concise style
+    concise = registry.get_style("Concise")
+    assert concise.description == "Minimalist, efficient, no wasted words", "Concise description incorrect"
+    assert len(concise.characteristics) >= 3, f"Expected at least 3 characteristics for Concise, got {len(concise.characteristics)}"
+    assert len(concise.examples) >= 1, "Concise should have examples"
+    assert "Ernest Hemingway" in concise.examples, "Ernest Hemingway should be in Concise examples"
+    
+    # Test Lyrical style
+    lyrical = registry.get_style("Lyrical")
+    assert lyrical.description == "Musical, poetic, flowing rhythm", "Lyrical description incorrect"
+    assert "Toni Morrison" in lyrical.examples, "Toni Morrison should be in Lyrical examples"
+    assert "Gabriel García Márquez" in lyrical.examples, "Gabriel García Márquez should be in Lyrical examples"
+    
+    # Test Analytical style
+    analytical = registry.get_style("Analytical")
+    assert analytical.description == "Logical, structured, evidence-based", "Analytical description incorrect"
+    assert "George Orwell" in analytical.examples, "George Orwell should be in Analytical examples"
+    
+    # Test Whimsical style
+    whimsical = registry.get_style("Whimsical")
+    assert whimsical.description == "Playful, imaginative, quirky", "Whimsical description incorrect"
+    assert "Roald Dahl" in whimsical.examples, "Roald Dahl should be in Whimsical examples"
+    assert "Douglas Adams" in whimsical.examples, "Douglas Adams should be in Whimsical examples"
+    
+    # Test Descriptive style
+    descriptive = registry.get_style("Descriptive")
+    assert descriptive.description == "Rich sensory detail, vivid imagery", "Descriptive description incorrect"
+    assert "Virginia Woolf" in descriptive.examples, "Virginia Woolf should be in Descriptive examples"
+    
+    # Test search functionality
+    search_results = registry.search_styles("humor")
+    humor_found = any("humor" in style.characteristics for style in search_results if style.characteristics)
+    assert humor_found or len(search_results) > 0, "Should find styles related to humor"
+    
+    print("✓ Style Properties tests passed")
+
+
+def test_style_class():
+    """Test the Style class."""
+    print("Testing Style class...")
+    
+    # Create a style
+    style = Style(
+        name="Test Style",
+        description="A test writing style",
+        characteristics=["Clear", "Direct", "Simple"],
+        examples=["Example Author 1", "Example Author 2"]
+    )
+    
+    assert style.name == "Test Style"
+    assert style.description == "A test writing style"
+    assert len(style.characteristics) == 3
+    assert len(style.examples) == 2
+    assert "Clear" in style.characteristics
+    assert "Example Author 1" in style.examples
+    
+    # Test string representation
+    str_repr = str(style)
+    assert "Test Style" in str_repr
+    assert "A test writing style" in str_repr
+    
+    print("✓ Style class tests passed")
+
+
+def test_style_enum():
+    """Test the StyleEnum."""
+    print("Testing StyleEnum...")
+    
+    # Test that all expected styles are present
+    assert StyleEnum.CONCISE.value == "Concise"
+    assert StyleEnum.LYRICAL.value == "Lyrical"
+    assert StyleEnum.ANALYTICAL.value == "Analytical"
+    assert StyleEnum.WHIMSICAL.value == "Whimsical"
+    assert StyleEnum.PHILOSOPHICAL.value == "Philosophical"
+    assert StyleEnum.EXPERIMENTAL.value == "Experimental"
+    assert StyleEnum.PERSUASIVE.value == "Persuasive"
+    
+    # Test that we have the correct number of styles
+    styles = list(StyleEnum)
+    assert len(styles) == 15, f"Expected 15 styles in enum, got {len(styles)}"
+    
+    print("✓ StyleEnum tests passed")
+
+
 def run_all_tests():
     """Run all tests."""
     print("=== Running Story Types Tests ===\n")
@@ -402,6 +531,10 @@ def run_all_tests():
         test_genre_class()
         test_genre_enum()
         test_subgenre_enum()
+        test_style_registry()
+        test_style_properties()
+        test_style_class()
+        test_style_enum()
         
         print("\n✅ All tests passed!")
         return True
