@@ -26,9 +26,9 @@
                         <div class="selections-content">
                             {% if session.get('story_data') %}
                                 {% set story_data = session.get('story_data') %}
-                                {% if story_data.get('story_type_name') and story_data.get('subtype_name') %}
+                                {% if story_data.get('story_type_name') %}
                                 <div class="selection-item">
-                                    <strong>Story Type:</strong> {{ story_data.get('story_type_name') }} - {{ story_data.get('subtype_name') }}
+                                    <strong>Story Type:</strong> {{ story_data.get('story_type_name') }}{% if story_data.get('subtype_name') %} - {{ story_data.get('subtype_name') }}{% endif %}
                                 </div>
                                 {% endif %}
                                 {% if story_data.get('key_theme') %}

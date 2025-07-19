@@ -75,6 +75,20 @@ def story_type_detail(story_type_name):
     if not story_type:
         return redirect(url_for('index'))
     
+    # Get story from session and update with story type selection
+    story = get_story_from_session()
+    previous_story_type_name = story.story_type_name
+    story.story_type_name = story_type_name
+    
+    # Clear subtype and subsequent selections if story type changes
+    if previous_story_type_name and previous_story_type_name != story_type_name:
+        # We're changing to a different story type, clear dependent selections
+        story.subtype_name = None
+        story.key_theme = None
+        story.core_arc = None
+    
+    save_story_to_session(story)
+    
     return render_template('subtypes.html', story_type=story_type)
 
 
