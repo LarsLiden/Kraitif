@@ -107,10 +107,14 @@ def update_story_selection(story_type_name, subtype_name):
     """Handle form submission for story element selections."""
     story_type = registry.get_story_type(story_type_name)
     if not story_type:
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return jsonify({'error': 'Story type not found'}), 404
         return redirect(url_for('index'))
     
     subtype = story_type.get_subtype(subtype_name)
     if not subtype:
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return jsonify({'error': 'Subtype not found'}), 404
         return redirect(url_for('story_type_detail', story_type_name=story_type_name))
     
     # Get or create story from session
@@ -125,6 +129,11 @@ def update_story_selection(story_type_name, subtype_name):
     # Save story back to session
     save_story_to_session(story)
     
+    # Handle AJAX requests
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        return jsonify({'success': True, 'message': 'Selections saved automatically'})
+    
+    # Handle regular form submissions (fallback)
     flash('Your selections have been saved!', 'success')
     # Redirect to genre selection instead of staying on the same page
     return redirect(url_for('genre_selection'))
