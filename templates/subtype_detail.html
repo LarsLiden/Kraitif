@@ -64,13 +64,12 @@
 </form>
 
 <!-- Show complete story information if all selections are made -->
-{% if saved_selections.get('key_theme') and saved_selections.get('core_arc') %}
-<div class="section">
+<div class="section" id="current-selections" {% if not (saved_selections.get('key_theme') and saved_selections.get('core_arc')) %}style="display: none;"{% endif %}>
     <div class="section-title">Your Current Selections</div>
-    <div class="section-content">
+    <div class="section-content" id="selections-content">
         <strong>Story Type:</strong> {{ story_type.name }} - {{ subtype.name }}<br>
-        <strong>Key Theme:</strong> {{ saved_selections.get('key_theme') }}<br>
-        <strong>Core Arc:</strong> {{ saved_selections.get('core_arc') }}
+        <strong>Key Theme:</strong> <span id="selected-theme">{{ saved_selections.get('key_theme', '') }}</span><br>
+        <strong>Core Arc:</strong> <span id="selected-arc">{{ saved_selections.get('core_arc', '') }}</span>
         {% if saved_selections.get('genre_name') %}
         <br><strong>Genre:</strong> {{ saved_selections.get('genre_name') }}
         {% endif %}
@@ -80,11 +79,11 @@
     </div>
     
     {% if not saved_selections.get('genre_name') %}
-    <div class="next-step">
+    <div class="next-step" id="genre-continue">
         <a href="{{ url_for('genre_selection') }}" class="submit-button">Continue to Genre Selection →</a>
     </div>
     {% elif not saved_selections.get('sub_genre_name') %}
-    <div class="next-step">
+    <div class="next-step" id="subgenre-continue">
         <a href="{{ url_for('subgenre_selection') }}" class="submit-button">Continue to Sub-Genre Selection →</a>
     </div>
     {% else %}
@@ -93,13 +92,32 @@
     </div>
     {% endif %}
 </div>
-{% endif %}
 
 <script>
 // Auto-save functionality for radio buttons
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('story-selection-form');
     const radioButtons = document.querySelectorAll('.auto-save-radio');
+    const currentSelectionsSection = document.getElementById('current-selections');
+    const selectedThemeSpan = document.getElementById('selected-theme');
+    const selectedArcSpan = document.getElementById('selected-arc');
+    
+    function updateSelectionsDisplay() {
+        const keyThemeRadio = document.querySelector('input[name="key_theme"]:checked');
+        const coreArcRadio = document.querySelector('input[name="core_arc"]:checked');
+        
+        if (keyThemeRadio && coreArcRadio) {
+            // Update the display with current selections
+            selectedThemeSpan.textContent = keyThemeRadio.value;
+            selectedArcSpan.textContent = coreArcRadio.value;
+            
+            // Show the selections section
+            currentSelectionsSection.style.display = 'block';
+        } else {
+            // Hide the selections section if not all selections are made
+            currentSelectionsSection.style.display = 'none';
+        }
+    }
     
     radioButtons.forEach(function(radio) {
         radio.addEventListener('change', function() {
@@ -118,6 +136,8 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(data => {
                 if (data.success) {
                     console.log('Selection saved automatically');
+                    // Update the display after successful save
+                    updateSelectionsDisplay();
                 } else {
                     console.error('Error saving selection:', data.error);
                 }
@@ -127,6 +147,9 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
     });
+    
+    // Initialize display on page load
+    updateSelectionsDisplay();
 });
 </script>
 
