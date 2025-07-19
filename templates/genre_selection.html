@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}Select Genre{% endblock %}
+
+{% block content %}
+<div class="breadcrumb">
+    <a href="{{ url_for('index') }}">Story Types</a> > 
+    <a href="{{ url_for('story_type_detail', story_type_name=story.story_type_name) }}">{{ story.story_type_name }}</a> > 
+    <a href="{{ url_for('subtype_detail', story_type_name=story.story_type_name, subtype_name=story.subtype_name) }}">{{ story.subtype_name }}</a> > 
+    Genre Selection
+</div>
+
+<h1>Select a Genre</h1>
+<h2>Step 3: Choose your story's genre</h2>
+
+{% if story.key_theme and story.core_arc %}
+<div class="section">
+    <div class="section-title">Your Story So Far</div>
+    <div class="section-content">
+        <strong>Story Type:</strong> {{ story.story_type_name }} - {{ story.subtype_name }}<br>
+        <strong>Key Theme:</strong> {{ story.key_theme }}<br>
+        <strong>Core Arc:</strong> {{ story.core_arc }}
+    </div>
+</div>
+{% endif %}
+
+<div class="section">
+    <div class="section-title">Available Genres</div>
+    <div class="section-content">
+        <form method="POST" action="{{ url_for('update_genre_selection') }}" class="story-selection-form">
+            <div class="selection-section">
+                <div class="radio-group">
+                    {% for genre in genres %}
+                    <label class="radio-label">
+                        <input type="radio" name="genre" value="{{ genre.name }}" 
+                            {% if story.genre and story.genre.name == genre.name %}checked{% endif %}
+                            {% if not story.genre and loop.first %}checked{% endif %}>
+                        <span class="radio-text">
+                            <strong>{{ genre.name }}</strong>
+                            <span class="genre-info">({{ genre.subgenres|length }} sub-genres)</span>
+                        </span>
+                    </label>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <button type="submit" class="submit-button">Continue to Sub-Genre Selection</button>
+        </form>
+    </div>
+</div>
+
+{% if story.story_type_name and story.subtype_name %}
+<a href="{{ url_for('subtype_detail', story_type_name=story.story_type_name, subtype_name=story.subtype_name) }}" class="back-link">← Back to {{ story.subtype_name }}</a>
+{% endif %}
+{% endblock %}

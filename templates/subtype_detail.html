@@ -63,6 +63,38 @@
     {% endif %}
 </form>
 
+<!-- Show complete story information if all selections are made -->
+{% if saved_selections.get('key_theme') and saved_selections.get('core_arc') %}
+<div class="section">
+    <div class="section-title">Your Current Selections</div>
+    <div class="section-content">
+        <strong>Story Type:</strong> {{ story_type.name }} - {{ subtype.name }}<br>
+        <strong>Key Theme:</strong> {{ saved_selections.get('key_theme') }}<br>
+        <strong>Core Arc:</strong> {{ saved_selections.get('core_arc') }}
+        {% if saved_selections.get('genre_name') %}
+        <br><strong>Genre:</strong> {{ saved_selections.get('genre_name') }}
+        {% endif %}
+        {% if saved_selections.get('sub_genre_name') %}
+        <br><strong>Sub-Genre:</strong> {{ saved_selections.get('sub_genre_name') }}
+        {% endif %}
+    </div>
+    
+    {% if not saved_selections.get('genre_name') %}
+    <div class="next-step">
+        <a href="{{ url_for('genre_selection') }}" class="submit-button">Continue to Genre Selection →</a>
+    </div>
+    {% elif not saved_selections.get('sub_genre_name') %}
+    <div class="next-step">
+        <a href="{{ url_for('subgenre_selection') }}" class="submit-button">Continue to Sub-Genre Selection →</a>
+    </div>
+    {% else %}
+    <div class="completion-message">
+        <strong>✅ Story Selection Complete!</strong>
+    </div>
+    {% endif %}
+</div>
+{% endif %}
+
 <script>
 // Auto-save functionality for radio buttons
 document.addEventListener('DOMContentLoaded', function() {
