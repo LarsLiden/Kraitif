@@ -142,6 +142,11 @@ def load_story():
             if story.from_json(content):
                 save_story_to_session(story)
                 flash('Story loaded successfully!', 'success')
+                # Redirect to the loaded story's subtype page if story data exists
+                if story.story_type_name and story.subtype_name:
+                    return redirect(url_for('subtype_detail', 
+                                          story_type_name=story.story_type_name, 
+                                          subtype_name=story.subtype_name))
             else:
                 flash('Invalid story file format', 'error')
         except Exception as e:
