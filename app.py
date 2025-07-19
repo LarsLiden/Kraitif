@@ -80,7 +80,7 @@ def story_type_detail(story_type_name):
 
 @app.route('/subtype/<story_type_name>/<subtype_name>')
 def subtype_detail(story_type_name, subtype_name):
-    """Show details for a specific subtype."""
+    """Show details for a specific subtype and save selection to session."""
     story_type = registry.get_story_type(story_type_name)
     if not story_type:
         return redirect(url_for('index'))
@@ -89,8 +89,13 @@ def subtype_detail(story_type_name, subtype_name):
     if not subtype:
         return redirect(url_for('story_type_detail', story_type_name=story_type_name))
     
-    # Get story selections
+    # Get story from session and update with story type/subtype selection
     story = get_story_from_session()
+    story.story_type_name = story_type_name
+    story.subtype_name = subtype_name
+    save_story_to_session(story)
+    
+    # Get story selections for display
     saved_selections = story.get_story_type_selection(story_type_name, subtype_name)
     
     # Add genre and sub-genre to saved selections for display
@@ -99,43 +104,82 @@ def subtype_detail(story_type_name, subtype_name):
     if story.sub_genre:
         saved_selections['sub_genre_name'] = story.sub_genre.name
     
-    return render_template('subtype_detail.html', story_type=story_type, subtype=subtype, saved_selections=saved_selections)
+    return render_template('subtype_detail.html', story_type=story_type, subtype=subtype, saved_selections=saved_selections, story=story)
 
 
-@app.route('/subtype/<story_type_name>/<subtype_name>/update', methods=['POST'])
-def update_story_selection(story_type_name, subtype_name):
-    """Handle form submission for story element selections."""
-    story_type = registry.get_story_type(story_type_name)
-    if not story_type:
-        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-            return jsonify({'error': 'Story type not found'}), 404
-        return redirect(url_for('index'))
-    
-    subtype = story_type.get_subtype(subtype_name)
-    if not subtype:
-        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-            return jsonify({'error': 'Subtype not found'}), 404
-        return redirect(url_for('story_type_detail', story_type_name=story_type_name))
-    
-    # Get or create story from session
+@app.route('/key-theme-selection')
+def key_theme_selection():
+    """Show key theme selection page."""
     story = get_story_from_session()
     
-    # Update story selections using Story class
+    # Check if story has required data (story type and subtype selections)
+    if not story.story_type_name or not story.subtype_name:
+        flash('Please complete story type and subtype selection first.', 'error')
+        return redirect(url_for('index'))
+    
+    # Get the story type to access key themes
+    story_type = registry.get_story_type(story.story_type_name)
+    if not story_type:
+        flash('Invalid story type.', 'error')
+        return redirect(url_for('index'))
+    
+    return render_template('key_theme_selection.html', story=story, story_type=story_type)
+
+
+@app.route('/key-theme-selection', methods=['POST'])
+def update_key_theme_selection():
+    """Handle key theme selection form submission."""
     key_theme = request.form.get('key_theme')
-    core_arc = request.form.get('core_arc')
+    if not key_theme:
+        flash('Please select a key theme.', 'error')
+        return redirect(url_for('key_theme_selection'))
     
-    story.set_story_type_selection(story_type_name, subtype_name, key_theme, core_arc)
+    # Get story from session
+    story = get_story_from_session()
     
-    # Save story back to session
+    # Set key theme
+    story.key_theme = key_theme
     save_story_to_session(story)
     
-    # Handle AJAX requests
-    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-        return jsonify({'success': True, 'message': 'Selections saved automatically'})
+    flash('Key theme selected successfully!', 'success')
+    return redirect(url_for('core_arc_selection'))
+
+
+@app.route('/core-arc-selection')
+def core_arc_selection():
+    """Show core arc selection page."""
+    story = get_story_from_session()
     
-    # Handle regular form submissions (fallback)
-    flash('Your selections have been saved!', 'success')
-    # Redirect to genre selection instead of staying on the same page
+    # Check if story has required data (story type, subtype, and key theme selections)
+    if not story.story_type_name or not story.subtype_name or not story.key_theme:
+        flash('Please complete story type, subtype, and key theme selection first.', 'error')
+        return redirect(url_for('index'))
+    
+    # Get the story type to access core arcs
+    story_type = registry.get_story_type(story.story_type_name)
+    if not story_type:
+        flash('Invalid story type.', 'error')
+        return redirect(url_for('index'))
+    
+    return render_template('core_arc_selection.html', story=story, story_type=story_type)
+
+
+@app.route('/core-arc-selection', methods=['POST'])
+def update_core_arc_selection():
+    """Handle core arc selection form submission."""
+    core_arc = request.form.get('core_arc')
+    if not core_arc:
+        flash('Please select a core arc.', 'error')
+        return redirect(url_for('core_arc_selection'))
+    
+    # Get story from session
+    story = get_story_from_session()
+    
+    # Set core arc
+    story.core_arc = core_arc
+    save_story_to_session(story)
+    
+    flash('Core arc selected successfully!', 'success')
     return redirect(url_for('genre_selection'))
 
 
