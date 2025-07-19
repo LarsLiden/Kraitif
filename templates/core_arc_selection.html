@@ -42,11 +42,7 @@
                 <input type="hidden" name="core_arc" id="selected_arc" value="{{ story.core_arc if story.core_arc else '' }}">
             </div>
             
-            <div class="next-step">
-                <button type="submit" class="submit-button" id="continue-btn" {% if not story.core_arc %}disabled{% endif %}>
-                    Continue to Genre Selection →
-                </button>
-            </div>
+
         </form>
     </div>
 </div>
@@ -64,8 +60,8 @@ function selectArc(arc) {
     const clickedCard = event.currentTarget;
     clickedCard.classList.add('selected');
     
-    // Enable continue button
-    document.getElementById('continue-btn').disabled = false;
+    // Auto-submit the form immediately
+    document.querySelector('.story-selection-form').submit();
 }
 
 // Initialize selection if arc is already selected
@@ -100,12 +96,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
 .arc-card.selected .story-type-title {
     color: #87CEEB;
-}
-
-.submit-button:disabled {
-    background-color: #555555;
-    cursor: not-allowed;
-    opacity: 0.6;
 }
 </style>
 

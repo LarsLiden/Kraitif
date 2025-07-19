@@ -51,10 +51,27 @@
                 </div>
             </div>
             
-            <button type="submit" class="submit-button">Complete Story Selection</button>
+            <button type="submit" class="submit-button" style="display: none;">Complete Story Selection</button>
         </form>
     </div>
 </div>
 
 <a href="{{ url_for('genre_selection') }}" class="back-link">← Back to Genre Selection</a>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Auto-submit form when sub-genre radio button is selected
+    const radioButtons = document.querySelectorAll('input[name="sub_genre"]');
+    radioButtons.forEach(radio => {
+        radio.addEventListener('change', function() {
+            if (this.checked) {
+                // Small delay to show the selection before submitting
+                setTimeout(() => {
+                    document.querySelector('.story-selection-form').submit();
+                }, 200);
+            }
+        });
+    });
+});
+</script>
 {% endblock %}

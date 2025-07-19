@@ -1,22 +1,40 @@
 The user will step through the following interfaces:
 
 1) Select story type
-2) Select story sub-type
-3) Select key theme
-4) Select core arc
-5) Select genre
-6) Select sub-genre
+2) Select story sub-type  
+3) Select key theme (auto-proceeds to next step)
+4) Select core arc (auto-proceeds to next step)
+5) Select genre (auto-proceeds to next step)
+6) Select sub-genre (auto-proceeds to completion)
+
+## User Experience Flow
+
+The UI provides a streamlined selection experience where users automatically proceed to the next step upon making their selection, eliminating the need for manual "continue" buttons.
+
+### Navigation Behavior
+- **Story Type & Subtype Selection**: Users click to navigate between these steps
+- **Key Theme Selection**: Clicking a theme card immediately submits and proceeds to core arc selection
+- **Core Arc Selection**: Clicking an arc card immediately submits and proceeds to genre selection  
+- **Genre Selection**: Selecting a radio button automatically submits and proceeds to sub-genre selection
+- **Sub-Genre Selection**: Selecting a radio button automatically submits and completes the story
+
+## UI Layout
 
 The UI has a left and right panel
 
-The left panel displays the choices that the user has made so far
-- choices are stored in the story class
+**Left Panel**: 
+- Displays the choices that the user has made so far (choices are stored in the story class)
+- Shows save and load buttons at the top
 
-The right panel shows the options that the user can choose from a panels
+**Right Panel**: 
+- Shows the options that the user can choose from
+- Displays current step content and selections
 
-At the top of the left panel is a load and save button.  
-- the save button is pressed the story object is save to disk in json format
-- when the load button is pressed 
-    - the the json is loaded and converted in to the story object.  
-    - The UI is updated to show the current state of the story
-    - If the story is incomplete, user taken to selection page for step with next missing information
+## Save/Load Functionality
+
+At the top of the left panel is a load and save button:
+- **Save button**: Saves the story object to disk in JSON format
+- **Load button**: 
+    - Loads the JSON and converts it to the story object
+    - Updates the UI to show the current state of the story  
+    - If the story is incomplete, user is taken to selection page for step with next missing information
