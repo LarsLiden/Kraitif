@@ -8,24 +8,73 @@
 </head>
 <body>
     <div class="container">
-        <div class="save-load-controls">
-            <a href="{{ url_for('save_story') }}" class="btn btn-save">📥 Save Story</a>
-            <form id="load-form" method="POST" action="{{ url_for('load_story') }}" enctype="multipart/form-data" style="display: inline;">
-                <label for="load-file" class="btn btn-load">📤 Load Story</label>
-                <input type="file" id="load-file" name="file" accept=".json" style="display: none;">
-            </form>
-        </div>
-        
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                <div class="flash-messages">
-                    {% for category, message in messages %}
-                        <div class="flash-message flash-{{ category }}">{{ message }}</div>
-                    {% endfor %}
+        <!-- Two-panel layout -->
+        <div class="two-panel-layout">
+            <!-- Left panel for user selections and controls -->
+            <div class="left-panel">
+                <div class="save-load-controls">
+                    <a href="{{ url_for('save_story') }}" class="btn btn-save">📥 Save Story</a>
+                    <form id="load-form" method="POST" action="{{ url_for('load_story') }}" enctype="multipart/form-data" style="display: inline;">
+                        <label for="load-file" class="btn btn-load">📤 Load Story</label>
+                        <input type="file" id="load-file" name="file" accept=".json" style="display: none;">
+                    </form>
                 </div>
-            {% endif %}
-        {% endwith %}
-        {% block content %}{% endblock %}
+                
+                {% block user_selections %}
+                    <div class="user-selections">
+                        <h3>Your Story Selections</h3>
+                        <div class="selections-content">
+                            {% if session.get('story_data') %}
+                                {% set story_data = session.get('story_data') %}
+                                {% if story_data.get('story_type_name') and story_data.get('subtype_name') %}
+                                <div class="selection-item">
+                                    <strong>Story Type:</strong> {{ story_data.get('story_type_name') }} - {{ story_data.get('subtype_name') }}
+                                </div>
+                                {% endif %}
+                                {% if story_data.get('key_theme') %}
+                                <div class="selection-item">
+                                    <strong>Key Theme:</strong> {{ story_data.get('key_theme') }}
+                                </div>
+                                {% endif %}
+                                {% if story_data.get('core_arc') %}
+                                <div class="selection-item">
+                                    <strong>Core Arc:</strong> {{ story_data.get('core_arc') }}
+                                </div>
+                                {% endif %}
+                                {% if story_data.get('genre_name') %}
+                                <div class="selection-item">
+                                    <strong>Genre:</strong> {{ story_data.get('genre_name') }}
+                                </div>
+                                {% endif %}
+                                {% if story_data.get('sub_genre_name') %}
+                                <div class="selection-item">
+                                    <strong>Sub-Genre:</strong> {{ story_data.get('sub_genre_name') }}
+                                </div>
+                                {% endif %}
+                            {% else %}
+                                <div class="no-selections">
+                                    No selections made yet. Start by choosing a story type.
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endblock %}
+            </div>
+            
+            <!-- Right panel for choices and navigation -->
+            <div class="right-panel">
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        <div class="flash-messages">
+                            {% for category, message in messages %}
+                                <div class="flash-message flash-{{ category }}">{{ message }}</div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                {% endwith %}
+                {% block content %}{% endblock %}
+            </div>
+        </div>
     </div>
     
     <script>
