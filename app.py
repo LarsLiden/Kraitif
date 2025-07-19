@@ -64,6 +64,14 @@ def save_story_to_session(story):
 @app.route('/')
 def index():
     """Main page showing all story types."""
+    # Clear session data for fresh visits (not navigation within app)
+    referrer = request.headers.get('Referer', '')
+    app_domain = request.host_url.rstrip('/')
+    
+    # If no referrer or referrer is from outside our app, clear session
+    if not referrer or not referrer.startswith(app_domain):
+        session.clear()
+    
     story_types = registry.get_all_story_types()
     return render_template('story_types.html', story_types=story_types)
 
