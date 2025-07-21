@@ -6,7 +6,8 @@ The user will step through the following interfaces:
 4) Select core arc (auto-proceeds to next step)
 5) Select genre (auto-proceeds to next step)
 6) Select sub-genre (auto-proceeds to next step)
-7) Select archetypes (manual proceed to completion)
+7) Select protagonist archetype (manual proceed to secondary characters)
+8) Select secondary character archetypes (manual proceed to completion)
 
 ## User Experience Flow
 
@@ -59,14 +60,26 @@ At the top of the left panel is a load and save button:
 
 ## Archetype Selection
 
-The archetype selection step allows users to choose multiple character archetypes for their story:
+The archetype selection has been separated into two distinct steps to differentiate between protagonist and secondary characters:
 
-### Two-Section Layout
-- **Typical Archetypes**: Shows archetypes that are commonly associated with the selected sub-genre
-- **Other Available Archetypes**: Shows all remaining archetypes in alphabetical order with descriptions
+### Protagonist Archetype Selection (Step 7)
+- **Single Selection**: Users select one archetype for the story protagonist using radio buttons
+- **Two-Section Layout**: 
+  - **Typical Protagonist Archetypes**: Shows archetypes commonly associated with the selected sub-genre
+  - **Other Available Protagonist Archetypes**: Shows all remaining archetypes with descriptions
+- **Navigation**: "Continue to Secondary Characters" button proceeds to the next step
 
-### Selection Behavior
-- Users can select multiple archetypes via checkboxes
-- Each archetype displays its name and description
-- Selected archetypes are visually highlighted
-- Users must manually click "Complete Story Selection" to proceed (unlike previous auto-proceeding steps)
+### Secondary Character Archetype Selection (Step 8)
+- **Optional Multiple Selection**: Users can select multiple archetypes for secondary characters using checkboxes
+- **Clearly Marked as Optional**: Both the heading and description indicate that secondary character selection is optional
+- **Excluded Protagonist**: The previously selected protagonist archetype is removed from available options
+- **Two-Section Layout**:
+  - **Typical Secondary Character Archetypes**: Shows remaining typical archetypes for the sub-genre
+  - **Other Available Secondary Character Archetypes**: Shows all other remaining archetypes
+- **Complete Button at Top**: "Complete Story Selection" button is positioned above the fold for easy access
+- **Navigation**: Users can go back to protagonist selection or complete the story
+
+### Left Panel Display
+The selected archetypes are displayed as separate sections in the left panel:
+- **Protagonist**: Shows the single selected protagonist archetype
+- **Secondary Characters**: Shows comma-separated list of selected secondary archetypes (only appears if any are selected)

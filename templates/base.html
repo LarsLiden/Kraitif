@@ -143,7 +143,17 @@
                                     <strong>Sub-Genre:</strong> {{ story_data.get('sub_genre_name') }}
                                 </div>
                                 {% endif %}
-                                {% if story_data.get('selected_archetypes') %}
+                                {% if story_data.get('protagonist_archetype') %}
+                                <div class="selection-item">
+                                    <strong>Protagonist:</strong> {{ story_data.get('protagonist_archetype') }}
+                                </div>
+                                {% endif %}
+                                {% if story_data.get('secondary_archetypes') %}
+                                <div class="selection-item">
+                                    <strong>Secondary Characters:</strong> {{ story_data.get('secondary_archetypes') | join(', ') }}
+                                </div>
+                                {% endif %}
+                                {% if story_data.get('selected_archetypes') and not story_data.get('protagonist_archetype') %}
                                 <div class="selection-item">
                                     <strong>Archetypes:</strong> {{ story_data.get('selected_archetypes') | join(', ') }}
                                 </div>

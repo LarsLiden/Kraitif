@@ -1,0 +1,172 @@
+{% extends "base.html" %}
+
+{% block title %}Select Protagonist Archetype{% endblock %}
+
+{% block content %}
+<div class="breadcrumb">
+    <a href="{{ url_for('index') }}">Story Types</a> > 
+    <a href="{{ url_for('story_type_detail', story_type_name=story.story_type_name) }}">{{ story.story_type_name }}</a> > 
+    <a href="{{ url_for('subtype_detail', story_type_name=story.story_type_name, subtype_name=story.subtype_name) }}">{{ story.subtype_name }}</a> > 
+    <a href="{{ url_for('genre_selection') }}">Genre Selection</a> >
+    <a href="{{ url_for('subgenre_selection') }}">Sub-Genre Selection</a> >
+    Protagonist Archetype Selection
+</div>
+
+<h1>Select Protagonist Archetype</h1>
+
+<form method="POST" action="{{ url_for('update_protagonist_archetype_selection') }}" class="archetype-selection-form">
+    
+    {% if typical_archetypes %}
+    <div class="section">
+        <div class="section-title">Typical {{ story.sub_genre.name }} Protagonist Archetypes</div>
+        <div class="section-content">
+            <div class="archetype-grid">
+                {% for archetype in typical_archetypes %}
+                <label class="archetype-card">
+                    <input type="radio" name="protagonist_archetype" value="{{ archetype.name }}" 
+                           {% if archetype.name == story.protagonist_archetype %}checked{% endif %}>
+                    <div class="archetype-content">
+                        <div class="archetype-name">{{ archetype.name }}</div>
+                        <div class="archetype-description">{{ archetype.description }}</div>
+                    </div>
+                </label>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    {% if other_archetypes %}
+    <div class="section">
+        <div class="section-title">Other Available Protagonist Archetypes</div>
+        <div class="section-content">
+            <div class="archetype-grid">
+                {% for archetype in other_archetypes %}
+                <label class="archetype-card">
+                    <input type="radio" name="protagonist_archetype" value="{{ archetype.name }}" 
+                           {% if archetype.name == story.protagonist_archetype %}checked{% endif %}>
+                    <div class="archetype-content">
+                        <div class="archetype-name">{{ archetype.name }}</div>
+                        <div class="archetype-description">{{ archetype.description }}</div>
+                    </div>
+                </label>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</form>
+
+<a href="{{ url_for('subgenre_selection') }}" class="back-link">← Back to Sub-Genre Selection</a>
+
+<style>
+.archetype-selection-info {
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    border-left: 4px solid #4a90e2;
+}
+
+.archetype-selection-form .section {
+    margin-bottom: 2rem;
+}
+
+.archetype-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.archetype-card {
+    display: block;
+    padding: 1rem;
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 2px solid transparent;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.archetype-card:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.archetype-card input[type="radio"] {
+    display: none;
+}
+
+.archetype-card input[type="radio"]:checked + .archetype-content {
+    background-color: rgba(74, 144, 226, 0.3);
+}
+
+.archetype-card {
+    position: relative;
+}
+
+.archetype-card input[type="radio"]:checked {
+    display: block;
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    width: 1rem;
+    height: 1rem;
+}
+
+.archetype-content {
+    padding: 0.5rem;
+    border-radius: 4px;
+    transition: background-color 0.2s ease;
+}
+
+.archetype-name {
+    font-weight: bold;
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+    color: #FFB74D;
+}
+
+.archetype-description {
+    font-size: 0.9rem;
+    line-height: 1.4;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.submit-button {
+    background-color: #4a90e2;
+    color: white;
+    padding: 1rem 2rem;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 2rem;
+    transition: background-color 0.2s ease;
+}
+
+.submit-button:hover {
+    background-color: #357abd;
+}
+</style>
+
+<script>
+// Auto-submit form when radio button is selected
+document.addEventListener('DOMContentLoaded', function() {
+    const radioButtons = document.querySelectorAll('input[type="radio"][name="protagonist_archetype"]');
+    
+    radioButtons.forEach(function(radio) {
+        radio.addEventListener('change', function() {
+            if (this.checked) {
+                // Small delay to show the selection before submitting
+                setTimeout(function() {
+                    document.querySelector('.archetype-selection-form').submit();
+                }, 300);
+            }
+        });
+    });
+});
+</script>
+{% endblock %}
