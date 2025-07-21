@@ -72,10 +72,10 @@ The archetype selection has been separated into two distinct steps to differenti
 ### Secondary Character Archetype Selection (Step 8)
 - **Optional Multiple Selection**: Users can select multiple archetypes for secondary characters using checkboxes
 - **Clearly Marked as Optional**: Both the heading and description indicate that secondary character selection is optional
-- **Excluded Protagonist**: The previously selected protagonist archetype is removed from available options
+- **Disabled Protagonist**: The previously selected protagonist archetype is displayed but disabled (greyed out text, not selectable) with "(Protagonist)" label to show context
 - **Two-Section Layout**:
-  - **Typical Secondary Character Archetypes**: Shows remaining typical archetypes for the sub-genre
-  - **Other Available Secondary Character Archetypes**: Shows all other remaining archetypes
+  - **Typical Secondary Character Archetypes**: Shows all typical archetypes for the sub-genre, with protagonist disabled
+  - **Other Available Secondary Character Archetypes**: Shows all other archetypes, with protagonist disabled if present
 - **Complete Button at Top**: "Complete Story Selection" button is positioned above the fold for easy access
 - **Navigation**: Users can go back to protagonist selection or complete the story
 

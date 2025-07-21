@@ -29,11 +29,12 @@
         <div class="section-content">
             <div class="archetype-grid">
                 {% for archetype in typical_archetypes %}
-                <label class="archetype-card">
+                <label class="archetype-card {% if archetype.name == story.protagonist_archetype %}disabled{% endif %}">
                     <input type="checkbox" name="secondary_archetypes" value="{{ archetype.name }}" 
-                           {% if archetype.name in story.secondary_archetypes %}checked{% endif %}>
+                           {% if archetype.name in story.secondary_archetypes %}checked{% endif %}
+                           {% if archetype.name == story.protagonist_archetype %}disabled{% endif %}>
                     <div class="archetype-content">
-                        <div class="archetype-name">{{ archetype.name }}</div>
+                        <div class="archetype-name">{{ archetype.name }}{% if archetype.name == story.protagonist_archetype %} (Protagonist){% endif %}</div>
                         <div class="archetype-description">{{ archetype.description }}</div>
                     </div>
                 </label>
@@ -49,11 +50,12 @@
         <div class="section-content">
             <div class="archetype-grid">
                 {% for archetype in other_archetypes %}
-                <label class="archetype-card">
+                <label class="archetype-card {% if archetype.name == story.protagonist_archetype %}disabled{% endif %}">
                     <input type="checkbox" name="secondary_archetypes" value="{{ archetype.name }}" 
-                           {% if archetype.name in story.secondary_archetypes %}checked{% endif %}>
+                           {% if archetype.name in story.secondary_archetypes %}checked{% endif %}
+                           {% if archetype.name == story.protagonist_archetype %}disabled{% endif %}>
                     <div class="archetype-content">
-                        <div class="archetype-name">{{ archetype.name }}</div>
+                        <div class="archetype-name">{{ archetype.name }}{% if archetype.name == story.protagonist_archetype %} (Protagonist){% endif %}</div>
                         <div class="archetype-description">{{ archetype.description }}</div>
                     </div>
                 </label>
@@ -161,6 +163,32 @@
 
 .submit-button:hover {
     background-color: #357abd;
+}
+
+.archetype-card.disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.archetype-card.disabled:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-color: transparent;
+}
+
+.archetype-card.disabled .archetype-content {
+    color: #666666;
+}
+
+.archetype-card.disabled .archetype-name {
+    color: #888888;
+}
+
+.archetype-card.disabled .archetype-description {
+    color: #666666;
+}
+
+.archetype-card.disabled input[type="checkbox"] {
+    cursor: not-allowed;
 }
 </style>
 {% endblock %}
