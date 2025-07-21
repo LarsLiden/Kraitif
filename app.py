@@ -63,6 +63,13 @@ def get_story_from_session():
     return story
 
 
+def get_protagonist_archetype_object(story):
+    """Get the protagonist archetype object from the story."""
+    if story.protagonist_archetype:
+        return archetype_registry.get_archetype(story.protagonist_archetype)
+    return None
+
+
 def save_story_to_session(story):
     """Save Story object to session."""
     session['story_data'] = {
@@ -91,7 +98,12 @@ def index():
         session.clear()
     
     story_types = registry.get_all_story_types()
-    return render_template('story_types.html', story_types=story_types)
+    
+    # Get story and protagonist archetype object for left panel
+    story = get_story_from_session() 
+    protagonist_archetype_obj = get_protagonist_archetype_object(story)
+    
+    return render_template('story_types.html', story_types=story_types, story=story, protagonist_archetype_obj=protagonist_archetype_obj)
 
 
 @app.route('/story_type/<story_type_name>')
@@ -115,10 +127,13 @@ def story_type_detail(story_type_name):
     
     save_story_to_session(story)
     
-    # Get the subtype object if subtype is selected
+    # Get the subtype object
     subtype = story_type.get_subtype(story.subtype_name) if story.subtype_name else None
     
-    return render_template('subtypes.html', story_type=story_type, subtype=subtype)
+    # Get protagonist archetype object
+    protagonist_archetype_obj = get_protagonist_archetype_object(story)
+    
+    return render_template('subtypes.html', story_type=story_type, subtype=subtype, story=story, protagonist_archetype_obj=protagonist_archetype_obj)
 
 
 @app.route('/subtype/<story_type_name>/<subtype_name>')
@@ -161,7 +176,10 @@ def key_theme_selection():
     # Get the subtype object
     subtype = story_type.get_subtype(story.subtype_name) if story.subtype_name else None
     
-    return render_template('key_theme_selection.html', story=story, story_type=story_type, subtype=subtype)
+    # Get protagonist archetype object
+    protagonist_archetype_obj = get_protagonist_archetype_object(story)
+    
+    return render_template('key_theme_selection.html', story=story, story_type=story_type, subtype=subtype, protagonist_archetype_obj=protagonist_archetype_obj)
 
 
 @app.route('/key-theme-selection', methods=['POST'])
@@ -202,7 +220,10 @@ def core_arc_selection():
     # Get the subtype object
     subtype = story_type.get_subtype(story.subtype_name) if story.subtype_name else None
     
-    return render_template('core_arc_selection.html', story=story, story_type=story_type, subtype=subtype)
+    # Get protagonist archetype object
+    protagonist_archetype_obj = get_protagonist_archetype_object(story)
+    
+    return render_template('core_arc_selection.html', story=story, story_type=story_type, subtype=subtype, protagonist_archetype_obj=protagonist_archetype_obj)
 
 
 @app.route('/core-arc-selection', methods=['POST'])
@@ -240,8 +261,11 @@ def genre_selection():
     # Get the subtype object
     subtype = story_type.get_subtype(story.subtype_name) if story.subtype_name else None
     
+    # Get protagonist archetype object
+    protagonist_archetype_obj = get_protagonist_archetype_object(story)
+    
     genres = genre_registry.get_all_genres()
-    return render_template('genre_selection.html', genres=genres, story=story, story_type=story_type, subtype=subtype)
+    return render_template('genre_selection.html', genres=genres, story=story, story_type=story_type, subtype=subtype, protagonist_archetype_obj=protagonist_archetype_obj)
 
 
 @app.route('/genre-selection', methods=['POST'])
@@ -281,8 +305,11 @@ def subgenre_selection():
     # Get the subtype object
     subtype = story_type.get_subtype(story.subtype_name) if story.subtype_name else None
     
+    # Get protagonist archetype object
+    protagonist_archetype_obj = get_protagonist_archetype_object(story)
+    
     sub_genres = story.get_available_sub_genres()
-    return render_template('subgenre_selection.html', sub_genres=sub_genres, story=story, story_type=story_type, subtype=subtype)
+    return render_template('subgenre_selection.html', sub_genres=sub_genres, story=story, story_type=story_type, subtype=subtype, protagonist_archetype_obj=protagonist_archetype_obj)
 
 
 @app.route('/subgenre-selection', methods=['POST'])
@@ -337,7 +364,8 @@ def protagonist_archetype_selection():
     return render_template('protagonist_archetype_selection.html', 
                          story=story, 
                          typical_archetypes=typical_archetype_objects,
-                         other_archetypes=other_archetype_objects)
+                         other_archetypes=other_archetype_objects,
+                         protagonist_archetype_obj=get_protagonist_archetype_object(story))
 
 
 @app.route('/protagonist-archetype-selection', methods=['POST'])
@@ -394,7 +422,8 @@ def secondary_archetype_selection():
     return render_template('secondary_archetype_selection.html', 
                          story=story, 
                          typical_archetypes=typical_archetype_objects,
-                         other_archetypes=other_archetype_objects)
+                         other_archetypes=other_archetype_objects,
+                         protagonist_archetype_obj=get_protagonist_archetype_object(story))
 
 
 @app.route('/secondary-archetype-selection', methods=['POST'])
@@ -448,7 +477,8 @@ def archetype_selection():
     return render_template('archetype_selection.html', 
                          story=story, 
                          typical_archetypes=typical_archetype_objects,
-                         other_archetypes=other_archetype_objects)
+                         other_archetypes=other_archetype_objects,
+                         protagonist_archetype_obj=get_protagonist_archetype_object(story))
 
 
 @app.route('/archetype-selection', methods=['POST'])
