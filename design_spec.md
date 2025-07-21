@@ -20,6 +20,13 @@ The UI provides a streamlined selection experience where users automatically pro
 
 All selection steps (themes, arcs, genres, and sub-genres) use a consistent card-based UI with hover effects and visual selection states for optimal user experience.
 
+### UI Cleanup
+The following pages have been streamlined to show only essential elements:
+
+- **Key Theme Selection**: Shows only the title, theme selection cards, and back button (removed story type description and section titles)
+- **Core Arc Selection**: Shows only the title, arc selection cards, and back button (removed step description and "Your Story So Far" section)  
+- **Genre Selection**: Shows only the title, genre selection cards, and back button (removed step description and "Your Story So Far" section). Genre cards now display actual sub-genre names instead of counts.
+
 ## UI Layout
 
 The UI has a left and right panel
