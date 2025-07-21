@@ -206,12 +206,52 @@
                                 {% endif %}
                                 {% endif %}
           
-                                <!-- Protagonist with expandable details -->
+                                <!-- Writing Style with expandable details -->
                                 {% if story_data.get('writing_style_name') %}
+                                {% if writing_style_obj %}
+                                <div class="story-writingstyle-details">
+                                    <div class="story-writingstyle-details-header" onclick="toggleWritingStyleDetails()">
+                                        <div class="story-writingstyle-label">
+                                            <strong>Writing Style:</strong> {{ story_data.get('writing_style_name') }}
+                                        </div>
+                                        <span class="expand-arrow" id="writingstyle-expand-arrow">▶</span>
+                                    </div>
+                                    <div class="story-writingstyle-details-content" id="writingstyle-details-content">
+                                        <div class="section">
+                                            <div class="section-title">Description</div>
+                                            <div class="section-content">{{ writing_style_obj.description }}</div>
+                                        </div>
+                                        
+                                        {% if writing_style_obj.characteristics %}
+                                        <div class="section">
+                                            <div class="section-title">Characteristics</div>
+                                            <div class="section-content">
+                                                <ul style="margin: 0; padding-left: 20px;">
+                                                    {% for characteristic in writing_style_obj.characteristics %}
+                                                    <li>{{ characteristic }}</li>
+                                                    {% endfor %}
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        {% endif %}
+                                        
+                                        {% if writing_style_obj.examples %}
+                                        <div class="section">
+                                            <div class="section-title">Examples</div>
+                                            <div class="section-content">{{ writing_style_obj.examples | join(', ') }}</div>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                {% else %}
+                                <!-- Fallback for when writing style object is not available -->
                                 <div class="selection-item">
                                     <strong>Writing Style:</strong> {{ story_data.get('writing_style_name') }}
                                 </div>
                                 {% endif %}
+                                {% endif %}
+
+                                <!-- Protagonist with expandable details -->
 
                                 {% if story_data.get('protagonist_archetype') %}
                                 {% if protagonist_archetype_obj %}
@@ -236,10 +276,32 @@
                                 </div>
                                 {% endif %}
                                 {% endif %}
+                                
+                                <!-- Secondary Characters with expandable details -->
                                 {% if story_data.get('secondary_archetypes') %}
+                                {% if secondary_archetype_objs %}
+                                <div class="story-secondary-details">
+                                    <div class="story-secondary-details-header" onclick="toggleSecondaryDetails()">
+                                        <div class="story-secondary-label">
+                                            <strong>Secondary Characters:</strong> {{ story_data.get('secondary_archetypes') | join(', ') }}
+                                        </div>
+                                        <span class="expand-arrow" id="secondary-expand-arrow">▶</span>
+                                    </div>
+                                    <div class="story-secondary-details-content" id="secondary-details-content">
+                                        {% for archetype in secondary_archetype_objs %}
+                                        <div class="section">
+                                            <div class="section-title">{{ archetype.name }}</div>
+                                            <div class="section-content">{{ archetype.description }}</div>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                {% else %}
+                                <!-- Fallback for when secondary archetype objects are not available -->
                                 <div class="selection-item">
                                     <strong>Secondary Characters:</strong> {{ story_data.get('secondary_archetypes') | join(', ') }}
                                 </div>
+                                {% endif %}
                                 {% endif %}
                                 {% if story_data.get('selected_archetypes') and not story_data.get('protagonist_archetype') %}
                                 <div class="selection-item">
@@ -343,6 +405,36 @@
         function toggleProtagonistDetails() {
             const content = document.getElementById('protagonist-details-content');
             const arrow = document.getElementById('protagonist-expand-arrow');
+            
+            if (content && arrow) {
+                if (content.style.display === 'none' || content.style.display === '') {
+                    content.style.display = 'block';
+                    arrow.textContent = '▼';
+                } else {
+                    content.style.display = 'none';
+                    arrow.textContent = '▶';
+                }
+            }
+        }
+        
+        function toggleWritingStyleDetails() {
+            const content = document.getElementById('writingstyle-details-content');
+            const arrow = document.getElementById('writingstyle-expand-arrow');
+            
+            if (content && arrow) {
+                if (content.style.display === 'none' || content.style.display === '') {
+                    content.style.display = 'block';
+                    arrow.textContent = '▼';
+                } else {
+                    content.style.display = 'none';
+                    arrow.textContent = '▶';
+                }
+            }
+        }
+        
+        function toggleSecondaryDetails() {
+            const content = document.getElementById('secondary-details-content');
+            const arrow = document.getElementById('secondary-expand-arrow');
             
             if (content && arrow) {
                 if (content.style.display === 'none' || content.style.display === '') {
