@@ -188,7 +188,6 @@ def update_key_theme_selection():
     story.key_theme = key_theme
     save_story_to_session(story)
     
-    flash('Key theme selected successfully!', 'success')
     return redirect(url_for('core_arc_selection'))
 
 
@@ -229,7 +228,6 @@ def update_core_arc_selection():
     story.core_arc = core_arc
     save_story_to_session(story)
     
-    flash('Core arc selected successfully!', 'success')
     return redirect(url_for('genre_selection'))
 
 
@@ -267,7 +265,6 @@ def update_genre_selection():
     # Set genre
     if story.set_genre(genre_name):
         save_story_to_session(story)
-        flash('Genre selected successfully!', 'success')
         return redirect(url_for('subgenre_selection'))
     else:
         flash('Invalid genre selection.', 'error')
@@ -308,7 +305,6 @@ def update_subgenre_selection():
     # Set sub-genre
     if story.set_sub_genre(sub_genre_name):
         save_story_to_session(story)
-        flash('Sub-genre selected successfully!', 'success')
         # Redirect to writing style selection instead of protagonist archetype selection
         return redirect(url_for('writing_style_selection'))
     else:
@@ -356,7 +352,6 @@ def update_writing_style_selection():
     # Set writing style
     if story.set_writing_style(writing_style_name):
         save_story_to_session(story)
-        flash('Writing style selected successfully!', 'success')
         return redirect(url_for('protagonist_archetype_selection'))
     else:
         flash('Invalid writing style selection.', 'error')
@@ -419,7 +414,6 @@ def update_protagonist_archetype_selection():
     # Set protagonist archetype
     if story.set_protagonist_archetype(protagonist_archetype):
         save_story_to_session(story)
-        flash('Protagonist archetype selected successfully!', 'success')
         return redirect(url_for('secondary_archetype_selection'))
     else:
         flash('Invalid protagonist archetype selection.', 'error')
@@ -480,7 +474,6 @@ def update_secondary_archetype_selection():
     # Set secondary archetypes (can be empty list if none selected)
     if story.set_secondary_archetypes(secondary_archetypes):
         save_story_to_session(story)
-        flash('Secondary archetype selection complete! Story finished!', 'success')
         # For now, redirect back to the original subtype page to show the complete story
         return redirect(url_for('subtype_detail', 
                               story_type_name=story.story_type_name, 
@@ -534,7 +527,6 @@ def update_archetype_selection():
     # Set archetypes (can be empty list if none selected)
     if story.set_archetypes(selected_archetypes):
         save_story_to_session(story)
-        flash('Archetype selection complete! Story finished!', 'success')
         # For now, redirect back to the original subtype page to show the complete story
         return redirect(url_for('subtype_detail', 
                               story_type_name=story.story_type_name, 
@@ -575,7 +567,6 @@ def load_story():
             story = Story()
             if story.from_json(content):
                 save_story_to_session(story)
-                flash('Story loaded successfully!', 'success')
                 # Redirect to the loaded story's subtype page if story data exists
                 if story.story_type_name and story.subtype_name:
                     return redirect(url_for('subtype_detail', 
