@@ -5,8 +5,9 @@ This module implements a Story object that backs user choices like genre and sub
 """
 
 import json
-from typing import Optional, Dict, Any
+from typing import Optional, Dict, Any, List
 from genre import Genre, SubGenre, GenreRegistry
+from archetype import ArchetypeRegistry
 
 
 class Story:
@@ -17,11 +18,14 @@ class Story:
         self.genre: Optional[Genre] = None
         self.sub_genre: Optional[SubGenre] = None
         self._genre_registry = GenreRegistry()
+        self._archetype_registry = ArchetypeRegistry()
         # Story type selections
         self.story_type_name: Optional[str] = None
         self.subtype_name: Optional[str] = None
         self.key_theme: Optional[str] = None
         self.core_arc: Optional[str] = None
+        # Archetype selections (multiple allowed)
+        self.selected_archetypes: List[str] = []
     
     def set_story_type_selection(self, story_type_name: str, subtype_name: str, 
                                 key_theme: Optional[str] = None, core_arc: Optional[str] = None) -> None:
@@ -66,6 +70,48 @@ class Story:
             return self.genre.subgenres
         return []
     
+    def add_archetype(self, archetype_name: str) -> bool:
+        """Add an archetype to the selection. Returns True if successful."""
+        archetype = self._archetype_registry.get_archetype(archetype_name)
+        if archetype and archetype_name not in self.selected_archetypes:
+            self.selected_archetypes.append(archetype_name)
+            return True
+        return False
+    
+    def remove_archetype(self, archetype_name: str) -> bool:
+        """Remove an archetype from the selection. Returns True if successful."""
+        if archetype_name in self.selected_archetypes:
+            self.selected_archetypes.remove(archetype_name)
+            return True
+        return False
+    
+    def set_archetypes(self, archetype_names: List[str]) -> bool:
+        """Set the archetype selection list. Returns True if successful."""
+        # Validate all archetypes exist
+        valid_archetypes = []
+        for name in archetype_names:
+            archetype = self._archetype_registry.get_archetype(name)
+            if archetype:
+                valid_archetypes.append(name)
+        
+        if len(valid_archetypes) == len(archetype_names):
+            self.selected_archetypes = valid_archetypes
+            return True
+        return False
+    
+    def get_typical_archetypes(self) -> List[str]:
+        """Get the typical archetypes for the current sub-genre."""
+        if self.sub_genre:
+            return self.sub_genre.archetypes
+        return []
+    
+    def get_other_archetypes(self) -> List[str]:
+        """Get all archetypes that are not typical for the current sub-genre, sorted alphabetically."""
+        typical_archetypes = set(self.get_typical_archetypes())
+        all_archetypes = self._archetype_registry.list_archetype_names()
+        other_archetypes = [name for name in all_archetypes if name not in typical_archetypes]
+        return sorted(other_archetypes)
+    
     def __str__(self) -> str:
         """String representation of the story."""
         parts = []
@@ -75,6 +121,8 @@ class Story:
             parts.append(f"Sub-genre: {self.sub_genre.name}")
         if self.story_type_name and self.subtype_name:
             parts.append(f"Story Type: {self.story_type_name} - {self.subtype_name}")
+        if self.selected_archetypes:
+            parts.append(f"Archetypes: {', '.join(self.selected_archetypes)}")
         return " | ".join(parts) if parts else "Story with no selections"
     
     def to_json(self) -> str:
@@ -85,7 +133,8 @@ class Story:
             'key_theme': self.key_theme,
             'core_arc': self.core_arc,
             'genre_name': self.genre.name if self.genre else None,
-            'sub_genre_name': self.sub_genre.name if self.sub_genre else None
+            'sub_genre_name': self.sub_genre.name if self.sub_genre else None,
+            'selected_archetypes': self.selected_archetypes
         }
         return json.dumps(data, indent=2)
     
@@ -108,6 +157,11 @@ class Story:
             sub_genre_name = data.get('sub_genre_name')
             if sub_genre_name:
                 self.set_sub_genre(sub_genre_name)
+            
+            # Load archetype selections
+            selected_archetypes = data.get('selected_archetypes', [])
+            if selected_archetypes:
+                self.set_archetypes(selected_archetypes)
                 
             return True
         except (json.JSONDecodeError, KeyError, TypeError):
