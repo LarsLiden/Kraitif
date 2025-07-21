@@ -9,13 +9,14 @@
     <a href="{{ url_for('subtype_detail', story_type_name=story.story_type_name, subtype_name=story.subtype_name) }}">{{ story.subtype_name }}</a> > 
     <a href="{{ url_for('genre_selection') }}">Genre Selection</a> >
     <a href="{{ url_for('subgenre_selection') }}">Sub-Genre Selection</a> >
+    <a href="{{ url_for('writing_style_selection') }}">Writing Style Selection</a> >
     Archetype Selection
 </div>
 
 <h1>Select Archetypes</h1>
-<h2>Step 7: Choose your character archetypes</h2>
+<h2>Step 6: Choose your character archetypes</h2>
 
-{% if story.key_theme and story.core_arc and story.genre and story.sub_genre %}
+{% if story.key_theme and story.core_arc and story.genre and story.sub_genre and story.writing_style %}
 <div class="section">
     <div class="section-title">Your Story So Far</div>
     <div class="section-content">
@@ -23,7 +24,8 @@
         <strong>Key Theme:</strong> {{ story.key_theme }}<br>
         <strong>Core Arc:</strong> {{ story.core_arc }}<br>
         <strong>Genre:</strong> {{ story.genre.name }}<br>
-        <strong>Sub-Genre:</strong> {{ story.sub_genre.name }}
+        <strong>Sub-Genre:</strong> {{ story.sub_genre.name }}<br>
+        <strong>Writing Style:</strong> {{ story.writing_style.name }}
     </div>
 </div>
 {% endif %}
@@ -77,7 +79,7 @@
     <button type="submit" class="submit-button">Complete Story Selection</button>
 </form>
 
-<a href="{{ url_for('subgenre_selection') }}" class="back-link">← Back to Sub-Genre Selection</a>
+<a href="{{ url_for('writing_style_selection') }}" class="back-link">← Back to Writing Style Selection</a>
 
 <style>
 .archetype-selection-info {

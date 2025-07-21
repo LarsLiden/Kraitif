@@ -8,6 +8,7 @@ import json
 from typing import Optional, Dict, Any, List
 from genre import Genre, SubGenre, GenreRegistry
 from archetype import ArchetypeRegistry
+from style import Style, StyleRegistry
 
 
 class Story:
@@ -17,8 +18,10 @@ class Story:
         """Initialize a new story."""
         self.genre: Optional[Genre] = None
         self.sub_genre: Optional[SubGenre] = None
+        self.writing_style: Optional[Style] = None
         self._genre_registry = GenreRegistry()
         self._archetype_registry = ArchetypeRegistry()
+        self._style_registry = StyleRegistry()
         # Story type selections
         self.story_type_name: Optional[str] = None
         self.subtype_name: Optional[str] = None
@@ -70,6 +73,18 @@ class Story:
             return self.genre.subgenres
         return []
     
+    def set_writing_style(self, style_name: str) -> bool:
+        """Set the writing style by name. Returns True if successful."""
+        style = self._style_registry.get_style(style_name)
+        if style:
+            self.writing_style = style
+            return True
+        return False
+    
+    def get_available_writing_styles(self) -> List[Style]:
+        """Get all available writing styles."""
+        return self._style_registry.get_all_styles()
+    
     def add_archetype(self, archetype_name: str) -> bool:
         """Add an archetype to the selection. Returns True if successful."""
         archetype = self._archetype_registry.get_archetype(archetype_name)
@@ -119,6 +134,8 @@ class Story:
             parts.append(f"Genre: {self.genre.name}")
         if self.sub_genre:
             parts.append(f"Sub-genre: {self.sub_genre.name}")
+        if self.writing_style:
+            parts.append(f"Writing Style: {self.writing_style.name}")
         if self.story_type_name and self.subtype_name:
             parts.append(f"Story Type: {self.story_type_name} - {self.subtype_name}")
         if self.selected_archetypes:
@@ -134,6 +151,7 @@ class Story:
             'core_arc': self.core_arc,
             'genre_name': self.genre.name if self.genre else None,
             'sub_genre_name': self.sub_genre.name if self.sub_genre else None,
+            'writing_style_name': self.writing_style.name if self.writing_style else None,
             'selected_archetypes': self.selected_archetypes
         }
         return json.dumps(data, indent=2)
@@ -157,6 +175,11 @@ class Story:
             sub_genre_name = data.get('sub_genre_name')
             if sub_genre_name:
                 self.set_sub_genre(sub_genre_name)
+            
+            # Load writing style data
+            writing_style_name = data.get('writing_style_name')
+            if writing_style_name:
+                self.set_writing_style(writing_style_name)
             
             # Load archetype selections
             selected_archetypes = data.get('selected_archetypes', [])
