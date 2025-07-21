@@ -174,7 +174,7 @@ def story_type_detail(story_type_name):
 
 @app.route('/subtype/<story_type_name>/<subtype_name>')
 def subtype_detail(story_type_name, subtype_name):
-    """Save subtype selection to session and redirect directly to key theme selection."""
+    """Show subtype detail page with current story progress."""
     story_type = registry.get_story_type(story_type_name)
     if not story_type:
         return redirect(url_for('index'))
@@ -189,8 +189,28 @@ def subtype_detail(story_type_name, subtype_name):
     story.subtype_name = subtype_name
     save_story_to_session(story)
     
-    # Redirect directly to key theme selection instead of showing intermediate page
-    return redirect(url_for('key_theme_selection'))
+    # Check if this is a redirect from completion or if story already has selections
+    # If story has no selections beyond type/subtype, redirect to key theme selection
+    if not story.key_theme and not story.core_arc:
+        return redirect(url_for('key_theme_selection'))
+    
+    # Get session data for the template
+    saved_selections = session.get('story_data', {})
+    
+    # Get objects for left panel
+    protagonist_archetype_obj = get_protagonist_archetype_object(story)
+    writing_style_obj = get_writing_style_object(story)
+    secondary_archetype_objs = get_secondary_archetype_objects(story)
+    
+    # Render the subtype detail page showing current progress
+    return render_template('subtype_detail.html', 
+                         story_type=story_type, 
+                         subtype=subtype, 
+                         story=story, 
+                         saved_selections=saved_selections,
+                         protagonist_archetype_obj=protagonist_archetype_obj,
+                         writing_style_obj=writing_style_obj,
+                         secondary_archetype_objs=secondary_archetype_objs)
 
 
 @app.route('/key-theme-selection')
