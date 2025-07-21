@@ -15,8 +15,10 @@ The UI provides a streamlined selection experience where users automatically pro
 - **Story Type & Subtype Selection**: Users click to navigate between these steps
 - **Key Theme Selection**: Clicking a theme card immediately submits and proceeds to core arc selection
 - **Core Arc Selection**: Clicking an arc card immediately submits and proceeds to genre selection  
-- **Genre Selection**: Selecting a radio button automatically submits and proceeds to sub-genre selection
-- **Sub-Genre Selection**: Selecting a radio button automatically submits and completes the story
+- **Genre Selection**: Clicking a genre card immediately submits and proceeds to sub-genre selection
+- **Sub-Genre Selection**: Clicking a sub-genre card immediately submits and completes the story
+
+All selection steps (themes, arcs, genres, and sub-genres) use a consistent card-based UI with hover effects and visual selection states for optimal user experience.
 
 ## UI Layout
 

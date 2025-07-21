@@ -506,6 +506,34 @@ h3 {
     margin-top: 3px;
 }
 
+/* Sub-genre card styling */
+.subgenre-card {
+    transition: all 0.3s ease;
+}
+
+.subgenre-card:hover {
+    border-color: #BA68C8;
+    box-shadow: 0 4px 12px rgba(186, 104, 200, 0.3);
+}
+
+.subgenre-card.selected {
+    border-color: #BA68C8;
+    background-color: #2a1a3d;
+    box-shadow: 0 4px 12px rgba(186, 104, 200, 0.4);
+}
+
+.subgenre-card.selected .story-type-title {
+    color: #CE93D8;
+}
+
+.subgenre-card.selected .subgenre-plot {
+    color: #C39BD3;
+}
+
+.subgenre-card.selected .subgenre-examples {
+    color: #B39DDB;
+}
+
 .next-step {
     margin-top: 15px;
     text-align: center;
