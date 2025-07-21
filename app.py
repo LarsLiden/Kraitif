@@ -102,7 +102,7 @@ def story_type_detail(story_type_name):
 
 @app.route('/subtype/<story_type_name>/<subtype_name>')
 def subtype_detail(story_type_name, subtype_name):
-    """Show details for a specific subtype and save selection to session."""
+    """Save subtype selection to session and redirect directly to key theme selection."""
     story_type = registry.get_story_type(story_type_name)
     if not story_type:
         return redirect(url_for('index'))
@@ -117,16 +117,8 @@ def subtype_detail(story_type_name, subtype_name):
     story.subtype_name = subtype_name
     save_story_to_session(story)
     
-    # Get story selections for display
-    saved_selections = story.get_story_type_selection(story_type_name, subtype_name)
-    
-    # Add genre and sub-genre to saved selections for display
-    if story.genre:
-        saved_selections['genre_name'] = story.genre.name
-    if story.sub_genre:
-        saved_selections['sub_genre_name'] = story.sub_genre.name
-    
-    return render_template('subtype_detail.html', story_type=story_type, subtype=subtype, saved_selections=saved_selections, story=story)
+    # Redirect directly to key theme selection instead of showing intermediate page
+    return redirect(url_for('key_theme_selection'))
 
 
 @app.route('/key-theme-selection')
