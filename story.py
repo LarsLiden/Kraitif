@@ -24,7 +24,10 @@ class Story:
         self.subtype_name: Optional[str] = None
         self.key_theme: Optional[str] = None
         self.core_arc: Optional[str] = None
-        # Archetype selections (multiple allowed)
+        # Archetype selections - separate protagonist and secondary characters
+        self.protagonist_archetype: Optional[str] = None
+        self.secondary_archetypes: List[str] = []
+        # Keep legacy field for backward compatibility
         self.selected_archetypes: List[str] = []
     
     def set_story_type_selection(self, story_type_name: str, subtype_name: str, 
@@ -85,8 +88,41 @@ class Story:
             return True
         return False
     
+    def set_protagonist_archetype(self, archetype_name: str) -> bool:
+        """Set the protagonist archetype. Returns True if successful."""
+        archetype = self._archetype_registry.get_archetype(archetype_name)
+        if archetype:
+            self.protagonist_archetype = archetype_name
+            # Update legacy field for backward compatibility
+            self._update_legacy_selected_archetypes()
+            return True
+        return False
+    
+    def set_secondary_archetypes(self, archetype_names: List[str]) -> bool:
+        """Set the secondary archetype selection list. Returns True if successful."""
+        # Validate all archetypes exist
+        valid_archetypes = []
+        for name in archetype_names:
+            archetype = self._archetype_registry.get_archetype(name)
+            if archetype:
+                valid_archetypes.append(name)
+        
+        if len(valid_archetypes) == len(archetype_names):
+            self.secondary_archetypes = valid_archetypes
+            # Update legacy field for backward compatibility
+            self._update_legacy_selected_archetypes()
+            return True
+        return False
+    
+    def _update_legacy_selected_archetypes(self):
+        """Update the legacy selected_archetypes field for backward compatibility."""
+        self.selected_archetypes = []
+        if self.protagonist_archetype:
+            self.selected_archetypes.append(self.protagonist_archetype)
+        self.selected_archetypes.extend(self.secondary_archetypes)
+
     def set_archetypes(self, archetype_names: List[str]) -> bool:
-        """Set the archetype selection list. Returns True if successful."""
+        """Legacy method - Set the archetype selection list. Returns True if successful."""
         # Validate all archetypes exist
         valid_archetypes = []
         for name in archetype_names:
@@ -96,6 +132,13 @@ class Story:
         
         if len(valid_archetypes) == len(archetype_names):
             self.selected_archetypes = valid_archetypes
+            # For legacy compatibility, treat first as protagonist, rest as secondary
+            if valid_archetypes:
+                self.protagonist_archetype = valid_archetypes[0]
+                self.secondary_archetypes = valid_archetypes[1:] if len(valid_archetypes) > 1 else []
+            else:
+                self.protagonist_archetype = None
+                self.secondary_archetypes = []
             return True
         return False
     
@@ -121,7 +164,12 @@ class Story:
             parts.append(f"Sub-genre: {self.sub_genre.name}")
         if self.story_type_name and self.subtype_name:
             parts.append(f"Story Type: {self.story_type_name} - {self.subtype_name}")
-        if self.selected_archetypes:
+        if self.protagonist_archetype:
+            parts.append(f"Protagonist: {self.protagonist_archetype}")
+        if self.secondary_archetypes:
+            parts.append(f"Secondary: {', '.join(self.secondary_archetypes)}")
+        # Legacy fallback
+        elif self.selected_archetypes:
             parts.append(f"Archetypes: {', '.join(self.selected_archetypes)}")
         return " | ".join(parts) if parts else "Story with no selections"
     
@@ -134,7 +182,9 @@ class Story:
             'core_arc': self.core_arc,
             'genre_name': self.genre.name if self.genre else None,
             'sub_genre_name': self.sub_genre.name if self.sub_genre else None,
-            'selected_archetypes': self.selected_archetypes
+            'protagonist_archetype': self.protagonist_archetype,
+            'secondary_archetypes': self.secondary_archetypes,
+            'selected_archetypes': self.selected_archetypes  # Keep for backward compatibility
         }
         return json.dumps(data, indent=2)
     
@@ -159,8 +209,17 @@ class Story:
                 self.set_sub_genre(sub_genre_name)
             
             # Load archetype selections
+            protagonist_archetype = data.get('protagonist_archetype')
+            if protagonist_archetype:
+                self.set_protagonist_archetype(protagonist_archetype)
+                
+            secondary_archetypes = data.get('secondary_archetypes', [])
+            if secondary_archetypes:
+                self.set_secondary_archetypes(secondary_archetypes)
+            
+            # Legacy support for old save format
             selected_archetypes = data.get('selected_archetypes', [])
-            if selected_archetypes:
+            if selected_archetypes and not self.protagonist_archetype and not self.secondary_archetypes:
                 self.set_archetypes(selected_archetypes)
                 
             return True
