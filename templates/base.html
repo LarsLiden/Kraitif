@@ -143,6 +143,11 @@
                                     <strong>Sub-Genre:</strong> {{ story_data.get('sub_genre_name') }}
                                 </div>
                                 {% endif %}
+                                {% if story_data.get('writing_style_name') %}
+                                <div class="selection-item">
+                                    <strong>Writing Style:</strong> {{ story_data.get('writing_style_name') }}
+                                </div>
+                                {% endif %}
                                 {% if story_data.get('protagonist_archetype') %}
                                 <div class="selection-item">
                                     <strong>Protagonist:</strong> {{ story_data.get('protagonist_archetype') }}
