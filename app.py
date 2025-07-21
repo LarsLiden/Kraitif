@@ -207,8 +207,11 @@ def genre_selection():
         flash('Please complete story type selection first.', 'error')
         return redirect(url_for('index'))
     
+    # Get the story type to access details for the left panel
+    story_type = registry.get_story_type(story.story_type_name)
+    
     genres = genre_registry.get_all_genres()
-    return render_template('genre_selection.html', genres=genres, story=story)
+    return render_template('genre_selection.html', genres=genres, story=story, story_type=story_type)
 
 
 @app.route('/genre-selection', methods=['POST'])
@@ -242,8 +245,11 @@ def subgenre_selection():
         flash('Please complete story type and genre selection first.', 'error')
         return redirect(url_for('index'))
     
+    # Get the story type to access details for the left panel
+    story_type = registry.get_story_type(story.story_type_name)
+    
     sub_genres = story.get_available_sub_genres()
-    return render_template('subgenre_selection.html', sub_genres=sub_genres, story=story)
+    return render_template('subgenre_selection.html', sub_genres=sub_genres, story=story, story_type=story_type)
 
 
 @app.route('/subgenre-selection', methods=['POST'])
@@ -318,4 +324,4 @@ def load_story():
 
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    app.run(debug=True, host='0.0.0.0', port=5001)

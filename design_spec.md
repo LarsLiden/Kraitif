@@ -32,8 +32,11 @@ The following pages have been streamlined to show only essential elements:
 The UI has a left and right panel
 
 **Left Panel**: 
-- Displays the choices that the user has made so far (choices are stored in the story class)
 - Shows save and load buttons at the top
+- Displays the choices that the user has made so far (choices are stored in the story class)
+- Contains an expandable details panel inside the "Your Story Selections" section that shows:
+  - Story type description, examples, emotional arc, key moments, and common elements
+  - This details panel persists across all pages once a story type is selected
 
 **Right Panel**: 
 - Shows the options that the user can choose from
