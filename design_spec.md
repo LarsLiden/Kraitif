@@ -23,6 +23,21 @@ The UI provides a streamlined selection experience where users automatically pro
 
 All selection steps (themes, arcs, genres, and sub-genres) use a consistent card-based UI with hover effects and visual selection states for optimal user experience.
 
+### Navigation System
+
+The application uses a **left panel navigation system** with edit buttons instead of traditional breadcrumb navigation:
+
+- **No Breadcrumb Navigation**: All breadcrumb trails (e.g., "Story Types > Rags to Riches > Pure Ascent > Key Theme Selection") have been removed from all pages
+- **Left Panel Edit Buttons**: Each completed selection in the "Your Story Selections" panel includes an edit button (✏️ icon) that allows users to return to that selection step
+- **Smart Clearing Logic**: When a user clicks an edit button to return to a previous step:
+  - That selection and all subsequent selections are cleared from the story object
+  - The user is redirected to the appropriate selection page for that step
+  - All selections made before that step are preserved
+- **Icon-Based Design**: Edit buttons use a clean pencil emoji (✏️) for an aesthetic, icon-based approach rather than text buttons
+- **Hover Effects**: Edit buttons include hover effects and tooltips for better user experience
+
+This navigation system provides a more intuitive way for users to modify their story selections without losing progress on earlier decisions, while maintaining a clean interface without cluttered breadcrumb navigation.
+
 ### UI Cleanup
 The following pages have been streamlined to show only essential elements:
 
@@ -40,10 +55,11 @@ The UI has a left and right panel
 - Displays the choices that the user has made so far (choices are stored in the story class)
 
 - Contains separate expandable details panels inside the "Your Story Selections" section:
-  - **Story Type Panel**: Shows story type name with expandable details including description, examples, emotional arc, key moments, and common elements
-  - **Story Sub-Type Panel**: Shows story sub-type name with expandable details specific to the sub-type including description and examples
-  - Both panels persist across all pages once selections are made and can be expanded/collapsed independently
-- Displays selected archetypes when multiple are chosen
+  - **Story Type Panel**: Shows story type name with expandable details including description, examples, emotional arc, key moments, and common elements. Includes edit button to return to story type selection.
+  - **Story Sub-Type Panel**: Shows story sub-type name with expandable details specific to the sub-type including description and examples. Includes edit button to return to subtype selection.
+  - **Selection Items**: Key Theme, Core Arc, Genre, Sub-Genre, Writing Style, Protagonist, and Secondary Characters all display with edit buttons that allow navigation back to their respective selection pages.
+  - Both expandable panels persist across all pages once selections are made and can be expanded/collapsed independently
+- All edit buttons use icon-based design (✏️) and implement smart clearing logic when clicked
 
 **Right Panel**: 
 - Shows the options that the user can choose from
@@ -81,5 +97,5 @@ The archetype selection has been separated into two distinct steps to differenti
 
 ### Left Panel Display
 The selected archetypes are displayed as separate sections in the left panel:
-- **Protagonist**: Shows the single selected protagonist archetype
-- **Secondary Characters**: Shows comma-separated list of selected secondary archetypes (only appears if any are selected)
+- **Protagonist**: Shows the single selected protagonist archetype with edit button
+- **Secondary Characters**: Shows comma-separated list of selected secondary archetypes with edit button (only appears if any are selected)

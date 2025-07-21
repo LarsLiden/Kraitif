@@ -74,10 +74,44 @@ body {
 .expandable-panel-label {
     margin: 0;
     font-size: 1em;
+    flex: 1;
 }
 
 .expandable-panel-label strong {
     color: #64B5F6;
+}
+
+.panel-controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.edit-button {
+    background: none;
+    border: none;
+    color: #FFB74D;
+    font-size: 1.1em;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 3px;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+}
+
+.edit-button:hover {
+    background-color: rgba(255, 183, 77, 0.2);
+    color: #FFC947;
+    transform: scale(1.1);
+}
+
+.edit-button:active {
+    transform: scale(0.95);
 }
 
 .expand-arrow {

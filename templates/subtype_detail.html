@@ -3,11 +3,7 @@
 {% block title %}{{ subtype.name }} - {{ story_type.name }}{% endblock %}
 
 {% block content %}
-<div class="breadcrumb">
-    <a href="{{ url_for('index') }}">Story Types</a> > 
-    <a href="{{ url_for('story_type_detail', story_type_name=story_type.name) }}">{{ story_type.name }}</a> > 
-    {{ subtype.name }}
-</div>
+
 
 <h1>{{ subtype.name }}</h1>
 <h2>{{ story_type.name }} Subtype</h2>

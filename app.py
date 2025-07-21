@@ -647,6 +647,82 @@ def update_archetype_selection():
         return redirect(url_for('archetype_selection'))
 
 
+@app.route('/navigate-to-step/<step>')
+def navigate_to_step(step):
+    """Navigate back to a specific selection step, clearing dependent selections."""
+    story = get_story_from_session()
+    
+    # Define step hierarchy - when going back to a step, clear that step and all after it
+    step_hierarchy = [
+        'story_type',
+        'subtype', 
+        'key_theme',
+        'core_arc',
+        'genre',
+        'sub_genre',
+        'writing_style',
+        'protagonist_archetype',
+        'secondary_archetypes'
+    ]
+    
+    # Find the step index to clear from
+    try:
+        step_index = step_hierarchy.index(step)
+    except ValueError:
+        flash('Invalid navigation step.', 'error')
+        return redirect(url_for('index'))
+    
+    # Clear the selected step and all subsequent steps
+    steps_to_clear = step_hierarchy[step_index:]
+    
+    for clear_step in steps_to_clear:
+        if clear_step == 'story_type':
+            story.story_type_name = None
+        elif clear_step == 'subtype':
+            story.subtype_name = None
+        elif clear_step == 'key_theme':
+            story.key_theme = None
+        elif clear_step == 'core_arc':
+            story.core_arc = None
+        elif clear_step == 'genre':
+            story.genre = None
+        elif clear_step == 'sub_genre':
+            story.sub_genre = None
+        elif clear_step == 'writing_style':
+            story.writing_style = None
+        elif clear_step == 'protagonist_archetype':
+            story.protagonist_archetype = None
+        elif clear_step == 'secondary_archetypes':
+            story.secondary_archetypes = []
+    
+    save_story_to_session(story)
+    
+    # Redirect to the appropriate selection page
+    if step == 'story_type':
+        return redirect(url_for('index'))
+    elif step == 'subtype':
+        if story.story_type_name:
+            return redirect(url_for('story_type_detail', story_type_name=story.story_type_name))
+        else:
+            return redirect(url_for('index'))
+    elif step == 'key_theme':
+        return redirect(url_for('key_theme_selection'))
+    elif step == 'core_arc':
+        return redirect(url_for('core_arc_selection'))
+    elif step == 'genre':
+        return redirect(url_for('genre_selection'))
+    elif step == 'sub_genre':
+        return redirect(url_for('subgenre_selection'))
+    elif step == 'writing_style':
+        return redirect(url_for('writing_style_selection'))
+    elif step == 'protagonist_archetype':
+        return redirect(url_for('protagonist_archetype_selection'))
+    elif step == 'secondary_archetypes':
+        return redirect(url_for('secondary_archetype_selection'))
+    else:
+        return redirect(url_for('index'))
+
+
 @app.route('/save')
 def save_story():
     """Save current story to JSON file."""
