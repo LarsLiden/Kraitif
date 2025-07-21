@@ -71,6 +71,30 @@ def get_story_from_session():
     return story
 
 
+def get_protagonist_archetype_object(story):
+    """Get the protagonist archetype object from the story."""
+    if story.protagonist_archetype:
+        return archetype_registry.get_archetype(story.protagonist_archetype)
+    return None
+
+
+def get_writing_style_object(story):
+    """Get the writing style object from the story."""
+    return story.writing_style
+
+
+def get_secondary_archetype_objects(story):
+    """Get the secondary archetype objects from the story."""
+    if story.secondary_archetypes:
+        secondary_objects = []
+        for archetype_name in story.secondary_archetypes:
+            archetype = archetype_registry.get_archetype(archetype_name)
+            if archetype:
+                secondary_objects.append(archetype)
+        return secondary_objects
+    return []
+
+
 def save_story_to_session(story):
     """Save Story object to session."""
     session['story_data'] = {
@@ -100,7 +124,17 @@ def index():
         session.clear()
     
     story_types = registry.get_all_story_types()
-    return render_template('story_types.html', story_types=story_types)
+    
+    # Get story and objects for left panel
+    story = get_story_from_session() 
+    protagonist_archetype_obj = get_protagonist_archetype_object(story)
+    writing_style_obj = get_writing_style_object(story)
+    secondary_archetype_objs = get_secondary_archetype_objects(story)
+    
+    return render_template('story_types.html', story_types=story_types, story=story, 
+                         protagonist_archetype_obj=protagonist_archetype_obj,
+                         writing_style_obj=writing_style_obj,
+                         secondary_archetype_objs=secondary_archetype_objs)
 
 
 @app.route('/story_type/<story_type_name>')
@@ -124,15 +158,23 @@ def story_type_detail(story_type_name):
     
     save_story_to_session(story)
     
-    # Get the subtype object if subtype is selected
+    # Get the subtype object
     subtype = story_type.get_subtype(story.subtype_name) if story.subtype_name else None
     
-    return render_template('subtypes.html', story_type=story_type, subtype=subtype)
+    # Get objects for left panel
+    protagonist_archetype_obj = get_protagonist_archetype_object(story)
+    writing_style_obj = get_writing_style_object(story)
+    secondary_archetype_objs = get_secondary_archetype_objects(story)
+    
+    return render_template('subtypes.html', story_type=story_type, subtype=subtype, story=story, 
+                         protagonist_archetype_obj=protagonist_archetype_obj,
+                         writing_style_obj=writing_style_obj,
+                         secondary_archetype_objs=secondary_archetype_objs)
 
 
 @app.route('/subtype/<story_type_name>/<subtype_name>')
 def subtype_detail(story_type_name, subtype_name):
-    """Save subtype selection to session and redirect directly to key theme selection."""
+    """Show subtype detail page with current story progress."""
     story_type = registry.get_story_type(story_type_name)
     if not story_type:
         return redirect(url_for('index'))
@@ -147,8 +189,28 @@ def subtype_detail(story_type_name, subtype_name):
     story.subtype_name = subtype_name
     save_story_to_session(story)
     
-    # Redirect directly to key theme selection instead of showing intermediate page
-    return redirect(url_for('key_theme_selection'))
+    # Check if this is a redirect from completion or if story already has selections
+    # If story has no selections beyond type/subtype, redirect to key theme selection
+    if not story.key_theme and not story.core_arc:
+        return redirect(url_for('key_theme_selection'))
+    
+    # Get session data for the template
+    saved_selections = session.get('story_data', {})
+    
+    # Get objects for left panel
+    protagonist_archetype_obj = get_protagonist_archetype_object(story)
+    writing_style_obj = get_writing_style_object(story)
+    secondary_archetype_objs = get_secondary_archetype_objects(story)
+    
+    # Render the subtype detail page showing current progress
+    return render_template('subtype_detail.html', 
+                         story_type=story_type, 
+                         subtype=subtype, 
+                         story=story, 
+                         saved_selections=saved_selections,
+                         protagonist_archetype_obj=protagonist_archetype_obj,
+                         writing_style_obj=writing_style_obj,
+                         secondary_archetype_objs=secondary_archetype_objs)
 
 
 @app.route('/key-theme-selection')
@@ -170,7 +232,15 @@ def key_theme_selection():
     # Get the subtype object
     subtype = story_type.get_subtype(story.subtype_name) if story.subtype_name else None
     
-    return render_template('key_theme_selection.html', story=story, story_type=story_type, subtype=subtype)
+    # Get objects for left panel
+    protagonist_archetype_obj = get_protagonist_archetype_object(story)
+    writing_style_obj = get_writing_style_object(story)
+    secondary_archetype_objs = get_secondary_archetype_objects(story)
+    
+    return render_template('key_theme_selection.html', story=story, story_type=story_type, subtype=subtype, 
+                         protagonist_archetype_obj=protagonist_archetype_obj,
+                         writing_style_obj=writing_style_obj,
+                         secondary_archetype_objs=secondary_archetype_objs)
 
 
 @app.route('/key-theme-selection', methods=['POST'])
@@ -211,7 +281,15 @@ def core_arc_selection():
     # Get the subtype object
     subtype = story_type.get_subtype(story.subtype_name) if story.subtype_name else None
     
-    return render_template('core_arc_selection.html', story=story, story_type=story_type, subtype=subtype)
+    # Get objects for left panel
+    protagonist_archetype_obj = get_protagonist_archetype_object(story)
+    writing_style_obj = get_writing_style_object(story)
+    secondary_archetype_objs = get_secondary_archetype_objects(story)
+    
+    return render_template('core_arc_selection.html', story=story, story_type=story_type, subtype=subtype, 
+                         protagonist_archetype_obj=protagonist_archetype_obj,
+                         writing_style_obj=writing_style_obj,
+                         secondary_archetype_objs=secondary_archetype_objs)
 
 
 @app.route('/core-arc-selection', methods=['POST'])
@@ -249,8 +327,16 @@ def genre_selection():
     # Get the subtype object
     subtype = story_type.get_subtype(story.subtype_name) if story.subtype_name else None
     
+    # Get objects for left panel
+    protagonist_archetype_obj = get_protagonist_archetype_object(story)
+    writing_style_obj = get_writing_style_object(story)
+    secondary_archetype_objs = get_secondary_archetype_objects(story)
+    
     genres = genre_registry.get_all_genres()
-    return render_template('genre_selection.html', genres=genres, story=story, story_type=story_type, subtype=subtype)
+    return render_template('genre_selection.html', genres=genres, story=story, story_type=story_type, subtype=subtype, 
+                         protagonist_archetype_obj=protagonist_archetype_obj,
+                         writing_style_obj=writing_style_obj,
+                         secondary_archetype_objs=secondary_archetype_objs)
 
 
 @app.route('/genre-selection', methods=['POST'])
@@ -290,8 +376,16 @@ def subgenre_selection():
     # Get the subtype object
     subtype = story_type.get_subtype(story.subtype_name) if story.subtype_name else None
     
+    # Get objects for left panel
+    protagonist_archetype_obj = get_protagonist_archetype_object(story)
+    writing_style_obj = get_writing_style_object(story)
+    secondary_archetype_objs = get_secondary_archetype_objects(story)
+    
     sub_genres = story.get_available_sub_genres()
-    return render_template('subgenre_selection.html', sub_genres=sub_genres, story=story, story_type=story_type, subtype=subtype)
+    return render_template('subgenre_selection.html', sub_genres=sub_genres, story=story, story_type=story_type, subtype=subtype, 
+                         protagonist_archetype_obj=protagonist_archetype_obj,
+                         writing_style_obj=writing_style_obj,
+                         secondary_archetype_objs=secondary_archetype_objs)
 
 
 @app.route('/subgenre-selection', methods=['POST'])
@@ -335,11 +429,19 @@ def writing_style_selection():
     # Get all available writing styles
     styles = story.get_available_styles()
     
+    # Get objects for left panel
+    protagonist_archetype_obj = get_protagonist_archetype_object(story)
+    writing_style_obj = get_writing_style_object(story)
+    secondary_archetype_objs = get_secondary_archetype_objects(story)
+    
     return render_template('writing_style_selection.html', 
                          styles=styles, 
                          story=story, 
                          story_type=story_type, 
-                         subtype=subtype)
+                         subtype=subtype,
+                         protagonist_archetype_obj=protagonist_archetype_obj,
+                         writing_style_obj=writing_style_obj,
+                         secondary_archetype_objs=secondary_archetype_objs)
 
 
 @app.route('/writing-style-selection', methods=['POST'])
@@ -401,7 +503,10 @@ def protagonist_archetype_selection():
                          story_type=story_type,
                          subtype=subtype,
                          typical_archetypes=typical_archetype_objects,
-                         other_archetypes=other_archetype_objects)
+                         other_archetypes=other_archetype_objects,
+                         protagonist_archetype_obj=get_protagonist_archetype_object(story),
+                         writing_style_obj=get_writing_style_object(story),
+                         secondary_archetype_objs=get_secondary_archetype_objects(story))
 
 
 @app.route('/protagonist-archetype-selection', methods=['POST'])
@@ -466,7 +571,10 @@ def secondary_archetype_selection():
                          story_type=story_type,
                          subtype=subtype,
                          typical_archetypes=typical_archetype_objects,
-                         other_archetypes=other_archetype_objects)
+                         other_archetypes=other_archetype_objects,
+                         protagonist_archetype_obj=get_protagonist_archetype_object(story),
+                         writing_style_obj=get_writing_style_object(story),
+                         secondary_archetype_objs=get_secondary_archetype_objects(story))
 
 
 @app.route('/secondary-archetype-selection', methods=['POST'])
@@ -520,7 +628,10 @@ def archetype_selection():
     return render_template('archetype_selection.html', 
                          story=story, 
                          typical_archetypes=typical_archetype_objects,
-                         other_archetypes=other_archetype_objects)
+                         other_archetypes=other_archetype_objects,
+                         protagonist_archetype_obj=get_protagonist_archetype_object(story),
+                         writing_style_obj=get_writing_style_object(story),
+                         secondary_archetype_objs=get_secondary_archetype_objects(story))
 
 
 @app.route('/archetype-selection', methods=['POST'])

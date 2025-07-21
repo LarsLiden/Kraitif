@@ -11,14 +11,14 @@
                 {% if story_data.get('story_type_name') %}
                 <!-- Story Type with expandable details -->
                 {% if story_type %}
-                <div class="story-type-details">
-                    <div class="story-type-details-header" onclick="toggleStoryTypeDetails()">
-                        <div class="story-type-label">
+                <div class="expandable-panel">
+                    <div class="expandable-panel-header" onclick="toggleStoryTypeDetails()">
+                        <div class="expandable-panel-label">
                             <strong>Story Type:</strong> {{ story_data.get('story_type_name') }}
                         </div>
                         <span class="expand-arrow" id="story-type-expand-arrow">▶</span>
                     </div>
-                    <div class="story-type-details-content" id="story-type-details-content">
+                    <div class="expandable-panel-content" id="story-type-details-content">
                         <div class="section">
                             <div class="section-title">Description</div>
                             <div class="section-content">{{ story_type.description }}</div>
@@ -76,14 +76,14 @@
                 <!-- Story Sub-Type with expandable details (separate from story type) -->
                 {% if story_data.get('subtype_name') %}
                 {% if subtype %}
-                <div class="story-subtype-details">
-                    <div class="story-subtype-details-header" onclick="toggleSubtypeDetails()">
-                        <div class="story-subtype-label">
+                <div class="expandable-panel">
+                    <div class="expandable-panel-header" onclick="toggleSubtypeDetails()">
+                        <div class="expandable-panel-label">
                             <strong>Story Sub-Type:</strong> {{ story_data.get('subtype_name') }}
                         </div>
                         <span class="expand-arrow" id="subtype-expand-arrow">▶</span>
                     </div>
-                    <div class="story-subtype-details-content" id="subtype-details-content">
+                    <div class="expandable-panel-content" id="subtype-details-content">
                         <div class="section">
                             <div class="section-title">Description</div>
                             <div class="section-content">{{ subtype.description }}</div>

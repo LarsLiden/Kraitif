@@ -29,14 +29,14 @@
                                 {% if story_data.get('story_type_name') %}
                                 <!-- Story Type with expandable details -->
                                 {% if story_type %}
-                                <div class="story-type-details">
-                                    <div class="story-type-details-header" onclick="toggleStoryTypeDetails()">
-                                        <div class="story-type-label">
+                                <div class="expandable-panel">
+                                    <div class="expandable-panel-header" onclick="toggleStoryTypeDetails()">
+                                        <div class="expandable-panel-label">
                                             <strong>Story Type:</strong> {{ story_data.get('story_type_name') }}
                                         </div>
                                         <span class="expand-arrow" id="story-type-expand-arrow">▶</span>
                                     </div>
-                                    <div class="story-type-details-content" id="story-type-details-content">
+                                    <div class="expandable-panel-content" id="story-type-details-content">
                                         <div class="section">
                                             <div class="section-title">Description</div>
                                             <div class="section-content">{{ story_type.description }}</div>
@@ -94,14 +94,14 @@
                                 <!-- Story Sub-Type with expandable details (separate from story type) -->
                                 {% if story_data.get('subtype_name') %}
                                 {% if subtype %}
-                                <div class="story-subtype-details">
-                                    <div class="story-subtype-details-header" onclick="toggleSubtypeDetails()">
-                                        <div class="story-subtype-label">
+                                <div class="expandable-panel">
+                                    <div class="expandable-panel-header" onclick="toggleSubtypeDetails()">
+                                        <div class="expandable-panel-label">
                                             <strong>Story Sub-Type:</strong> {{ story_data.get('subtype_name') }}
                                         </div>
                                         <span class="expand-arrow" id="subtype-expand-arrow">▶</span>
                                     </div>
-                                    <div class="story-subtype-details-content" id="subtype-details-content">
+                                    <div class="expandable-panel-content" id="subtype-details-content">
                                         <div class="section">
                                             <div class="section-title">Description</div>
                                             <div class="section-content">{{ subtype.description }}</div>
@@ -133,30 +133,175 @@
                                     <strong>Core Arc:</strong> {{ story_data.get('core_arc') }}
                                 </div>
                                 {% endif %}
+                                
+                                <!-- Genre with expandable details -->
                                 {% if story_data.get('genre_name') %}
+                                {% if story and story.genre %}
+                                <div class="expandable-panel">
+                                    <div class="expandable-panel-header" onclick="toggleGenreDetails()">
+                                        <div class="expandable-panel-label">
+                                            <strong>Genre:</strong> {{ story_data.get('genre_name') }}
+                                        </div>
+                                        <span class="expand-arrow" id="genre-expand-arrow">▶</span>
+                                    </div>
+                                    <div class="expandable-panel-content" id="genre-details-content">
+                                        {% if story.genre.subgenres %}
+                                        <div class="section">
+                                            <div class="section-title">Sub-Genres</div>
+                                            <div class="section-content">
+                                                {% for subgenre in story.genre.subgenres %}
+                                                    {{ subgenre.name }}{% if not loop.last %}, {% endif %}
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                {% else %}
+                                <!-- Fallback for when genre object is not available -->
                                 <div class="selection-item">
                                     <strong>Genre:</strong> {{ story_data.get('genre_name') }}
                                 </div>
                                 {% endif %}
+                                {% endif %}
+                                
+                                <!-- Sub-Genre with expandable details -->
                                 {% if story_data.get('sub_genre_name') %}
+                                {% if story and story.sub_genre %}
+                                <div class="expandable-panel">
+                                    <div class="expandable-panel-header" onclick="toggleSubGenreDetails()">
+                                        <div class="expandable-panel-label">
+                                            <strong>Sub-Genre:</strong> {{ story_data.get('sub_genre_name') }}
+                                        </div>
+                                        <span class="expand-arrow" id="subgenre-expand-arrow">▶</span>
+                                    </div>
+                                    <div class="expandable-panel-content" id="subgenre-details-content">
+                                        {% if story.sub_genre.plot %}
+                                        <div class="section">
+                                            <div class="section-title">Plot Type</div>
+                                            <div class="section-content">{{ story.sub_genre.plot }}</div>
+                                        </div>
+                                        {% endif %}
+                                        
+                                        {% if story.sub_genre.examples %}
+                                        <div class="section">
+                                            <div class="section-title">Examples</div>
+                                            <div class="section-content">{{ story.sub_genre.examples | join(', ') }}</div>
+                                        </div>
+                                        {% endif %}
+                                        
+                                        {% if story.sub_genre.archetypes %}
+                                        <div class="section">
+                                            <div class="section-title">Typical Archetypes</div>
+                                            <div class="section-content">{{ story.sub_genre.archetypes | join(', ') }}</div>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                {% else %}
+                                <!-- Fallback for when sub-genre object is not available -->
                                 <div class="selection-item">
                                     <strong>Sub-Genre:</strong> {{ story_data.get('sub_genre_name') }}
                                 </div>
                                 {% endif %}
+                                {% endif %}
+          
+                                <!-- Writing Style with expandable details -->
                                 {% if story_data.get('writing_style_name') %}
+                                {% if writing_style_obj %}
+                                <div class="expandable-panel">
+                                    <div class="expandable-panel-header" onclick="toggleWritingStyleDetails()">
+                                        <div class="expandable-panel-label">
+                                            <strong>Writing Style:</strong> {{ story_data.get('writing_style_name') }}
+                                        </div>
+                                        <span class="expand-arrow" id="writingstyle-expand-arrow">▶</span>
+                                    </div>
+                                    <div class="expandable-panel-content" id="writingstyle-details-content">
+                                        <div class="section">
+                                            <div class="section-title">Description</div>
+                                            <div class="section-content">{{ writing_style_obj.description }}</div>
+                                        </div>
+                                        
+                                        {% if writing_style_obj.characteristics %}
+                                        <div class="section">
+                                            <div class="section-title">Characteristics</div>
+                                            <div class="section-content">
+                                                <ul style="margin: 0; padding-left: 20px;">
+                                                    {% for characteristic in writing_style_obj.characteristics %}
+                                                    <li>{{ characteristic }}</li>
+                                                    {% endfor %}
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        {% endif %}
+                                        
+                                        {% if writing_style_obj.examples %}
+                                        <div class="section">
+                                            <div class="section-title">Examples</div>
+                                            <div class="section-content">{{ writing_style_obj.examples | join(', ') }}</div>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                {% else %}
+                                <!-- Fallback for when writing style object is not available -->
                                 <div class="selection-item">
                                     <strong>Writing Style:</strong> {{ story_data.get('writing_style_name') }}
                                 </div>
                                 {% endif %}
+                                {% endif %}
+
+                                <!-- Protagonist with expandable details -->
+
                                 {% if story_data.get('protagonist_archetype') %}
+                                {% if protagonist_archetype_obj %}
+                                <div class="expandable-panel">
+                                    <div class="expandable-panel-header" onclick="toggleProtagonistDetails()">
+                                        <div class="expandable-panel-label">
+                                            <strong>Protagonist:</strong> {{ story_data.get('protagonist_archetype') }}
+                                        </div>
+                                        <span class="expand-arrow" id="protagonist-expand-arrow">▶</span>
+                                    </div>
+                                    <div class="expandable-panel-content" id="protagonist-details-content">
+                                        <div class="section">
+                                            <div class="section-title">Description</div>
+                                            <div class="section-content">{{ protagonist_archetype_obj.description }}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% else %}
+                                <!-- Fallback for when protagonist archetype object is not available -->
                                 <div class="selection-item">
                                     <strong>Protagonist:</strong> {{ story_data.get('protagonist_archetype') }}
                                 </div>
                                 {% endif %}
+                                {% endif %}
+                                
+                                <!-- Secondary Characters with expandable details -->
                                 {% if story_data.get('secondary_archetypes') %}
+                                {% if secondary_archetype_objs %}
+                                <div class="expandable-panel">
+                                    <div class="expandable-panel-header" onclick="toggleSecondaryDetails()">
+                                        <div class="expandable-panel-label">
+                                            <strong>Secondary Characters:</strong> {{ story_data.get('secondary_archetypes') | join(', ') }}
+                                        </div>
+                                        <span class="expand-arrow" id="secondary-expand-arrow">▶</span>
+                                    </div>
+                                    <div class="expandable-panel-content" id="secondary-details-content">
+                                        {% for archetype in secondary_archetype_objs %}
+                                        <div class="section">
+                                            <div class="section-title">{{ archetype.name }}</div>
+                                            <div class="section-content">{{ archetype.description }}</div>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                {% else %}
+                                <!-- Fallback for when secondary archetype objects are not available -->
                                 <div class="selection-item">
                                     <strong>Secondary Characters:</strong> {{ story_data.get('secondary_archetypes') | join(', ') }}
                                 </div>
+                                {% endif %}
                                 {% endif %}
                                 {% if story_data.get('selected_archetypes') and not story_data.get('protagonist_archetype') %}
                                 <div class="selection-item">
@@ -215,6 +360,81 @@
         function toggleSubtypeDetails() {
             const content = document.getElementById('subtype-details-content');
             const arrow = document.getElementById('subtype-expand-arrow');
+            
+            if (content && arrow) {
+                if (content.style.display === 'none' || content.style.display === '') {
+                    content.style.display = 'block';
+                    arrow.textContent = '▼';
+                } else {
+                    content.style.display = 'none';
+                    arrow.textContent = '▶';
+                }
+            }
+        }
+        
+        function toggleGenreDetails() {
+            const content = document.getElementById('genre-details-content');
+            const arrow = document.getElementById('genre-expand-arrow');
+            
+            if (content && arrow) {
+                if (content.style.display === 'none' || content.style.display === '') {
+                    content.style.display = 'block';
+                    arrow.textContent = '▼';
+                } else {
+                    content.style.display = 'none';
+                    arrow.textContent = '▶';
+                }
+            }
+        }
+        
+        function toggleSubGenreDetails() {
+            const content = document.getElementById('subgenre-details-content');
+            const arrow = document.getElementById('subgenre-expand-arrow');
+            
+            if (content && arrow) {
+                if (content.style.display === 'none' || content.style.display === '') {
+                    content.style.display = 'block';
+                    arrow.textContent = '▼';
+                } else {
+                    content.style.display = 'none';
+                    arrow.textContent = '▶';
+                }
+            }
+        }
+        
+        function toggleProtagonistDetails() {
+            const content = document.getElementById('protagonist-details-content');
+            const arrow = document.getElementById('protagonist-expand-arrow');
+            
+            if (content && arrow) {
+                if (content.style.display === 'none' || content.style.display === '') {
+                    content.style.display = 'block';
+                    arrow.textContent = '▼';
+                } else {
+                    content.style.display = 'none';
+                    arrow.textContent = '▶';
+                }
+            }
+        }
+        
+        function toggleWritingStyleDetails() {
+            const content = document.getElementById('writingstyle-details-content');
+            const arrow = document.getElementById('writingstyle-expand-arrow');
+            
+            if (content && arrow) {
+                if (content.style.display === 'none' || content.style.display === '') {
+                    content.style.display = 'block';
+                    arrow.textContent = '▼';
+                } else {
+                    content.style.display = 'none';
+                    arrow.textContent = '▶';
+                }
+            }
+        }
+        
+        function toggleSecondaryDetails() {
+            const content = document.getElementById('secondary-details-content');
+            const arrow = document.getElementById('secondary-expand-arrow');
             
             if (content && arrow) {
                 if (content.style.display === 'none' || content.style.display === '') {
