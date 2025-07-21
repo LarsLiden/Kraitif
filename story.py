@@ -191,6 +191,69 @@ class Story:
             parts.append(f"Archetypes: {', '.join(self.selected_archetypes)}")
         return " | ".join(parts) if parts else "Story with no selections"
     
+    def to_prompt_text(self) -> str:
+        """Convert story selections to a formatted text suitable for LLM prompts."""
+        lines = []
+        lines.append("STORY CONFIGURATION:")
+        lines.append("=" * 50)
+        
+        # Story Type and Subtype
+        if self.story_type_name and self.subtype_name:
+            lines.append(f"Story Type: {self.story_type_name}")
+            lines.append(f"Story Subtype: {self.subtype_name}")
+            
+            if self.key_theme:
+                lines.append(f"Key Theme: {self.key_theme}")
+            
+            if self.core_arc:
+                lines.append(f"Core Arc: {self.core_arc}")
+            
+            lines.append("")
+        
+        # Genre Information
+        if self.genre:
+            lines.append(f"Genre: {self.genre.name}")
+            
+            if self.sub_genre:
+                lines.append(f"Sub-Genre: {self.sub_genre.name}")
+                
+                # Add sub-genre details if available
+                if hasattr(self.sub_genre, 'plot') and self.sub_genre.plot:
+                    lines.append(f"Plot Type: {self.sub_genre.plot}")
+            
+            lines.append("")
+        
+        # Writing Style
+        if self.writing_style:
+            lines.append(f"Writing Style: {self.writing_style.name}")
+            
+            if hasattr(self.writing_style, 'description') and self.writing_style.description:
+                lines.append(f"Style Description: {self.writing_style.description}")
+            
+            lines.append("")
+        
+        # Character Archetypes
+        if self.protagonist_archetype or self.secondary_archetypes or self.selected_archetypes:
+            lines.append("CHARACTER ARCHETYPES:")
+            
+            if self.protagonist_archetype:
+                lines.append(f"Protagonist: {self.protagonist_archetype}")
+            
+            if self.secondary_archetypes:
+                lines.append(f"Secondary Characters: {', '.join(self.secondary_archetypes)}")
+            
+            # Legacy fallback
+            elif self.selected_archetypes and not self.protagonist_archetype:
+                lines.append(f"Selected Archetypes: {', '.join(self.selected_archetypes)}")
+            
+            lines.append("")
+        
+        # Add a footer note
+        lines.append("=" * 50)
+        lines.append("Use this configuration to guide the story creation process.")
+        
+        return "\n".join(lines)
+    
     def to_json(self) -> str:
         """Serialize story to JSON string."""
         data = {
