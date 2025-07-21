@@ -11,21 +11,8 @@
 </div>
 
 <h1>Select a Genre</h1>
-<h2>Step 3: Choose your story's genre</h2>
-
-{% if story.key_theme and story.core_arc %}
-<div class="section">
-    <div class="section-title">Your Story So Far</div>
-    <div class="section-content">
-        <strong>Story Type:</strong> {{ story.story_type_name }} - {{ story.subtype_name }}<br>
-        <strong>Key Theme:</strong> {{ story.key_theme }}<br>
-        <strong>Core Arc:</strong> {{ story.core_arc }}
-    </div>
-</div>
-{% endif %}
 
 <div class="section">
-    <div class="section-title">Available Genres</div>
     <div class="section-content">
         <form method="POST" action="{{ url_for('update_genre_selection') }}" class="story-selection-form">
             <div class="selection-section">
@@ -34,7 +21,7 @@
                     <div class="story-type-card genre-card" onclick="selectGenre('{{ genre.name }}')">
                         <div class="story-type-left">
                             <div class="story-type-title">{{ genre.name }}</div>
-                            <div class="genre-info">({{ genre.subgenres|length }} sub-genres)</div>
+                            <div class="genre-info">{% for subgenre in genre.subgenres %}{{ subgenre.name }}{% if not loop.last %}, {% endif %}{% endfor %}</div>
                         </div>
                     </div>
                     {% endfor %}

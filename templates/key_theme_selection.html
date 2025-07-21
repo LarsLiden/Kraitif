@@ -12,16 +12,7 @@
 
 <h1>Select a Key Theme</h1>
 
-{% if story.story_type_name and story.subtype_name %}
 <div class="section">
-    <div class="section-content">
-        <strong>Story Type:</strong> {{ story.story_type_name }} - {{ story.subtype_name }}
-    </div>
-</div>
-{% endif %}
-
-<div class="section">
-    <div class="section-title">Available Key Themes</div>
     <div class="section-content">
         <form method="POST" action="{{ url_for('update_key_theme_selection') }}" class="story-selection-form">
             <div class="selection-section">

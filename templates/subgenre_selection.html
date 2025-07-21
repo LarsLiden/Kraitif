@@ -31,27 +31,24 @@
     <div class="section-content">
         <form method="POST" action="{{ url_for('update_subgenre_selection') }}" class="story-selection-form">
             <div class="selection-section">
-                <div class="radio-group">
+                <div class="story-types-grid">
                     {% for sub_genre in sub_genres %}
-                    <label class="radio-label">
-                        <input type="radio" name="sub_genre" value="{{ sub_genre.name }}" 
-                            {% if story.sub_genre and story.sub_genre.name == sub_genre.name %}checked{% endif %}
-                            {% if not story.sub_genre and loop.first %}checked{% endif %}>
-                        <span class="radio-text">
-                            <strong>{{ sub_genre.name }}</strong>
+                    <div class="story-type-card subgenre-card" onclick="selectSubGenre('{{ sub_genre.name }}')">
+                        <div class="story-type-left">
+                            <div class="story-type-title">{{ sub_genre.name }}</div>
                             {% if sub_genre.plot %}
                             <div class="subgenre-plot">{{ sub_genre.plot }}</div>
                             {% endif %}
                             {% if sub_genre.examples %}
                             <div class="subgenre-examples">Examples: {{ sub_genre.examples | join(', ') }}</div>
                             {% endif %}
-                        </span>
-                    </label>
+                        </div>
+                    </div>
                     {% endfor %}
                 </div>
+                
+                <input type="hidden" name="sub_genre" id="selected_sub_genre" value="{{ story.sub_genre.name if story.sub_genre else '' }}">
             </div>
-            
-            <button type="submit" class="submit-button" style="display: none;">Complete Story Selection</button>
         </form>
     </div>
 </div>
@@ -59,19 +56,33 @@
 <a href="{{ url_for('genre_selection') }}" class="back-link">← Back to Genre Selection</a>
 
 <script>
+function selectSubGenre(subGenre) {
+    // Update hidden input
+    document.getElementById('selected_sub_genre').value = subGenre;
+    
+    // Update visual selection
+    const cards = document.querySelectorAll('.subgenre-card');
+    cards.forEach(card => card.classList.remove('selected'));
+    
+    // Find and select the clicked card
+    const clickedCard = event.currentTarget;
+    clickedCard.classList.add('selected');
+    
+    // Auto-submit the form immediately
+    document.querySelector('.story-selection-form').submit();
+}
+
+// Initialize selection if sub-genre is already selected
 document.addEventListener('DOMContentLoaded', function() {
-    // Auto-submit form when sub-genre radio button is selected
-    const radioButtons = document.querySelectorAll('input[name="sub_genre"]');
-    radioButtons.forEach(radio => {
-        radio.addEventListener('change', function() {
-            if (this.checked) {
-                // Small delay to show the selection before submitting
-                setTimeout(() => {
-                    document.querySelector('.story-selection-form').submit();
-                }, 200);
+    const selectedSubGenre = document.getElementById('selected_sub_genre').value;
+    if (selectedSubGenre) {
+        const cards = document.querySelectorAll('.subgenre-card');
+        cards.forEach(card => {
+            if (card.querySelector('.story-type-title').textContent.trim() === selectedSubGenre) {
+                card.classList.add('selected');
             }
         });
-    });
+    }
 });
 </script>
 {% endblock %}
