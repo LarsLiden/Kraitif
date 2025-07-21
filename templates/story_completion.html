@@ -1,0 +1,210 @@
+{% extends "base.html" %}
+
+{% block title %}Story Selection Complete{% endblock %}
+
+{% block content %}
+<div class="breadcrumb">
+    <a href="{{ url_for('index') }}">Story Types</a> > 
+    {% if story_type %}
+    <a href="{{ url_for('story_type_detail', story_type_name=story_type.name) }}">{{ story_type.name }}</a> > 
+    {% endif %}
+    {% if subtype %}
+    <a href="{{ url_for('subtype_detail', story_type_name=story.story_type_name, subtype_name=story.subtype_name) }}">{{ subtype.name }}</a> > 
+    {% endif %}
+    Story Complete
+</div>
+
+<h1>✅ Story Selection Complete!</h1>
+
+<div class="completion-message">
+    <p><strong>Congratulations!</strong> You have successfully configured your story. Below is the generated prompt text that can be used with an LLM to help create your story.</p>
+</div>
+
+<div class="section">
+    <div class="section-title">Generated Prompt Text</div>
+    <div class="section-content">
+        <div class="prompt-text-container">
+            <pre class="prompt-text">{{ prompt_text }}</pre>
+        </div>
+        <div class="prompt-actions">
+            <button onclick="copyPromptText()" class="copy-button">📋 Copy to Clipboard</button>
+            <a href="{{ url_for('save_story') }}" class="btn btn-save">💾 Save Story Configuration</a>
+        </div>
+    </div>
+</div>
+
+<div class="section">
+    <div class="section-title">What's Next?</div>
+    <div class="section-content">
+        <p>You can now:</p>
+        <ul>
+            <li>Copy the prompt text above and use it with your preferred LLM (ChatGPT, Claude, etc.)</li>
+            <li>Save your story configuration for later use</li>
+            <li>Go back and modify any of your selections if needed</li>
+            <li>Start a new story configuration</li>
+        </ul>
+    </div>
+</div>
+
+<div class="navigation-actions">
+    {% if story.story_type_name and story.subtype_name %}
+    <a href="{{ url_for('subtype_detail', story_type_name=story.story_type_name, subtype_name=story.subtype_name) }}" class="back-link">← Back to Story Details</a>
+    {% endif %}
+    <a href="{{ url_for('index') }}" class="submit-button">🆕 Start New Story</a>
+</div>
+
+<style>
+.completion-message {
+    background-color: rgba(76, 175, 80, 0.2);
+    border: 2px solid #4CAF50;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.completion-message p {
+    margin: 0;
+    color: #E8F5E8;
+}
+
+.prompt-text-container {
+    background-color: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.prompt-text {
+    color: #E0E0E0;
+    font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    margin: 0;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+.prompt-actions {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.copy-button {
+    background-color: #2196F3;
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: bold;
+    transition: background-color 0.2s ease;
+}
+
+.copy-button:hover {
+    background-color: #1976D2;
+}
+
+.copy-button:active {
+    background-color: #0D47A1;
+}
+
+.navigation-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 2rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.section ul {
+    margin: 1rem 0;
+    padding-left: 2rem;
+}
+
+.section li {
+    margin-bottom: 0.5rem;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+@media (max-width: 768px) {
+    .prompt-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .navigation-actions {
+        flex-direction: column;
+    }
+}
+</style>
+
+<script>
+function copyPromptText() {
+    const promptText = document.querySelector('.prompt-text').textContent;
+    
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        // Modern clipboard API
+        navigator.clipboard.writeText(promptText).then(function() {
+            const button = document.querySelector('.copy-button');
+            const originalText = button.textContent;
+            button.textContent = '✅ Copied!';
+            button.style.backgroundColor = '#4CAF50';
+            
+            setTimeout(function() {
+                button.textContent = originalText;
+                button.style.backgroundColor = '#2196F3';
+            }, 2000);
+        }).catch(function(err) {
+            console.error('Failed to copy text: ', err);
+            fallbackCopyTextToClipboard(promptText);
+        });
+    } else {
+        // Fallback for older browsers
+        fallbackCopyTextToClipboard(promptText);
+    }
+}
+
+function fallbackCopyTextToClipboard(text) {
+    const textArea = document.createElement("textarea");
+    textArea.value = text;
+    
+    // Avoid scrolling to bottom
+    textArea.style.top = "0";
+    textArea.style.left = "0";
+    textArea.style.position = "fixed";
+    
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+    
+    try {
+        const successful = document.execCommand('copy');
+        const button = document.querySelector('.copy-button');
+        if (successful) {
+            const originalText = button.textContent;
+            button.textContent = '✅ Copied!';
+            button.style.backgroundColor = '#4CAF50';
+            
+            setTimeout(function() {
+                button.textContent = originalText;
+                button.style.backgroundColor = '#2196F3';
+            }, 2000);
+        } else {
+            alert('Unable to copy text. Please select and copy manually.');
+        }
+    } catch (err) {
+        alert('Unable to copy text. Please select and copy manually.');
+    }
+    
+    document.body.removeChild(textArea);
+}
+</script>
+{% endblock %}

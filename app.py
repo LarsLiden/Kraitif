@@ -582,10 +582,8 @@ def update_secondary_archetype_selection():
     # Set secondary archetypes (can be empty list if none selected)
     if story.set_secondary_archetypes(secondary_archetypes):
         save_story_to_session(story)
-        # For now, redirect back to the original subtype page to show the complete story
-        return redirect(url_for('subtype_detail', 
-                              story_type_name=story.story_type_name, 
-                              subtype_name=story.subtype_name))
+        # Redirect to the story completion page
+        return redirect(url_for('complete_story_selection'))
     else:
         flash('Error saving secondary archetype selection.', 'error')
         return redirect(url_for('secondary_archetype_selection'))
@@ -638,10 +636,8 @@ def update_archetype_selection():
     # Set archetypes (can be empty list if none selected)
     if story.set_archetypes(selected_archetypes):
         save_story_to_session(story)
-        # For now, redirect back to the original subtype page to show the complete story
-        return redirect(url_for('subtype_detail', 
-                              story_type_name=story.story_type_name, 
-                              subtype_name=story.subtype_name))
+        # Redirect to the story completion page
+        return redirect(url_for('complete_story_selection'))
     else:
         flash('Error saving archetype selection.', 'error')
         return redirect(url_for('archetype_selection'))
@@ -691,6 +687,37 @@ def load_story():
         flash('Please select a JSON file', 'error')
     
     return redirect(url_for('index'))
+
+
+@app.route('/complete-story-selection')
+def complete_story_selection():
+    """Show the completed story selection with generated prompt text."""
+    story = get_story_from_session()
+    
+    # Check if we have a reasonably complete story
+    if not story.story_type_name or not story.subtype_name:
+        flash('Please complete at least the story type and subtype selection first.', 'error')
+        return redirect(url_for('index'))
+    
+    # Generate the prompt text
+    prompt_text = story.to_prompt_text()
+    
+    # Get additional context objects for the template
+    story_type = None
+    subtype = None
+    if story.story_type_name and story.subtype_name:
+        story_type = registry.get_story_type(story.story_type_name)
+        if story_type:
+            subtype = story_type.get_subtype(story.subtype_name)
+    
+    return render_template('story_completion.html',
+                         story=story,
+                         story_type=story_type,
+                         subtype=subtype,
+                         prompt_text=prompt_text,
+                         protagonist_archetype_obj=get_protagonist_archetype_object(story),
+                         writing_style_obj=get_writing_style_object(story),
+                         secondary_archetype_objs=get_secondary_archetype_objects(story))
 
 
 if __name__ == '__main__':

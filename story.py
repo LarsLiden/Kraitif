@@ -9,6 +9,7 @@ from typing import Optional, Dict, Any, List
 from genre import Genre, SubGenre, GenreRegistry
 from archetype import ArchetypeRegistry
 from style import Style, StyleRegistry
+from story_types import StoryTypeRegistry
 
 
 class Story:
@@ -21,6 +22,7 @@ class Story:
         self._genre_registry = GenreRegistry()
         self._archetype_registry = ArchetypeRegistry()
         self._style_registry = StyleRegistry()
+        self._story_type_registry = StoryTypeRegistry()
         # Story type selections
         self.story_type_name: Optional[str] = None
         self.subtype_name: Optional[str] = None
@@ -190,6 +192,116 @@ class Story:
         elif self.selected_archetypes:
             parts.append(f"Archetypes: {', '.join(self.selected_archetypes)}")
         return " | ".join(parts) if parts else "Story with no selections"
+    
+    def to_prompt_text(self) -> str:
+        """Convert story selections to a formatted text suitable for LLM prompts."""
+        lines = []
+        lines.append("STORY CONFIGURATION:")
+        lines.append("=" * 50)
+        
+        # Story Type and Subtype with detailed information
+        if self.story_type_name and self.subtype_name:
+            story_type = self._story_type_registry.get_story_type(self.story_type_name)
+            if story_type:
+                lines.append(f"Story Type: {self.story_type_name}")
+                lines.append(f"Description: {story_type.description}")
+                if story_type.examples:
+                    lines.append(f"Examples: {', '.join(story_type.examples)}")
+                
+                # Add subtype details
+                subtype = story_type.get_subtype(self.subtype_name)
+                if subtype:
+                    lines.append(f"Story Subtype: {self.subtype_name}")
+                    lines.append(f"Subtype Description: {subtype.description}")
+                    if subtype.examples:
+                        lines.append(f"Subtype Examples: {', '.join(subtype.examples)}")
+                
+                # Add story type specific details
+                if story_type.narrative_rhythm:
+                    lines.append(f"Narrative Rhythm: {story_type.narrative_rhythm}")
+                
+                if story_type.emotional_arc:
+                    lines.append(f"Emotional Arc: {' → '.join(story_type.emotional_arc)}")
+                
+                if story_type.key_moment:
+                    lines.append("Key Moments:")
+                    for moment in story_type.key_moment:
+                        lines.append(f"  • {moment}")
+                
+                # Add user-selected theme and core arc
+                if self.key_theme:
+                    lines.append(f"Selected Key Theme: {self.key_theme}")
+                
+                if self.core_arc:
+                    lines.append(f"Selected Core Arc: {self.core_arc}")
+                
+                lines.append("")
+        
+        # Genre Information with detailed information
+        if self.genre:
+            lines.append(f"Genre: {self.genre.name}")
+            
+            if self.sub_genre:
+                lines.append(f"Sub-Genre: {self.sub_genre.name}")
+                
+                # Add sub-genre details if available
+                if hasattr(self.sub_genre, 'plot') and self.sub_genre.plot:
+                    lines.append(f"Plot Type: {self.sub_genre.plot}")
+                    
+                if hasattr(self.sub_genre, 'examples') and self.sub_genre.examples:
+                    lines.append(f"Genre Examples: {', '.join(self.sub_genre.examples)}")
+            
+            lines.append("")
+        
+        # Writing Style with detailed information
+        if self.writing_style:
+            lines.append(f"Writing Style: {self.writing_style.name}")
+            lines.append(f"Style Description: {self.writing_style.description}")
+            
+            if hasattr(self.writing_style, 'characteristics') and self.writing_style.characteristics:
+                lines.append("Style Characteristics:")
+                for characteristic in self.writing_style.characteristics:
+                    lines.append(f"  • {characteristic}")
+            
+            if hasattr(self.writing_style, 'examples') and self.writing_style.examples:
+                lines.append(f"Style Examples: {', '.join(self.writing_style.examples)}")
+            
+            lines.append("")
+        
+        # Character Archetypes with detailed descriptions
+        if self.protagonist_archetype or self.secondary_archetypes or self.selected_archetypes:
+            lines.append("CHARACTER ARCHETYPES:")
+            
+            if self.protagonist_archetype:
+                protagonist = self._archetype_registry.get_archetype(self.protagonist_archetype)
+                lines.append(f"Protagonist: {self.protagonist_archetype}")
+                if protagonist:
+                    lines.append(f"  Description: {protagonist.description}")
+            
+            if self.secondary_archetypes:
+                lines.append("Secondary Characters:")
+                for archetype_name in self.secondary_archetypes:
+                    archetype = self._archetype_registry.get_archetype(archetype_name)
+                    lines.append(f"  • {archetype_name}")
+                    if archetype:
+                        lines.append(f"    Description: {archetype.description}")
+            
+            # Legacy fallback
+            elif self.selected_archetypes and not self.protagonist_archetype:
+                lines.append("Selected Archetypes:")
+                for archetype_name in self.selected_archetypes:
+                    archetype = self._archetype_registry.get_archetype(archetype_name)
+                    lines.append(f"  • {archetype_name}")
+                    if archetype:
+                        lines.append(f"    Description: {archetype.description}")
+            
+            lines.append("")
+        
+        # Add a footer note
+        lines.append("=" * 50)
+        lines.append("Use this configuration to guide the story creation process.")
+        
+        return "\n".join(lines)
     
     def to_json(self) -> str:
         """Serialize story to JSON string."""
