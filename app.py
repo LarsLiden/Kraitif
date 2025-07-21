@@ -10,6 +10,7 @@ from flask import Flask, render_template, request, redirect, url_for, session, f
 from story_types import StoryTypeRegistry
 from story import Story
 from genre import GenreRegistry
+from archetype import ArchetypeRegistry
 
 app = Flask(__name__)
 app.secret_key = 'kraitif_story_selection_key'  # For session management
@@ -19,6 +20,9 @@ registry = StoryTypeRegistry()
 
 # Initialize the genre registry
 genre_registry = GenreRegistry()
+
+# Initialize the archetype registry
+archetype_registry = ArchetypeRegistry()
 
 # Custom Jinja2 filter for formatting emotional arc as arrows
 @app.template_filter('arrow_format')
@@ -45,6 +49,10 @@ def get_story_from_session():
         sub_genre_name = story_data.get('sub_genre_name')
         if sub_genre_name:
             story.set_sub_genre(sub_genre_name)
+        # Load archetype selections
+        selected_archetypes = story_data.get('selected_archetypes', [])
+        if selected_archetypes:
+            story.set_archetypes(selected_archetypes)
     return story
 
 
@@ -56,7 +64,8 @@ def save_story_to_session(story):
         'key_theme': story.key_theme,
         'core_arc': story.core_arc,
         'genre_name': story.genre.name if story.genre else None,
-        'sub_genre_name': story.sub_genre.name if story.sub_genre else None
+        'sub_genre_name': story.sub_genre.name if story.sub_genre else None,
+        'selected_archetypes': story.selected_archetypes
     }
     session.modified = True
 
@@ -281,14 +290,66 @@ def update_subgenre_selection():
     # Set sub-genre
     if story.set_sub_genre(sub_genre_name):
         save_story_to_session(story)
-        flash('Sub-genre selected successfully! Story complete!', 'success')
+        flash('Sub-genre selected successfully!', 'success')
+        # Redirect to archetype selection instead of completing the story
+        return redirect(url_for('archetype_selection'))
+    else:
+        flash('Invalid sub-genre selection.', 'error')
+        return redirect(url_for('subgenre_selection'))
+
+
+@app.route('/archetype-selection')
+def archetype_selection():
+    """Show archetype selection page."""
+    story = get_story_from_session()
+    
+    # Check if story has required data (story type selections, genre, and sub-genre)
+    if not story.story_type_name or not story.subtype_name or not story.genre or not story.sub_genre:
+        flash('Please complete story type, genre, and sub-genre selection first.', 'error')
+        return redirect(url_for('index'))
+    
+    # Get typical and other archetypes
+    typical_archetypes = story.get_typical_archetypes()
+    other_archetype_names = story.get_other_archetypes()
+    
+    # Get archetype objects with descriptions
+    typical_archetype_objects = []
+    for name in typical_archetypes:
+        archetype = archetype_registry.get_archetype(name)
+        if archetype:
+            typical_archetype_objects.append(archetype)
+    
+    other_archetype_objects = []
+    for name in other_archetype_names:
+        archetype = archetype_registry.get_archetype(name)
+        if archetype:
+            other_archetype_objects.append(archetype)
+    
+    return render_template('archetype_selection.html', 
+                         story=story, 
+                         typical_archetypes=typical_archetype_objects,
+                         other_archetypes=other_archetype_objects)
+
+
+@app.route('/archetype-selection', methods=['POST'])
+def update_archetype_selection():
+    """Handle archetype selection form submission."""
+    selected_archetypes = request.form.getlist('archetypes')
+    
+    # Get story from session
+    story = get_story_from_session()
+    
+    # Set archetypes (can be empty list if none selected)
+    if story.set_archetypes(selected_archetypes):
+        save_story_to_session(story)
+        flash('Archetype selection complete! Story finished!', 'success')
         # For now, redirect back to the original subtype page to show the complete story
         return redirect(url_for('subtype_detail', 
                               story_type_name=story.story_type_name, 
                               subtype_name=story.subtype_name))
     else:
-        flash('Invalid sub-genre selection.', 'error')
-        return redirect(url_for('subgenre_selection'))
+        flash('Error saving archetype selection.', 'error')
+        return redirect(url_for('archetype_selection'))
 
 
 @app.route('/save')
