@@ -12,20 +12,8 @@
 </div>
 
 <h1>Select a Core Arc</h1>
-<h2>Step 4: Choose your story's core arc</h2>
-
-{% if story.story_type_name and story.subtype_name and story.key_theme %}
-<div class="section">
-    <div class="section-title">Your Story So Far</div>
-    <div class="section-content">
-        <strong>Story Type:</strong> {{ story.story_type_name }} - {{ story.subtype_name }}<br>
-        <strong>Key Theme:</strong> {{ story.key_theme }}
-    </div>
-</div>
-{% endif %}
 
 <div class="section">
-    <div class="section-title">Available Core Arcs</div>
     <div class="section-content">
         <form method="POST" action="{{ url_for('update_core_arc_selection') }}" class="story-selection-form">
             <div class="selection-section">
