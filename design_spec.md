@@ -34,9 +34,10 @@ The UI has a left and right panel
 **Left Panel**: 
 - Shows save and load buttons at the top
 - Displays the choices that the user has made so far (choices are stored in the story class)
-- Contains an expandable details panel inside the "Your Story Selections" section that shows:
-  - Story type description, examples, emotional arc, key moments, and common elements
-  - This details panel persists across all pages once a story type is selected
+- Contains separate expandable details panels inside the "Your Story Selections" section:
+  - **Story Type Panel**: Shows story type name with expandable details including description, examples, emotional arc, key moments, and common elements
+  - **Story Sub-Type Panel**: Shows story sub-type name with expandable details specific to the sub-type including description and examples
+  - Both panels persist across all pages once selections are made and can be expanded/collapsed independently
 
 **Right Panel**: 
 - Shows the options that the user can choose from

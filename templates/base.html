@@ -32,9 +32,9 @@
                                 <div class="story-type-details">
                                     <div class="story-type-details-header" onclick="toggleStoryTypeDetails()">
                                         <div class="story-type-label">
-                                            <strong>Story Type:</strong> {{ story_data.get('story_type_name') }}{% if story_data.get('subtype_name') %} - {{ story_data.get('subtype_name') }}{% endif %}
+                                            <strong>Story Type:</strong> {{ story_data.get('story_type_name') }}
                                         </div>
-                                        <span class="expand-arrow" id="expand-arrow">▶</span>
+                                        <span class="expand-arrow" id="story-type-expand-arrow">▶</span>
                                     </div>
                                     <div class="story-type-details-content" id="story-type-details-content">
                                         <div class="section">
@@ -87,8 +87,40 @@
                                 {% else %}
                                 <!-- Fallback for when story_type is not available -->
                                 <div class="selection-item">
-                                    <strong>Story Type:</strong> {{ story_data.get('story_type_name') }}{% if story_data.get('subtype_name') %} - {{ story_data.get('subtype_name') }}{% endif %}
+                                    <strong>Story Type:</strong> {{ story_data.get('story_type_name') }}
                                 </div>
+                                {% endif %}
+                                
+                                <!-- Story Sub-Type with expandable details (separate from story type) -->
+                                {% if story_data.get('subtype_name') %}
+                                {% if subtype %}
+                                <div class="story-subtype-details">
+                                    <div class="story-subtype-details-header" onclick="toggleSubtypeDetails()">
+                                        <div class="story-subtype-label">
+                                            <strong>Story Sub-Type:</strong> {{ story_data.get('subtype_name') }}
+                                        </div>
+                                        <span class="expand-arrow" id="subtype-expand-arrow">▶</span>
+                                    </div>
+                                    <div class="story-subtype-details-content" id="subtype-details-content">
+                                        <div class="section">
+                                            <div class="section-title">Description</div>
+                                            <div class="section-content">{{ subtype.description }}</div>
+                                        </div>
+
+                                        {% if subtype.examples %}
+                                        <div class="section">
+                                            <div class="section-title">Examples</div>
+                                            <div class="section-content">{{ subtype.examples | join(', ') }}</div>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                {% else %}
+                                <!-- Fallback for when subtype object is not available -->
+                                <div class="selection-item">
+                                    <strong>Story Sub-Type:</strong> {{ story_data.get('subtype_name') }}
+                                </div>
+                                {% endif %}
                                 {% endif %}
                                 {% endif %}
                                 {% if story_data.get('key_theme') %}
@@ -147,7 +179,22 @@
         
         function toggleStoryTypeDetails() {
             const content = document.getElementById('story-type-details-content');
-            const arrow = document.getElementById('expand-arrow');
+            const arrow = document.getElementById('story-type-expand-arrow');
+            
+            if (content && arrow) {
+                if (content.style.display === 'none' || content.style.display === '') {
+                    content.style.display = 'block';
+                    arrow.textContent = '▼';
+                } else {
+                    content.style.display = 'none';
+                    arrow.textContent = '▶';
+                }
+            }
+        }
+        
+        function toggleSubtypeDetails() {
+            const content = document.getElementById('subtype-details-content');
+            const arrow = document.getElementById('subtype-expand-arrow');
             
             if (content && arrow) {
                 if (content.style.display === 'none' || content.style.display === '') {

@@ -97,7 +97,10 @@ def story_type_detail(story_type_name):
     
     save_story_to_session(story)
     
-    return render_template('subtypes.html', story_type=story_type)
+    # Get the subtype object if subtype is selected
+    subtype = story_type.get_subtype(story.subtype_name) if story.subtype_name else None
+    
+    return render_template('subtypes.html', story_type=story_type, subtype=subtype)
 
 
 @app.route('/subtype/<story_type_name>/<subtype_name>')
@@ -137,7 +140,10 @@ def key_theme_selection():
         flash('Invalid story type.', 'error')
         return redirect(url_for('index'))
     
-    return render_template('key_theme_selection.html', story=story, story_type=story_type)
+    # Get the subtype object
+    subtype = story_type.get_subtype(story.subtype_name) if story.subtype_name else None
+    
+    return render_template('key_theme_selection.html', story=story, story_type=story_type, subtype=subtype)
 
 
 @app.route('/key-theme-selection', methods=['POST'])
@@ -175,7 +181,10 @@ def core_arc_selection():
         flash('Invalid story type.', 'error')
         return redirect(url_for('index'))
     
-    return render_template('core_arc_selection.html', story=story, story_type=story_type)
+    # Get the subtype object
+    subtype = story_type.get_subtype(story.subtype_name) if story.subtype_name else None
+    
+    return render_template('core_arc_selection.html', story=story, story_type=story_type, subtype=subtype)
 
 
 @app.route('/core-arc-selection', methods=['POST'])
@@ -210,8 +219,11 @@ def genre_selection():
     # Get the story type to access details for the left panel
     story_type = registry.get_story_type(story.story_type_name)
     
+    # Get the subtype object
+    subtype = story_type.get_subtype(story.subtype_name) if story.subtype_name else None
+    
     genres = genre_registry.get_all_genres()
-    return render_template('genre_selection.html', genres=genres, story=story, story_type=story_type)
+    return render_template('genre_selection.html', genres=genres, story=story, story_type=story_type, subtype=subtype)
 
 
 @app.route('/genre-selection', methods=['POST'])
@@ -248,8 +260,11 @@ def subgenre_selection():
     # Get the story type to access details for the left panel
     story_type = registry.get_story_type(story.story_type_name)
     
+    # Get the subtype object
+    subtype = story_type.get_subtype(story.subtype_name) if story.subtype_name else None
+    
     sub_genres = story.get_available_sub_genres()
-    return render_template('subgenre_selection.html', sub_genres=sub_genres, story=story, story_type=story_type)
+    return render_template('subgenre_selection.html', sub_genres=sub_genres, story=story, story_type=story_type, subtype=subtype)
 
 
 @app.route('/subgenre-selection', methods=['POST'])
