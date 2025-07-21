@@ -193,6 +193,10 @@ class Story:
         try:
             data = json.loads(json_str)
             
+            # Ensure data is a dictionary
+            if not isinstance(data, dict):
+                return False
+            
             # Load story type data
             self.story_type_name = data.get('story_type_name')
             self.subtype_name = data.get('subtype_name')
