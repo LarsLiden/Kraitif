@@ -27,9 +27,69 @@
                             {% if session.get('story_data') %}
                                 {% set story_data = session.get('story_data') %}
                                 {% if story_data.get('story_type_name') %}
+                                <!-- Story Type with expandable details -->
+                                {% if story_type %}
+                                <div class="story-type-details">
+                                    <div class="story-type-details-header" onclick="toggleStoryTypeDetails()">
+                                        <div class="story-type-label">
+                                            <strong>Story Type:</strong> {{ story_data.get('story_type_name') }}{% if story_data.get('subtype_name') %} - {{ story_data.get('subtype_name') }}{% endif %}
+                                        </div>
+                                        <span class="expand-arrow" id="expand-arrow">▶</span>
+                                    </div>
+                                    <div class="story-type-details-content" id="story-type-details-content">
+                                        <div class="section">
+                                            <div class="section-title">Description</div>
+                                            <div class="section-content">{{ story_type.description }}</div>
+                                        </div>
+
+                                        {% if story_type.examples %}
+                                        <div class="section">
+                                            <div class="section-title">Examples</div>
+                                            <div class="section-content">{{ story_type.examples | join(', ') }}</div>
+                                        </div>
+                                        {% endif %}
+
+                                        {% if story_type.narrative_elements %}
+                                        <div class="section">
+                                            <div class="section-title">Narrative Elements</div>
+                                            <div class="section-content">{{ story_type.narrative_elements }}</div>
+                                        </div>
+                                        {% endif %}
+
+                                        {% if story_type.emotional_arc %}
+                                        <div class="section">
+                                            <div class="section-title">Emotional Arc</div>
+                                            <div class="section-content">{{ story_type.emotional_arc | arrow_format }}</div>
+                                        </div>
+                                        {% endif %}
+
+                                        {% if story_type.key_moment %}
+                                        <div class="section">
+                                            <div class="section-title">Key Moments</div>
+                                            <div class="section-content">
+                                                <ul style="margin: 0; padding-left: 20px;">
+                                                    {% for moment in story_type.key_moment %}
+                                                    <li>{{ moment }}</li>
+                                                    {% endfor %}
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        {% endif %}
+
+                                        {% if story_type.common_elements %}
+                                        <div class="section">
+                                            <div class="section-title">Common Elements</div>
+                                            <div class="section-content">{{ story_type.common_elements | join(', ') }}</div>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                {% else %}
+                                <!-- Fallback for when story_type is not available -->
                                 <div class="selection-item">
                                     <strong>Story Type:</strong> {{ story_data.get('story_type_name') }}{% if story_data.get('subtype_name') %} - {{ story_data.get('subtype_name') }}{% endif %}
                                 </div>
+                                {% endif %}
                                 {% endif %}
                                 {% if story_data.get('key_theme') %}
                                 <div class="selection-item">
@@ -57,63 +117,6 @@
                                 </div>
                             {% endif %}
                         </div>
-                        
-                        <!-- Story Type Details Section inside Your Story Selections -->
-                        {% if story_type and session.get('story_data') and session.get('story_data').get('story_type_name') %}
-                        <div class="story-type-details">
-                            <div class="story-type-details-header" onclick="toggleStoryTypeDetails()">
-                                <h3>{{ story_type.name }} Details</h3>
-                                <span class="expand-arrow" id="expand-arrow">▶</span>
-                            </div>
-                            <div class="story-type-details-content" id="story-type-details-content">
-                                <div class="section">
-                                    <div class="section-title">Description</div>
-                                    <div class="section-content">{{ story_type.description }}</div>
-                                </div>
-
-                                {% if story_type.examples %}
-                                <div class="section">
-                                    <div class="section-title">Examples</div>
-                                    <div class="section-content">{{ story_type.examples | join(', ') }}</div>
-                                </div>
-                                {% endif %}
-
-                                {% if story_type.narrative_elements %}
-                                <div class="section">
-                                    <div class="section-title">Narrative Elements</div>
-                                    <div class="section-content">{{ story_type.narrative_elements }}</div>
-                                </div>
-                                {% endif %}
-
-                                {% if story_type.emotional_arc %}
-                                <div class="section">
-                                    <div class="section-title">Emotional Arc</div>
-                                    <div class="section-content">{{ story_type.emotional_arc | arrow_format }}</div>
-                                </div>
-                                {% endif %}
-
-                                {% if story_type.key_moment %}
-                                <div class="section">
-                                    <div class="section-title">Key Moments</div>
-                                    <div class="section-content">
-                                        <ul style="margin: 0; padding-left: 20px;">
-                                            {% for moment in story_type.key_moment %}
-                                            <li>{{ moment }}</li>
-                                            {% endfor %}
-                                        </ul>
-                                    </div>
-                                </div>
-                                {% endif %}
-
-                                {% if story_type.common_elements %}
-                                <div class="section">
-                                    <div class="section-title">Common Elements</div>
-                                    <div class="section-content">{{ story_type.common_elements | join(', ') }}</div>
-                                </div>
-                                {% endif %}
-                            </div>
-                        </div>
-                        {% endif %}
                     </div>
                 {% endblock %}
             </div>

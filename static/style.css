@@ -72,10 +72,10 @@ body {
     background-color: #333333;
 }
 
-.story-type-details-header h3 {
+.story-type-label {
     margin: 0;
-    color: #64B5F6;
-    font-size: 1.1em;
+    color: #ffffff;
+    font-size: 1em;
 }
 
 .expand-arrow {
