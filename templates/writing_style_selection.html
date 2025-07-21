@@ -13,20 +13,6 @@
 </div>
 
 <h1>Select a Writing Style</h1>
-<h2>Step 5: Choose your writing style</h2>
-
-{% if story.key_theme and story.core_arc and story.genre and story.sub_genre %}
-<div class="section">
-    <div class="section-title">Your Story So Far</div>
-    <div class="section-content">
-        <strong>Story Type:</strong> {{ story.story_type_name }} - {{ story.subtype_name }}<br>
-        <strong>Key Theme:</strong> {{ story.key_theme }}<br>
-        <strong>Core Arc:</strong> {{ story.core_arc }}<br>
-        <strong>Genre:</strong> {{ story.genre.name }}<br>
-        <strong>Sub-Genre:</strong> {{ story.sub_genre.name }}
-    </div>
-</div>
-{% endif %}
 
 <div class="section">
     <div class="section-title">Available Writing Styles</div>

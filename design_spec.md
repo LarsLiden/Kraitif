@@ -6,7 +6,8 @@ The user will step through the following interfaces:
 4) Select core arc (auto-proceeds to next step)
 5) Select genre (auto-proceeds to next step)
 6) Select sub-genre (auto-proceeds to next step)
-7) Select archetypes (manual proceed to completion)
+7) Select writing style (auto-proceeds to next step)
+8) Select archetypes (manual proceed to completion)
 
 ## User Experience Flow
 
@@ -17,7 +18,8 @@ The UI provides a streamlined selection experience where users automatically pro
 - **Key Theme Selection**: Clicking a theme card immediately submits and proceeds to core arc selection
 - **Core Arc Selection**: Clicking an arc card immediately submits and proceeds to genre selection  
 - **Genre Selection**: Selecting a radio button automatically submits and proceeds to sub-genre selection
-- **Sub-Genre Selection**: Selecting a radio button automatically submits and proceeds to archetype selection
+- **Sub-Genre Selection**: Selecting a radio button automatically submits and proceeds to writing style selection
+- **Writing Style Selection**: Clicking a style card immediately submits and proceeds to archetype selection
 - **Archetype Selection**: Users can select multiple archetypes via checkboxes, then manually click "Complete Story Selection" to finish
 
 All selection steps (themes, arcs, genres, and sub-genres) use a consistent card-based UI with hover effects and visual selection states for optimal user experience.
@@ -28,6 +30,7 @@ The following pages have been streamlined to show only essential elements:
 - **Key Theme Selection**: Shows only the title, theme selection cards, and back button (removed story type description and section titles)
 - **Core Arc Selection**: Shows only the title, arc selection cards, and back button (removed step description and "Your Story So Far" section)  
 - **Genre Selection**: Shows only the title, genre selection cards, and back button (removed step description and "Your Story So Far" section). Genre cards now display actual sub-genre names instead of counts.
+- **Writing Style Selection**: Shows only the title, writing style selection cards, and back button (removed step description and "Your Story So Far" section)
 
 ## UI Layout
 
