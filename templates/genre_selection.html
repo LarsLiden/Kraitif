@@ -29,22 +29,19 @@
     <div class="section-content">
         <form method="POST" action="{{ url_for('update_genre_selection') }}" class="story-selection-form">
             <div class="selection-section">
-                <div class="radio-group">
+                <div class="story-types-grid">
                     {% for genre in genres %}
-                    <label class="radio-label">
-                        <input type="radio" name="genre" value="{{ genre.name }}" 
-                            {% if story.genre and story.genre.name == genre.name %}checked{% endif %}
-                            {% if not story.genre and loop.first %}checked{% endif %}>
-                        <span class="radio-text">
-                            <strong>{{ genre.name }}</strong>
-                            <span class="genre-info">({{ genre.subgenres|length }} sub-genres)</span>
-                        </span>
-                    </label>
+                    <div class="story-type-card genre-card" onclick="selectGenre('{{ genre.name }}')">
+                        <div class="story-type-left">
+                            <div class="story-type-title">{{ genre.name }}</div>
+                            <div class="genre-info">({{ genre.subgenres|length }} sub-genres)</div>
+                        </div>
+                    </div>
                     {% endfor %}
                 </div>
+                
+                <input type="hidden" name="genre" id="selected_genre" value="{{ story.genre.name if story.genre else '' }}">
             </div>
-            
-            <button type="submit" class="submit-button" style="display: none;">Continue to Sub-Genre Selection</button>
         </form>
     </div>
 </div>
@@ -54,19 +51,58 @@
 {% endif %}
 
 <script>
+function selectGenre(genre) {
+    // Update hidden input
+    document.getElementById('selected_genre').value = genre;
+    
+    // Update visual selection
+    const cards = document.querySelectorAll('.genre-card');
+    cards.forEach(card => card.classList.remove('selected'));
+    
+    // Find and select the clicked card
+    const clickedCard = event.currentTarget;
+    clickedCard.classList.add('selected');
+    
+    // Auto-submit the form immediately
+    document.querySelector('.story-selection-form').submit();
+}
+
+// Initialize selection if genre is already selected
 document.addEventListener('DOMContentLoaded', function() {
-    // Auto-submit form when genre radio button is selected
-    const radioButtons = document.querySelectorAll('input[name="genre"]');
-    radioButtons.forEach(radio => {
-        radio.addEventListener('change', function() {
-            if (this.checked) {
-                // Small delay to show the selection before submitting
-                setTimeout(() => {
-                    document.querySelector('.story-selection-form').submit();
-                }, 200);
+    const selectedGenre = document.getElementById('selected_genre').value;
+    if (selectedGenre) {
+        const cards = document.querySelectorAll('.genre-card');
+        cards.forEach(card => {
+            if (card.querySelector('.story-type-title').textContent.trim() === selectedGenre) {
+                card.classList.add('selected');
             }
         });
-    });
+    }
 });
 </script>
+
+<style>
+.genre-card {
+    transition: all 0.3s ease;
+}
+
+.genre-card:hover {
+    border-color: #FFB74D;
+    box-shadow: 0 4px 12px rgba(255, 183, 77, 0.3);
+}
+
+.genre-card.selected {
+    border-color: #FFB74D;
+    background-color: #3d2a1a;
+    box-shadow: 0 4px 12px rgba(255, 183, 77, 0.4);
+}
+
+.genre-card.selected .story-type-title {
+    color: #FFD54F;
+}
+
+.genre-card.selected .genre-info {
+    color: #FFCC80;
+}
+</style>
 {% endblock %}
