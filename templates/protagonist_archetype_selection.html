@@ -13,11 +13,6 @@
 </div>
 
 <h1>Select Protagonist Archetype</h1>
-<h2>Step 7: Choose your story protagonist</h2>
-
-<div class="archetype-selection-info">
-    <p><strong>Note:</strong> Select one archetype for your story protagonist. This will be the main character.</p>
-</div>
 
 <form method="POST" action="{{ url_for('update_protagonist_archetype_selection') }}" class="archetype-selection-form">
     
@@ -60,8 +55,6 @@
         </div>
     </div>
     {% endif %}
-    
-    <button type="submit" class="submit-button">Continue to Secondary Characters</button>
 </form>
 
 <a href="{{ url_for('subgenre_selection') }}" class="back-link">← Back to Sub-Genre Selection</a>
@@ -158,4 +151,22 @@
     background-color: #357abd;
 }
 </style>
+
+<script>
+// Auto-submit form when radio button is selected
+document.addEventListener('DOMContentLoaded', function() {
+    const radioButtons = document.querySelectorAll('input[type="radio"][name="protagonist_archetype"]');
+    
+    radioButtons.forEach(function(radio) {
+        radio.addEventListener('change', function() {
+            if (this.checked) {
+                // Small delay to show the selection before submitting
+                setTimeout(function() {
+                    document.querySelector('.archetype-selection-form').submit();
+                }, 300);
+            }
+        });
+    });
+});
+</script>
 {% endblock %}
