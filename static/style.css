@@ -351,6 +351,124 @@ body {
     line-height: 1.4;
 }
 
+/* Writing Style Details Section */
+.story-writingstyle-details {
+    margin-bottom: 12px;
+    background-color: #2a2a2a;
+    border-radius: 4px;
+    border-left: 3px solid #4CAF50;
+}
+
+.story-writingstyle-details-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.story-writingstyle-details-header:hover {
+    background-color: #333333;
+}
+
+.story-writingstyle-label {
+    margin: 0;
+    font-size: 1em;
+}
+
+.story-writingstyle-label strong {
+    color: #64B5F6;
+}
+
+.story-writingstyle-details-content {
+    display: none;
+    padding: 15px;
+    border-top: 1px solid #444444;
+    background-color: #1a1a1a;
+    border-radius: 0 0 4px 4px;
+}
+
+.story-writingstyle-details-content .section {
+    margin-bottom: 15px;
+}
+
+.story-writingstyle-details-content .section:last-child {
+    margin-bottom: 0;
+}
+
+.story-writingstyle-details-content .section-title {
+    font-size: 0.9em;
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #FFB74D;
+}
+
+.story-writingstyle-details-content .section-content {
+    color: #bbbbbb;
+    font-size: 0.85em;
+    line-height: 1.4;
+}
+
+/* Secondary Characters Details Section */
+.story-secondary-details {
+    margin-bottom: 12px;
+    background-color: #2a2a2a;
+    border-radius: 4px;
+    border-left: 3px solid #4CAF50;
+}
+
+.story-secondary-details-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.story-secondary-details-header:hover {
+    background-color: #333333;
+}
+
+.story-secondary-label {
+    margin: 0;
+    font-size: 1em;
+}
+
+.story-secondary-label strong {
+    color: #64B5F6;
+}
+
+.story-secondary-details-content {
+    display: none;
+    padding: 15px;
+    border-top: 1px solid #444444;
+    background-color: #1a1a1a;
+    border-radius: 0 0 4px 4px;
+}
+
+.story-secondary-details-content .section {
+    margin-bottom: 15px;
+}
+
+.story-secondary-details-content .section:last-child {
+    margin-bottom: 0;
+}
+
+.story-secondary-details-content .section-title {
+    font-size: 0.9em;
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #FFB74D;
+}
+
+.story-secondary-details-content .section-content {
+    color: #bbbbbb;
+    font-size: 0.85em;
+    line-height: 1.4;
+}
+
 .selections-content {
     color: #cccccc;
 }
