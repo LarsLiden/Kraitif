@@ -373,6 +373,12 @@ def protagonist_archetype_selection():
         flash('Please complete story type, genre, sub-genre, and writing style selection first.', 'error')
         return redirect(url_for('index'))
     
+    # Get the story type to access details for the left panel
+    story_type = registry.get_story_type(story.story_type_name)
+    
+    # Get the subtype object
+    subtype = story_type.get_subtype(story.subtype_name) if story_type and story.subtype_name else None
+    
     # Get typical and other archetypes
     typical_archetypes = story.get_typical_archetypes()
     other_archetype_names = story.get_other_archetypes()
@@ -392,6 +398,8 @@ def protagonist_archetype_selection():
     
     return render_template('protagonist_archetype_selection.html', 
                          story=story, 
+                         story_type=story_type,
+                         subtype=subtype,
                          typical_archetypes=typical_archetype_objects,
                          other_archetypes=other_archetype_objects)
 
@@ -428,6 +436,12 @@ def secondary_archetype_selection():
         flash('Please complete story type, genre, sub-genre, writing style, and protagonist archetype selection first.', 'error')
         return redirect(url_for('index'))
     
+    # Get the story type to access details for the left panel
+    story_type = registry.get_story_type(story.story_type_name)
+    
+    # Get the subtype object
+    subtype = story_type.get_subtype(story.subtype_name) if story_type and story.subtype_name else None
+    
     # Get typical and other archetypes, including the already selected protagonist
     typical_archetypes = story.get_typical_archetypes()
     other_archetype_names = story.get_other_archetypes()
@@ -449,6 +463,8 @@ def secondary_archetype_selection():
     
     return render_template('secondary_archetype_selection.html', 
                          story=story, 
+                         story_type=story_type,
+                         subtype=subtype,
                          typical_archetypes=typical_archetype_objects,
                          other_archetypes=other_archetype_objects)
 
