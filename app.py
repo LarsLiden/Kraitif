@@ -372,15 +372,11 @@ def secondary_archetype_selection():
         flash('Please complete story type, genre, sub-genre, and protagonist archetype selection first.', 'error')
         return redirect(url_for('index'))
     
-    # Get typical and other archetypes, excluding the already selected protagonist
+    # Get typical and other archetypes, including the already selected protagonist
     typical_archetypes = story.get_typical_archetypes()
     other_archetype_names = story.get_other_archetypes()
     
-    # Remove protagonist archetype from available options
-    if story.protagonist_archetype in typical_archetypes:
-        typical_archetypes.remove(story.protagonist_archetype)
-    if story.protagonist_archetype in other_archetype_names:
-        other_archetype_names.remove(story.protagonist_archetype)
+    # Don't remove protagonist archetype - we want to show it as disabled
     
     # Get archetype objects with descriptions
     typical_archetype_objects = []
