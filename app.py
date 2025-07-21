@@ -11,6 +11,7 @@ from story_types import StoryTypeRegistry
 from story import Story
 from genre import GenreRegistry
 from archetype import ArchetypeRegistry
+from style import StyleRegistry
 
 app = Flask(__name__)
 app.secret_key = 'kraitif_story_selection_key'  # For session management
@@ -23,6 +24,9 @@ genre_registry = GenreRegistry()
 
 # Initialize the archetype registry
 archetype_registry = ArchetypeRegistry()
+
+# Initialize the style registry
+style_registry = StyleRegistry()
 
 # Custom Jinja2 filter for formatting emotional arc as arrows
 @app.template_filter('arrow_format')
@@ -49,6 +53,10 @@ def get_story_from_session():
         sub_genre_name = story_data.get('sub_genre_name')
         if sub_genre_name:
             story.set_sub_genre(sub_genre_name)
+        # Load writing style data
+        writing_style_name = story_data.get('writing_style_name')
+        if writing_style_name:
+            story.set_writing_style(writing_style_name)
         # Load archetype selections
         protagonist_archetype = story_data.get('protagonist_archetype')
         if protagonist_archetype:
@@ -79,6 +87,7 @@ def save_story_to_session(story):
         'core_arc': story.core_arc,
         'genre_name': story.genre.name if story.genre else None,
         'sub_genre_name': story.sub_genre.name if story.sub_genre else None,
+        'writing_style_name': story.writing_style.name if story.writing_style else None,
         'protagonist_archetype': story.protagonist_archetype,
         'secondary_archetypes': story.secondary_archetypes,
         'selected_archetypes': story.selected_archetypes  # Keep for backward compatibility
@@ -327,11 +336,58 @@ def update_subgenre_selection():
     if story.set_sub_genre(sub_genre_name):
         save_story_to_session(story)
         flash('Sub-genre selected successfully!', 'success')
-        # Redirect to protagonist archetype selection instead of completing the story
-        return redirect(url_for('protagonist_archetype_selection'))
+        # Redirect to writing style selection instead of protagonist archetype selection
+        return redirect(url_for('writing_style_selection'))
     else:
         flash('Invalid sub-genre selection.', 'error')
         return redirect(url_for('subgenre_selection'))
+
+
+@app.route('/writing-style-selection')
+def writing_style_selection():
+    """Show writing style selection page."""
+    story = get_story_from_session()
+    
+    # Check if story has required data (story type selections, genre, and sub-genre)
+    if not story.story_type_name or not story.subtype_name or not story.genre or not story.sub_genre:
+        flash('Please complete story type, genre, and sub-genre selection first.', 'error')
+        return redirect(url_for('index'))
+    
+    # Get the story type to access details for the left panel
+    story_type = registry.get_story_type(story.story_type_name)
+    
+    # Get the subtype object
+    subtype = story_type.get_subtype(story.subtype_name) if story.subtype_name else None
+    
+    # Get all available writing styles
+    styles = story.get_available_styles()
+    
+    return render_template('writing_style_selection.html', 
+                         styles=styles, 
+                         story=story, 
+                         story_type=story_type, 
+                         subtype=subtype)
+
+
+@app.route('/writing-style-selection', methods=['POST'])
+def update_writing_style_selection():
+    """Handle writing style selection form submission."""
+    writing_style_name = request.form.get('writing_style')
+    if not writing_style_name:
+        flash('Please select a writing style.', 'error')
+        return redirect(url_for('writing_style_selection'))
+    
+    # Get story from session
+    story = get_story_from_session()
+    
+    # Set writing style
+    if story.set_writing_style(writing_style_name):
+        save_story_to_session(story)
+        flash('Writing style selected successfully!', 'success')
+        return redirect(url_for('protagonist_archetype_selection'))
+    else:
+        flash('Invalid writing style selection.', 'error')
+        return redirect(url_for('writing_style_selection'))
 
 
 @app.route('/protagonist-archetype-selection')
@@ -339,10 +395,16 @@ def protagonist_archetype_selection():
     """Show protagonist archetype selection page."""
     story = get_story_from_session()
     
-    # Check if story has required data (story type selections, genre, and sub-genre)
-    if not story.story_type_name or not story.subtype_name or not story.genre or not story.sub_genre:
-        flash('Please complete story type, genre, and sub-genre selection first.', 'error')
+    # Check if story has required data (story type selections, genre, sub-genre, and writing style)
+    if not story.story_type_name or not story.subtype_name or not story.genre or not story.sub_genre or not story.writing_style:
+        flash('Please complete story type, genre, sub-genre, and writing style selection first.', 'error')
         return redirect(url_for('index'))
+    
+    # Get the story type to access details for the left panel
+    story_type = registry.get_story_type(story.story_type_name)
+    
+    # Get the subtype object
+    subtype = story_type.get_subtype(story.subtype_name) if story_type and story.subtype_name else None
     
     # Get typical and other archetypes
     typical_archetypes = story.get_typical_archetypes()
@@ -363,6 +425,8 @@ def protagonist_archetype_selection():
     
     return render_template('protagonist_archetype_selection.html', 
                          story=story, 
+                         story_type=story_type,
+                         subtype=subtype,
                          typical_archetypes=typical_archetype_objects,
                          other_archetypes=other_archetype_objects,
                          protagonist_archetype_obj=get_protagonist_archetype_object(story))
@@ -395,10 +459,16 @@ def secondary_archetype_selection():
     """Show secondary archetype selection page."""
     story = get_story_from_session()
     
-    # Check if story has required data including protagonist archetype
-    if not story.story_type_name or not story.subtype_name or not story.genre or not story.sub_genre or not story.protagonist_archetype:
-        flash('Please complete story type, genre, sub-genre, and protagonist archetype selection first.', 'error')
+    # Check if story has required data including protagonist archetype and writing style
+    if not story.story_type_name or not story.subtype_name or not story.genre or not story.sub_genre or not story.writing_style or not story.protagonist_archetype:
+        flash('Please complete story type, genre, sub-genre, writing style, and protagonist archetype selection first.', 'error')
         return redirect(url_for('index'))
+    
+    # Get the story type to access details for the left panel
+    story_type = registry.get_story_type(story.story_type_name)
+    
+    # Get the subtype object
+    subtype = story_type.get_subtype(story.subtype_name) if story_type and story.subtype_name else None
     
     # Get typical and other archetypes, including the already selected protagonist
     typical_archetypes = story.get_typical_archetypes()
@@ -421,6 +491,8 @@ def secondary_archetype_selection():
     
     return render_template('secondary_archetype_selection.html', 
                          story=story, 
+                         story_type=story_type,
+                         subtype=subtype,
                          typical_archetypes=typical_archetype_objects,
                          other_archetypes=other_archetype_objects,
                          protagonist_archetype_obj=get_protagonist_archetype_object(story))
@@ -452,9 +524,9 @@ def archetype_selection():
     """Show archetype selection page."""
     story = get_story_from_session()
     
-    # Check if story has required data (story type selections, genre, and sub-genre)
-    if not story.story_type_name or not story.subtype_name or not story.genre or not story.sub_genre:
-        flash('Please complete story type, genre, and sub-genre selection first.', 'error')
+    # Check if story has required data (story type selections, genre, sub-genre, and writing style)
+    if not story.story_type_name or not story.subtype_name or not story.genre or not story.sub_genre or not story.writing_style:
+        flash('Please complete story type, genre, sub-genre, and writing style selection first.', 'error')
         return redirect(url_for('index'))
     
     # Get typical and other archetypes

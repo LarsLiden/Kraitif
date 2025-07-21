@@ -204,9 +204,14 @@
                                     <strong>Sub-Genre:</strong> {{ story_data.get('sub_genre_name') }}
                                 </div>
                                 {% endif %}
-                                {% endif %}
-                                
+          
                                 <!-- Protagonist with expandable details -->
+                                {% if story_data.get('writing_style_name') %}
+                                <div class="selection-item">
+                                    <strong>Writing Style:</strong> {{ story_data.get('writing_style_name') }}
+                                </div>
+                                {% endif %}
+
                                 {% if story_data.get('protagonist_archetype') %}
                                 {% if protagonist_archetype_obj %}
                                 <div class="story-protagonist-details">

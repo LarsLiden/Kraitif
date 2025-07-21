@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block title %}Select Writing Style{% endblock %}
+
+{% block content %}
+<div class="breadcrumb">
+    <a href="{{ url_for('index') }}">Story Types</a> > 
+    <a href="{{ url_for('story_type_detail', story_type_name=story.story_type_name) }}">{{ story.story_type_name }}</a> > 
+    <a href="{{ url_for('subtype_detail', story_type_name=story.story_type_name, subtype_name=story.subtype_name) }}">{{ story.subtype_name }}</a> > 
+    <a href="{{ url_for('genre_selection') }}">Genre Selection</a> >
+    <a href="{{ url_for('subgenre_selection') }}">Sub-Genre Selection</a> >
+    Writing Style Selection
+</div>
+
+<h1>Select a Writing Style</h1>
+
+<div class="section">
+    <div class="section-title">Available Writing Styles</div>
+    <div class="section-content">
+        <form method="POST" action="{{ url_for('update_writing_style_selection') }}" class="story-selection-form">
+            <div class="selection-section">
+                <div class="story-types-grid">
+                    {% for style in styles %}
+                    <div class="story-type-card style-card" onclick="selectWritingStyle('{{ style.name }}')">
+                        <div class="story-type-left">
+                            <div class="story-type-title">{{ style.name }}</div>
+                            <div class="style-description">{{ style.description }}</div>
+                            {% if style.characteristics %}
+                            <div class="style-characteristics">
+                                <strong>Characteristics:</strong>
+                                <ul>
+                                    {% for characteristic in style.characteristics %}
+                                    <li>{{ characteristic }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                            {% endif %}
+                            {% if style.examples %}
+                            <div class="style-examples">Examples: {{ style.examples | join(', ') }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                
+                <input type="hidden" name="writing_style" id="selected_writing_style" value="{{ story.writing_style.name if story.writing_style else '' }}">
+            </div>
+        </form>
+    </div>
+</div>
+
+<a href="{{ url_for('subgenre_selection') }}" class="back-link">← Back to Sub-Genre Selection</a>
+
+<script>
+function selectWritingStyle(styleName) {
+    // Update hidden input
+    document.getElementById('selected_writing_style').value = styleName;
+    
+    // Update visual selection
+    const cards = document.querySelectorAll('.style-card');
+    cards.forEach(card => card.classList.remove('selected'));
+    
+    // Find and select the clicked card
+    const clickedCard = event.currentTarget;
+    clickedCard.classList.add('selected');
+    
+    // Auto-submit the form immediately
+    document.querySelector('.story-selection-form').submit();
+}
+
+// Initialize selection if writing style is already selected
+document.addEventListener('DOMContentLoaded', function() {
+    const selectedStyle = document.getElementById('selected_writing_style').value;
+    if (selectedStyle) {
+        const cards = document.querySelectorAll('.style-card');
+        cards.forEach(card => {
+            if (card.querySelector('.story-type-title').textContent.trim() === selectedStyle) {
+                card.classList.add('selected');
+            }
+        });
+    }
+});
+</script>
+{% endblock %}
