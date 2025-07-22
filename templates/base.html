@@ -380,8 +380,8 @@
                                 </div>
                                 {% endif %}
                                 
-                                <!-- Note and Generate plot lines button - appears when user has reached secondary archetype selection -->
-                                {% if story_data and story_data.get('protagonist_archetype') %}
+                                <!-- Note and Generate plot lines button - appears when user has reached secondary archetype selection but not on story complete page -->
+                                {% if story_data and story_data.get('protagonist_archetype') and not is_story_complete %}
                                 <div class="secondary-notes-section">
                                     <div class="archetype-selection-info">
                                         <p><strong>Note:</strong> Selection of secondary character archetypes is optional. You can select multiple archetypes or none at all. These will be some of supporting characters in your story. If you don't select any, they will be chosen for you.</p>

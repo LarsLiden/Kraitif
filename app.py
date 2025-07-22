@@ -793,7 +793,8 @@ def complete_story_selection():
                          prompt_text=prompt_text,
                          protagonist_archetype_obj=get_protagonist_archetype_object(story),
                          writing_style_obj=get_writing_style_object(story),
-                         secondary_archetype_objs=get_secondary_archetype_objects(story))
+                         secondary_archetype_objs=get_secondary_archetype_objects(story),
+                         is_story_complete=True)
 
 
 if __name__ == '__main__':
