@@ -231,6 +231,16 @@ body {
     border-color: #60B0BF;
 }
 
+.btn-new {
+    background-color: #5a2d2d;
+    border-color: #AF5050;
+}
+
+.btn-new:hover {
+    background-color: #6a3d3d;
+    border-color: #BF6060;
+}
+
 h1 {
     text-align: center;
     margin-bottom: 30px;

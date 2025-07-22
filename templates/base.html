@@ -18,6 +18,7 @@
                         <label for="load-file" class="btn btn-load">📤 Load Story</label>
                         <input type="file" id="load-file" name="file" accept=".json" style="display: none;">
                     </form>
+                    <button class="btn btn-new" onclick="confirmNewStory()">🆕 New Story</button>
                 </div>
                 
                 {% block user_selections %}
@@ -412,6 +413,12 @@
                 document.getElementById('load-form').submit();
             }
         });
+        
+        function confirmNewStory() {
+            if (confirm('Are you sure you want to start a new story? This will clear all your current selections.')) {
+                window.location.href = '{{ url_for("new_story") }}';
+            }
+        }
         
         function toggleStoryTypeDetails() {
             const content = document.getElementById('story-type-details-content');
