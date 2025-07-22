@@ -389,7 +389,7 @@
                                     </div>
                                 </div>
                                 <div class="generate-plotlines-section">
-                                    <a href="{{ url_for('complete_story_selection') }}" class="generate-plotlines-button">
+                                    <a href="{{ url_for('complete_story_selection') }}" class="generate-plotlines-button" onclick="return handleGeneratePlotLines(event)">
                                         📋 Generate plot lines
                                     </a>
                                 </div>
@@ -547,6 +547,24 @@
                     arrow.textContent = '▶';
                 }
             }
+        }
+        
+        function handleGeneratePlotLines(event) {
+            // Check if we're on the secondary archetype selection page
+            if (window.location.pathname === '/secondary-archetype-selection') {
+                // Prevent the default link action
+                event.preventDefault();
+                
+                // Submit the secondary archetype form
+                const form = document.getElementById('secondary-form');
+                if (form) {
+                    form.submit();
+                    return false;
+                }
+            }
+            
+            // For other pages, allow normal navigation
+            return true;
         }
     </script>
 </body>
