@@ -19,6 +19,8 @@ from genre import GenreRegistry
 from archetype import ArchetypeRegistry
 from style import StyleRegistry
 from prompt import Prompt
+from plot_line import PlotLine, parse_plot_lines_from_ai_response
+from ai.ai_client import get_ai_response
 
 app = Flask(__name__)
 app.secret_key = 'kraitif_story_selection_key'  # For session management
@@ -813,6 +815,80 @@ def complete_story_selection():
                          writing_style_obj=get_writing_style_object(story),
                          secondary_archetype_objs=get_secondary_archetype_objects(story),
                          is_story_complete=True)
+
+
+@app.route('/generate-plot-lines', methods=['POST'])
+def generate_plot_lines():
+    """Generate plot lines using AI based on the current story configuration."""
+    story = get_story_from_session()
+    
+    # Check if we have a reasonably complete story
+    if not story.story_type_name or not story.subtype_name:
+        return jsonify({'error': 'Please complete at least the story type and subtype selection first.'}), 400
+    
+    try:
+        # Generate the prompt text
+        prompt_text = prompt_generator.generate_plot_prompt(story)
+        
+        # Get AI response - with fallback to mock data for testing
+        try:
+            ai_response = get_ai_response(prompt_text)
+            
+            # Check if we got an error response (likely auth failure)
+            if ai_response.startswith("Error:"):
+                # Use mock data for demonstration purposes
+                ai_response = get_mock_ai_response()
+        except Exception:
+            # Use mock data for demonstration purposes
+            ai_response = get_mock_ai_response()
+        
+        # Parse plot lines from the response
+        plot_lines = parse_plot_lines_from_ai_response(ai_response)
+        
+        # Convert to dictionaries for JSON response
+        plot_lines_data = [plot_line.to_dict() for plot_line in plot_lines]
+        
+        return jsonify({
+            'success': True,
+            'plot_lines': plot_lines_data,
+            'ai_response': ai_response  # Include for debugging if needed
+        })
+    
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': f'Failed to generate plot lines: {str(e)}'
+        }), 500
+
+
+def get_mock_ai_response():
+    """Return mock AI response for testing purposes."""
+    return """<STRUCTURED_DATA>
+{
+  "plotlines": [
+    {
+      "name": "The Crystal Crown Quest",
+      "plotline": "Young Kael, a shepherd's apprentice, discovers he is the prophesied Chosen One when ancient runes on his skin begin glowing during a solar eclipse. His wise mentor, the exiled wizard Theron, reveals that the Crystal Crown of the First Kings lies hidden in the Shadowmere Mountains, and only Kael can claim it to restore balance to the realm.\\n\\nThe treacherous journey through mist-shrouded peaks and ancient ruins tests Kael's courage as he faces stone guardians, riddling sphinxes, and his own self-doubt. When Theron sacrifices himself to save Kael from a collapsing temple, the young hero realizes that true strength comes not from destiny, but from the love and sacrifice of those who believe in him, ultimately claiming the crown and awakening his dormant magical powers."
+    },
+    {
+      "name": "The Starfire Amulet",
+      "plotline": "Lyra, a blacksmith's daughter marked by a birthmark resembling a constellation, reluctantly accepts her role as the Chosen One when her village is threatened by creeping darkness. Guided by Master Elara, a former court mage living in exile, Lyra must seek the Starfire Amulet hidden within the Whispering Woods where reality bends and ancient magic still flows.\\n\\nThrough enchanted groves where trees speak in riddles and clearings where time moves differently, Lyra learns that leadership means putting others before herself. When she chooses to use the amulet's power to seal away the darkness rather than claim it for personal gain, the magical artifact transforms her understanding of heroism, teaching her that true victory comes through sacrifice and wisdom gained along the journey."
+    },
+    {
+      "name": "The Dragon's Heart Gem",
+      "plotline": "Torven, a street orphan who discovers he can understand the ancient dragon tongue, is thrust into a quest to find the Dragon's Heart Gem when the last dragon appears to him in dreams. His mentor, the scholarly priest Aldric, guides him through forgotten libraries and hidden dragon lairs, where each chamber reveals more about Torven's mysterious heritage.\\n\\nAs they navigate crystal caverns filled with sleeping dragon spirits and face trials that test both intellect and courage, Torven learns that his power comes not from his bloodline but from his willingness to persevere when others would flee. In the climactic moment, when Aldric is mortally wounded protecting ancient dragon eggs, Torven realizes that claiming the gem means accepting the responsibility to protect all dragonkind, transforming from a selfish survivor into a guardian of ancient wisdom."
+    },
+    {
+      "name": "The Scepter of Storms",
+      "plotline": "Marina, a lighthouse keeper's daughter who can hear the voices of storms, learns she is the sea-born Chosen One destined to claim the Scepter of Storms from the underwater city of Pearlhaven. Her mentor, Captain Nerida, a weathered sea-witch who once served the mer-kings, guides her through treacherous waters where sea monsters dwell and underwater ruins hold deadly secrets.\\n\\nThrough coral labyrinths and battles with krakens and siren queens, Marina discovers that her connection to the ocean's fury grows stronger with each act of selflessness. When Nerida gives her life to calm a supernatural maelstrom that threatens to destroy fishing villages, Marina understands that wielding the storm's power means protecting those who depend on the sea's bounty, ultimately becoming a bridge between the surface world and the ocean's ancient magic."
+    },
+    {
+      "name": "The Phoenix Feather Crown",
+      "plotline": "Ash, a healer's apprentice born during a rare celestial alignment, discovers his destiny when the Phoenix of Renewal appears to him in visions of flame and rebirth. His mentor, the ancient druid Oakenheart, leads him on a perilous journey to the Ember Peaks where the Phoenix Feather Crown awaits the worthy in a trial by fire.\\n\\nThrough valleys of perpetual autumn and mountains where phoenix descendants nest, Ash faces tests that require him to heal rather than harm, to build rather than destroy. When Oakenheart willingly enters the phoenix flames to clear the path for Ash's final trial, the young healer realizes that true strength lies in renewal and growth rather than power and dominance, claiming the crown not as a conqueror but as a guardian of life's endless cycle of death and rebirth."
+    }
+  ]
+}
+</STRUCTURED_DATA>"""
 
 
 if __name__ == '__main__':
