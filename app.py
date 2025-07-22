@@ -4,6 +4,12 @@ Flask web application for Story Types and SubTypes
 
 This Flask app provides a web interface to explore the seven classical story types
 and their subtypes.
+
+IMPORTANT: When making changes to the project please makes sure to consults the following files that are designed to help AI coding agents:
+- design_spec.md
+- architectural_spec.md
+
+Please also update the design_spec and architecture_spec documents to reflext any changes that would help an AI coding agent
 """
 
 from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify, make_response
