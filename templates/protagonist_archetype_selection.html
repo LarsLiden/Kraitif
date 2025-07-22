@@ -7,22 +7,20 @@
 
 <h1>Select Protagonist Archetype</h1>
 
-<form method="POST" action="{{ url_for('update_protagonist_archetype_selection') }}" class="archetype-selection-form">
+<form method="POST" action="{{ url_for('update_protagonist_archetype_selection') }}" class="story-selection-form">
     
     {% if typical_archetypes %}
     <div class="section">
         <div class="section-title">Typical {{ story.sub_genre.name }} Protagonist Archetypes</div>
         <div class="section-content">
-            <div class="archetype-grid">
+            <div class="story-types-grid">
                 {% for archetype in typical_archetypes %}
-                <label class="archetype-card">
-                    <input type="radio" name="protagonist_archetype" value="{{ archetype.name }}" 
-                           {% if archetype.name == story.protagonist_archetype %}checked{% endif %}>
-                    <div class="archetype-content">
-                        <div class="archetype-name">{{ archetype.name }}</div>
+                <div class="story-type-card protagonist-archetype-card" onclick="selectProtagonistArchetype(this)" data-archetype="{{ archetype.name|e }}">
+                    <div class="story-type-left">
+                        <div class="story-type-title">{{ archetype.name }}</div>
                         <div class="archetype-description">{{ archetype.description }}</div>
                     </div>
-                </label>
+                </div>
                 {% endfor %}
             </div>
         </div>
@@ -33,133 +31,87 @@
     <div class="section">
         <div class="section-title">Other Available Protagonist Archetypes</div>
         <div class="section-content">
-            <div class="archetype-grid">
+            <div class="story-types-grid">
                 {% for archetype in other_archetypes %}
-                <label class="archetype-card">
-                    <input type="radio" name="protagonist_archetype" value="{{ archetype.name }}" 
-                           {% if archetype.name == story.protagonist_archetype %}checked{% endif %}>
-                    <div class="archetype-content">
-                        <div class="archetype-name">{{ archetype.name }}</div>
+                <div class="story-type-card protagonist-archetype-card" onclick="selectProtagonistArchetype(this)" data-archetype="{{ archetype.name|e }}">
+                    <div class="story-type-left">
+                        <div class="story-type-title">{{ archetype.name }}</div>
                         <div class="archetype-description">{{ archetype.description }}</div>
                     </div>
-                </label>
+                </div>
                 {% endfor %}
             </div>
         </div>
     </div>
     {% endif %}
+    
+    <input type="hidden" name="protagonist_archetype" id="selected_protagonist_archetype" value="{{ story.protagonist_archetype if story.protagonist_archetype else '' }}">
 </form>
 
 <a href="{{ url_for('subgenre_selection') }}" class="back-link">← Back to Sub-Genre Selection</a>
 
 <style>
-.archetype-selection-info {
-    margin-bottom: 1.5rem;
-    padding: 1rem;
-    background-color: rgba(255, 255, 255, 0.1);
-    border-radius: 8px;
-    border-left: 4px solid #4a90e2;
+.protagonist-archetype-card {
+    transition: all 0.3s ease;
 }
 
-.archetype-selection-form .section {
-    margin-bottom: 2rem;
+.protagonist-archetype-card:hover {
+    border-color: #FFB74D;
+    box-shadow: 0 4px 12px rgba(255, 183, 77, 0.3);
 }
 
-.archetype-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 1rem;
-    margin-top: 1rem;
+.protagonist-archetype-card.selected {
+    border-color: #FFB74D;
+    background-color: #3d2a1a;
+    box-shadow: 0 4px 12px rgba(255, 183, 77, 0.4);
 }
 
-.archetype-card {
-    display: block;
-    padding: 1rem;
-    background-color: rgba(255, 255, 255, 0.1);
-    border: 2px solid transparent;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.2s ease;
+.protagonist-archetype-card.selected .story-type-title {
+    color: #FFD54F;
 }
 
-.archetype-card:hover {
-    background-color: rgba(255, 255, 255, 0.15);
-    border-color: rgba(255, 255, 255, 0.3);
-}
-
-.archetype-card input[type="radio"] {
-    display: none;
-}
-
-.archetype-card input[type="radio"]:checked + .archetype-content {
-    background-color: rgba(74, 144, 226, 0.3);
-}
-
-.archetype-card {
-    position: relative;
-}
-
-.archetype-card input[type="radio"]:checked {
-    display: block;
-    position: absolute;
-    top: 0.5rem;
-    right: 0.5rem;
-    width: 1rem;
-    height: 1rem;
-}
-
-.archetype-content {
-    padding: 0.5rem;
-    border-radius: 4px;
-    transition: background-color 0.2s ease;
-}
-
-.archetype-name {
-    font-weight: bold;
-    font-size: 1.1rem;
-    margin-bottom: 0.5rem;
-    color: #FFB74D;
+.protagonist-archetype-card.selected .archetype-description {
+    color: #FFCC80;
 }
 
 .archetype-description {
     font-size: 0.9rem;
     line-height: 1.4;
     color: rgba(255, 255, 255, 0.8);
-}
-
-.submit-button {
-    background-color: #4a90e2;
-    color: white;
-    padding: 1rem 2rem;
-    border: none;
-    border-radius: 8px;
-    font-size: 1.1rem;
-    font-weight: bold;
-    cursor: pointer;
-    margin-top: 2rem;
-    transition: background-color 0.2s ease;
-}
-
-.submit-button:hover {
-    background-color: #357abd;
+    margin-top: 0.5rem;
 }
 </style>
 
 <script>
-// Auto-submit form when radio button is selected
-document.addEventListener('DOMContentLoaded', function() {
-    const radioButtons = document.querySelectorAll('input[type="radio"][name="protagonist_archetype"]');
+function selectProtagonistArchetype(element) {
+    // Get archetype from data attribute
+    const archetypeName = element.getAttribute('data-archetype');
     
-    radioButtons.forEach(function(radio) {
-        radio.addEventListener('change', function() {
-            if (this.checked) {
-                // Small delay to show the selection before submitting
-                setTimeout(function() {
-                    document.querySelector('.archetype-selection-form').submit();
-                }, 300);
+    // Update hidden input
+    document.getElementById('selected_protagonist_archetype').value = archetypeName;
+    
+    // Update visual selection
+    const cards = document.querySelectorAll('.protagonist-archetype-card');
+    cards.forEach(card => card.classList.remove('selected'));
+    
+    // Select the clicked card
+    element.classList.add('selected');
+    
+    // Auto-submit the form immediately
+    document.querySelector('.story-selection-form').submit();
+}
+
+// Initialize selection if protagonist archetype is already selected
+document.addEventListener('DOMContentLoaded', function() {
+    const selectedArchetype = document.getElementById('selected_protagonist_archetype').value;
+    if (selectedArchetype) {
+        const cards = document.querySelectorAll('.protagonist-archetype-card');
+        cards.forEach(card => {
+            if (card.getAttribute('data-archetype') === selectedArchetype) {
+                card.classList.add('selected');
             }
         });
-    });
+    }
 });
 </script>
 {% endblock %}
