@@ -13,7 +13,7 @@
             <div class="selection-section">
                 <div class="story-types-grid">
                     {% for theme in story_type.key_theme %}
-                    <div class="story-type-card theme-card" onclick="selectTheme('{{ theme }}')">
+                    <div class="story-type-card theme-card" onclick="selectTheme(this)" data-theme="{{ theme|e }}">
                         <div class="story-type-left">
                             <div class="story-type-title">{{ theme }}</div>
                         </div>
@@ -30,7 +30,10 @@
 </div>
 
 <script>
-function selectTheme(theme) {
+function selectTheme(element) {
+    // Get theme from data attribute
+    const theme = element.getAttribute('data-theme');
+    
     // Update hidden input
     document.getElementById('selected_theme').value = theme;
     
@@ -38,9 +41,8 @@ function selectTheme(theme) {
     const cards = document.querySelectorAll('.theme-card');
     cards.forEach(card => card.classList.remove('selected'));
     
-    // Find and select the clicked card
-    const clickedCard = event.currentTarget;
-    clickedCard.classList.add('selected');
+    // Select the clicked card
+    element.classList.add('selected');
     
     // Auto-submit the form immediately
     document.querySelector('.story-selection-form').submit();
@@ -52,7 +54,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (selectedTheme) {
         const cards = document.querySelectorAll('.theme-card');
         cards.forEach(card => {
-            if (card.querySelector('.story-type-title').textContent.trim() === selectedTheme) {
+            if (card.getAttribute('data-theme') === selectedTheme) {
                 card.classList.add('selected');
             }
         });
