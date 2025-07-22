@@ -379,6 +379,15 @@
                                     </div>
                                 </div>
                                 {% endif %}
+                                
+                                <!-- Generate plot lines button - appears when story has enough selections -->
+                                {% if story_data and story_data.get('story_type_name') and story_data.get('subtype_name') %}
+                                <div class="generate-plotlines-section">
+                                    <a href="{{ url_for('complete_story_selection') }}" class="generate-plotlines-button">
+                                        📋 Generate plot lines
+                                    </a>
+                                </div>
+                                {% endif %}
                             {% else %}
                                 <div class="no-selections">
                                     No selections made yet. Start by choosing a story type.

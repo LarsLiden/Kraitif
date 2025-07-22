@@ -452,6 +452,33 @@ h3 {
     background-color: #555555;
 }
 
+/* Generate plot lines button */
+.generate-plotlines-section {
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px solid #333333;
+}
+
+.generate-plotlines-button {
+    display: block;
+    background-color: #4a90e2;
+    color: white;
+    text-decoration: none;
+    text-align: center;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    transition: background-color 0.2s ease;
+    margin: 0;
+}
+
+.generate-plotlines-button:hover {
+    background-color: #357abd;
+    text-decoration: none;
+    color: white;
+}
+
 /* Flash messages */
 .flash-messages {
     margin-bottom: 20px;
