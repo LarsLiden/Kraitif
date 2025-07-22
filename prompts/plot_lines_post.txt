@@ -1,0 +1,20 @@
+Use the STORY CONFIGURATION as a structural framework for your plot ideas. Each summary should creatively reflect the character's internal and external journey, the genre’s tone and stakes, and the whimsical style described.
+
+**OUTPUT FORMAT:**  
+Return your 5 plot ideas in the following structured format and include **only** this structure:
+
+```json
+<STRUCTURED_DATA>
+{
+  "plotlines": [
+    {
+      "name": "Short name for plot line",
+      "plotline": "Two-paragraph description of the story"
+    },
+    ...
+  ]
+}
+</STRUCTURED_DATA>
+```
+
+**Do not** include any commentary, explanation, or formatting outside this JSON block.

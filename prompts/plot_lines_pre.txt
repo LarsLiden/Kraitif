@@ -1,0 +1,3 @@
+Your task is to generate **five distinct plot ideas** for a novel, based on the STORY CONFIGURATION provided below. Each plot should be written as a **concise two-paragraph summary**, and should reflect the narrative structure, genre conventions, protagonist archetype, and writing style defined in the configuration.
+
+Each plot must incorporate the specified emotional arc, narrative rhythm, and at least one key moment. Vary the settings, supporting characters, and progression of the central character’s transformation across the five entries.
