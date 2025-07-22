@@ -14,7 +14,7 @@
             <div class="selection-section">
                 <div class="story-types-grid">
                     {% for style in styles %}
-                    <div class="story-type-card style-card" onclick="selectWritingStyle('{{ style.name }}')">
+                    <div class="story-type-card style-card" onclick="selectWritingStyle(this)" data-style="{{ style.name|e }}">>
                         <div class="story-type-left">
                             <div class="story-type-title">{{ style.name }}</div>
                             <div class="style-description">{{ style.description }}</div>
@@ -45,7 +45,10 @@
 <a href="{{ url_for('subgenre_selection') }}" class="back-link">← Back to Sub-Genre Selection</a>
 
 <script>
-function selectWritingStyle(styleName) {
+function selectWritingStyle(element) {
+    // Get style from data attribute
+    const styleName = element.getAttribute('data-style');
+    
     // Update hidden input
     document.getElementById('selected_writing_style').value = styleName;
     
@@ -53,9 +56,8 @@ function selectWritingStyle(styleName) {
     const cards = document.querySelectorAll('.style-card');
     cards.forEach(card => card.classList.remove('selected'));
     
-    // Find and select the clicked card
-    const clickedCard = event.currentTarget;
-    clickedCard.classList.add('selected');
+    // Select the clicked card
+    element.classList.add('selected');
     
     // Auto-submit the form immediately
     document.querySelector('.story-selection-form').submit();
@@ -67,7 +69,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (selectedStyle) {
         const cards = document.querySelectorAll('.style-card');
         cards.forEach(card => {
-            if (card.querySelector('.story-type-title').textContent.trim() === selectedStyle) {
+            if (card.getAttribute('data-style') === selectedStyle) {
                 card.classList.add('selected');
             }
         });
