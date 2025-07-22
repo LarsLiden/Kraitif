@@ -380,8 +380,13 @@
                                 </div>
                                 {% endif %}
                                 
-                                <!-- Generate plot lines button - appears when story has enough selections -->
-                                {% if story_data and story_data.get('story_type_name') and story_data.get('subtype_name') %}
+                                <!-- Note and Generate plot lines button - appears when user has reached secondary archetype selection -->
+                                {% if story_data and story_data.get('protagonist_archetype') %}
+                                <div class="secondary-notes-section">
+                                    <div class="archetype-selection-info">
+                                        <p><strong>Note:</strong> Selection of secondary character archetypes is optional. You can select multiple archetypes or none at all. These will be some of supporting characters in your story. If you don't select any, they will be chosen for you.</p>
+                                    </div>
+                                </div>
                                 <div class="generate-plotlines-section">
                                     <a href="{{ url_for('complete_story_selection') }}" class="generate-plotlines-button">
                                         📋 Generate plot lines

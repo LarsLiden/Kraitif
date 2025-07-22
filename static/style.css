@@ -452,11 +452,31 @@ h3 {
     background-color: #555555;
 }
 
-/* Generate plot lines button */
-.generate-plotlines-section {
+/* Secondary archetype notes section */
+.secondary-notes-section {
     margin-top: 20px;
     padding-top: 15px;
     border-top: 1px solid #333333;
+}
+
+.secondary-notes-section .archetype-selection-info {
+    margin-bottom: 15px;
+    padding: 12px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    border-left: 4px solid #4a90e2;
+}
+
+.secondary-notes-section .archetype-selection-info p {
+    margin: 0;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+/* Generate plot lines button */
+.generate-plotlines-section {
+    margin-top: 0;
 }
 
 .generate-plotlines-button {
