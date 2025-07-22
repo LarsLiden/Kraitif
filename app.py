@@ -18,6 +18,7 @@ from story import Story
 from genre import GenreRegistry
 from archetype import ArchetypeRegistry
 from style import StyleRegistry
+from prompt import Prompt
 
 app = Flask(__name__)
 app.secret_key = 'kraitif_story_selection_key'  # For session management
@@ -33,6 +34,9 @@ archetype_registry = ArchetypeRegistry()
 
 # Initialize the style registry
 style_registry = StyleRegistry()
+
+# Initialize the prompt generator
+prompt_generator = Prompt()
 
 # Custom Jinja2 filter for formatting emotional arc as arrows
 @app.template_filter('arrow_format')
@@ -789,8 +793,8 @@ def complete_story_selection():
         flash('Please complete at least the story type and subtype selection first.', 'error')
         return redirect(url_for('index'))
     
-    # Generate the prompt text
-    prompt_text = story.to_prompt_text()
+    # Generate the prompt text using the new Prompt class
+    prompt_text = prompt_generator.generate_plot_prompt(story)
     
     # Get additional context objects for the template
     story_type = None
