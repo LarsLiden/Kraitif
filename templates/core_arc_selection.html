@@ -13,7 +13,7 @@
             <div class="selection-section">
                 <div class="story-types-grid">
                     {% for arc in story_type.core_arc %}
-                    <div class="story-type-card arc-card" onclick="selectArc('{{ arc }}')">
+                    <div class="story-type-card arc-card" onclick="selectArc(this)" data-arc="{{ arc|e }}">
                         <div class="story-type-left">
                             <div class="story-type-title">{{ arc }}</div>
                         </div>
@@ -30,7 +30,10 @@
 </div>
 
 <script>
-function selectArc(arc) {
+function selectArc(element) {
+    // Get arc from data attribute
+    const arc = element.getAttribute('data-arc');
+    
     // Update hidden input
     document.getElementById('selected_arc').value = arc;
     
@@ -38,9 +41,8 @@ function selectArc(arc) {
     const cards = document.querySelectorAll('.arc-card');
     cards.forEach(card => card.classList.remove('selected'));
     
-    // Find and select the clicked card
-    const clickedCard = event.currentTarget;
-    clickedCard.classList.add('selected');
+    // Select the clicked card
+    element.classList.add('selected');
     
     // Auto-submit the form immediately
     document.querySelector('.story-selection-form').submit();
@@ -52,7 +54,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (selectedArc) {
         const cards = document.querySelectorAll('.arc-card');
         cards.forEach(card => {
-            if (card.querySelector('.story-type-title').textContent.trim() === selectedArc) {
+            if (card.getAttribute('data-arc') === selectedArc) {
                 card.classList.add('selected');
             }
         });

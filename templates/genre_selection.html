@@ -13,7 +13,7 @@
             <div class="selection-section">
                 <div class="story-types-grid">
                     {% for genre in genres %}
-                    <div class="story-type-card genre-card" onclick="selectGenre('{{ genre.name }}')">
+                    <div class="story-type-card genre-card" onclick="selectGenre(this)" data-genre="{{ genre.name|e }}">
                         <div class="story-type-left">
                             <div class="story-type-title">{{ genre.name }}</div>
                             <div class="genre-info">{% for subgenre in genre.subgenres %}{{ subgenre.name }}{% if not loop.last %}, {% endif %}{% endfor %}</div>
@@ -33,7 +33,10 @@
 {% endif %}
 
 <script>
-function selectGenre(genre) {
+function selectGenre(element) {
+    // Get genre from data attribute
+    const genre = element.getAttribute('data-genre');
+    
     // Update hidden input
     document.getElementById('selected_genre').value = genre;
     
@@ -41,9 +44,8 @@ function selectGenre(genre) {
     const cards = document.querySelectorAll('.genre-card');
     cards.forEach(card => card.classList.remove('selected'));
     
-    // Find and select the clicked card
-    const clickedCard = event.currentTarget;
-    clickedCard.classList.add('selected');
+    // Select the clicked card
+    element.classList.add('selected');
     
     // Auto-submit the form immediately
     document.querySelector('.story-selection-form').submit();
@@ -55,7 +57,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (selectedGenre) {
         const cards = document.querySelectorAll('.genre-card');
         cards.forEach(card => {
-            if (card.querySelector('.story-type-title').textContent.trim() === selectedGenre) {
+            if (card.getAttribute('data-genre') === selectedGenre) {
                 card.classList.add('selected');
             }
         });
