@@ -23,47 +23,24 @@
 <div class="section">
     <div class="section-title">Generated Plot Lines</div>
     <div class="section-content">
-        {% if plot_lines %}
-            <div id="plot-lines-container">
-                <div id="plot-lines-list">
-                    {% for plot_line in plot_lines %}
-                    <div class="plot-line-item">
-                        <div class="plot-line-name">{{ loop.index }}. {{ plot_line.name }}</div>
-                        <div class="plot-line-content">{{ plot_line.plotline }}</div>
-                    </div>
-                    {% endfor %}
-                </div>
-            </div>
-            <div id="prompt-text-container" class="prompt-text-container" style="display: none;">
-                <pre class="prompt-text">{{ prompt_text }}</pre>
-            </div>
-            <div class="prompt-actions">
-                <button id="show-prompt-btn" onclick="showPromptText()" class="copy-button">📝 Show Prompt Text</button>
-                <button id="show-plot-lines-btn" onclick="showPlotLines()" class="generate-button" style="display: none;">🤖 Show Plot Lines</button>
-                <button onclick="copyPromptText()" class="copy-button">📋 Copy Prompt to Clipboard</button>
-                <a href="{{ url_for('save_story') }}" class="btn btn-save">💾 Save Story Configuration</a>
-            </div>
-        {% elif ai_error %}
-            <div class="error-message">
-                <p>{{ ai_error }}</p>
-                <p>Showing the generated prompt text instead:</p>
-            </div>
-            <div id="prompt-text-container" class="prompt-text-container">
-                <pre class="prompt-text">{{ prompt_text }}</pre>
-            </div>
-            <div class="prompt-actions">
-                <button onclick="copyPromptText()" class="copy-button">📋 Copy Prompt to Clipboard</button>
-                <a href="{{ url_for('save_story') }}" class="btn btn-save">💾 Save Story Configuration</a>
-            </div>
-        {% else %}
-            <div class="prompt-text-container">
-                <pre class="prompt-text">{{ prompt_text }}</pre>
-            </div>
-            <div class="prompt-actions">
-                <button onclick="copyPromptText()" class="copy-button">📋 Copy Prompt to Clipboard</button>
-                <a href="{{ url_for('save_story') }}" class="btn btn-save">💾 Save Story Configuration</a>
-            </div>
-        {% endif %}
+        <div id="plot-lines-container" style="display: none;">
+            <div id="plot-lines-list"></div>
+        </div>
+        <div id="prompt-text-container" class="prompt-text-container">
+            <pre class="prompt-text">{{ prompt_text }}</pre>
+        </div>
+        <div class="prompt-actions" id="prompt-actions">
+            <button id="generate-plot-lines-btn" onclick="generatePlotLines()" class="generate-button">🤖 Generate Plot Lines</button>
+            <button id="show-prompt-btn" onclick="showPromptText()" class="copy-button" style="display: none;">📝 Show Prompt Text</button>
+            <button onclick="copyPromptText()" class="copy-button">📋 Copy Prompt to Clipboard</button>
+            <a href="{{ url_for('save_story') }}" class="btn btn-save">💾 Save Story Configuration</a>
+        </div>
+        <div id="loading-indicator" style="display: none;" class="loading-message">
+            <p>Generating potential plot lines. This could take a few moments.</p>
+        </div>
+        <div id="error-message" style="display: none;" class="error-message">
+            <p id="error-text"></p>
+        </div>
     </div>
 </div>
 
@@ -170,6 +147,20 @@
     cursor: not-allowed;
 }
 
+.loading-message {
+    background-color: rgba(33, 150, 243, 0.2);
+    border: 2px solid #2196F3;
+    border-radius: 8px;
+    padding: 1rem;
+    margin: 1rem 0;
+    text-align: center;
+}
+
+.loading-message p {
+    margin: 0;
+    color: #E8F5E8;
+}
+
 .error-message {
     background-color: rgba(244, 67, 54, 0.2);
     border: 2px solid #f44336;
@@ -263,30 +254,111 @@ function copyPromptText() {
     }
 }
 
+function generatePlotLines() {
+    const generateBtn = document.getElementById('generate-plot-lines-btn');
+    const loadingIndicator = document.getElementById('loading-indicator');
+    const errorMessage = document.getElementById('error-message');
+    const plotLinesContainer = document.getElementById('plot-lines-container');
+    const promptContainer = document.getElementById('prompt-text-container');
+    const showPromptBtn = document.getElementById('show-prompt-btn');
+    const completionMessage = document.querySelector('.completion-message');
+    
+    // Hide the button and the note (completion message)
+    generateBtn.style.display = 'none';
+    if (completionMessage) {
+        completionMessage.style.display = 'none';
+    }
+    
+    // Show loading message
+    loadingIndicator.style.display = 'block';
+    errorMessage.style.display = 'none';
+    
+    // Make API call
+    fetch('/generate-plot-lines', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        loadingIndicator.style.display = 'none';
+        
+        if (data.success && data.plot_lines) {
+            // Hide prompt text and show plot lines
+            promptContainer.style.display = 'none';
+            showPromptBtn.style.display = 'inline-block';
+            plotLinesContainer.style.display = 'block';
+            
+            // Display plot lines
+            displayPlotLines(data.plot_lines);
+        } else {
+            // Show error and restore UI
+            const errorText = document.getElementById('error-text');
+            errorText.textContent = data.error || 'Unknown error occurred';
+            errorMessage.style.display = 'block';
+            
+            // Restore button and note on error
+            generateBtn.style.display = 'inline-block';
+            if (completionMessage) {
+                completionMessage.style.display = 'block';
+            }
+        }
+    })
+    .catch(error => {
+        loadingIndicator.style.display = 'none';
+        
+        const errorText = document.getElementById('error-text');
+        errorText.textContent = 'Network error: ' + error.message;
+        errorMessage.style.display = 'block';
+        
+        // Restore button and note on error
+        generateBtn.style.display = 'inline-block';
+        if (completionMessage) {
+            completionMessage.style.display = 'block';
+        }
+    });
+}
+
+function displayPlotLines(plotLines) {
+    const plotLinesList = document.getElementById('plot-lines-list');
+    plotLinesList.innerHTML = '';
+    
+    plotLines.forEach((plotLine, index) => {
+        const plotLineElement = document.createElement('div');
+        plotLineElement.className = 'plot-line-item';
+        
+        const nameElement = document.createElement('div');
+        nameElement.className = 'plot-line-name';
+        nameElement.textContent = `${index + 1}. ${plotLine.name}`;
+        
+        const contentElement = document.createElement('div');
+        contentElement.className = 'plot-line-content';
+        contentElement.textContent = plotLine.plotline;
+        
+        plotLineElement.appendChild(nameElement);
+        plotLineElement.appendChild(contentElement);
+        plotLinesList.appendChild(plotLineElement);
+    });
+}
+
 function showPromptText() {
     const plotLinesContainer = document.getElementById('plot-lines-container');
     const promptContainer = document.getElementById('prompt-text-container');
     const showPromptBtn = document.getElementById('show-prompt-btn');
-    const showPlotLinesBtn = document.getElementById('show-plot-lines-btn');
+    const generateBtn = document.getElementById('generate-plot-lines-btn');
+    const completionMessage = document.querySelector('.completion-message');
     
     // Show prompt text and hide plot lines
-    if (plotLinesContainer) plotLinesContainer.style.display = 'none';
-    if (promptContainer) promptContainer.style.display = 'block';
-    if (showPromptBtn) showPromptBtn.style.display = 'none';
-    if (showPlotLinesBtn) showPlotLinesBtn.style.display = 'inline-block';
-}
-
-function showPlotLines() {
-    const plotLinesContainer = document.getElementById('plot-lines-container');
-    const promptContainer = document.getElementById('prompt-text-container');
-    const showPromptBtn = document.getElementById('show-prompt-btn');
-    const showPlotLinesBtn = document.getElementById('show-plot-lines-btn');
+    plotLinesContainer.style.display = 'none';
+    promptContainer.style.display = 'block';
+    showPromptBtn.style.display = 'none';
+    generateBtn.style.display = 'inline-block';
     
-    // Show plot lines and hide prompt text
-    if (plotLinesContainer) plotLinesContainer.style.display = 'block';
-    if (promptContainer) promptContainer.style.display = 'none';
-    if (showPromptBtn) showPromptBtn.style.display = 'inline-block';
-    if (showPlotLinesBtn) showPlotLinesBtn.style.display = 'none';
+    // Restore the completion message
+    if (completionMessage) {
+        completionMessage.style.display = 'block';
+    }
 }
 
 function fallbackCopyTextToClipboard(text) {
