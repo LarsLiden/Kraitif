@@ -13,11 +13,12 @@
             <!-- Left panel for user selections and controls -->
             <div class="left-panel">
                 <div class="save-load-controls">
-                    <a href="{{ url_for('save_story') }}" class="btn btn-save">📥 Save Story</a>
+                    <a href="{{ url_for('save_story') }}" class="btn btn-save">📥 Save</a>
                     <form id="load-form" method="POST" action="{{ url_for('load_story') }}" enctype="multipart/form-data" style="display: inline;">
-                        <label for="load-file" class="btn btn-load">📤 Load Story</label>
+                        <label for="load-file" class="btn btn-load">📤 Load</label>
                         <input type="file" id="load-file" name="file" accept=".json" style="display: none;">
                     </form>
+                    <button class="btn btn-new" onclick="confirmNewStory()">🆕 New</button>
                 </div>
                 
                 {% block user_selections %}
@@ -412,6 +413,12 @@
                 document.getElementById('load-form').submit();
             }
         });
+        
+        function confirmNewStory() {
+            if (confirm('Are you sure you want to start a new story? This will clear all your current selections.')) {
+                window.location.href = '{{ url_for("new_story") }}';
+            }
+        }
         
         function toggleStoryTypeDetails() {
             const content = document.getElementById('story-type-details-content');

@@ -771,6 +771,14 @@ def load_story():
     return redirect(url_for('index'))
 
 
+@app.route('/new')
+def new_story():
+    """Clear all story selections and start a new story."""
+    session.clear()
+    flash('New story started. All previous selections have been cleared.', 'success')
+    return redirect(url_for('index'))
+
+
 @app.route('/complete-story-selection')
 def complete_story_selection():
     """Show the completed story selection with generated prompt text."""
