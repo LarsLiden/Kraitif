@@ -1,3 +1,77 @@
+# Kraitif Design Specification
+
+## Application Purpose and Domain
+
+Kraitif is a narrative theory application that helps writers systematically create story configurations based on established literary principles. The application implements Christopher Booker's seven basic plot types from narrative theory, combined with character archetypes, writing styles, and genre classifications to provide comprehensive story guidance.
+
+**Core Domain**: Narrative theory and story structure analysis  
+**Target Users**: Writers, storytellers, content creators, and narrative designers  
+**Primary Goal**: Generate detailed story configurations that can guide creative writing processes
+
+## Narrative Theory Foundation
+
+The application is built on these literary concepts:
+
+### Seven Classical Story Types
+Each story type represents a fundamental narrative pattern with specific emotional arcs, key moments, and thematic elements:
+
+1. **Overcoming the Monster** - Hero faces a great evil or threat
+2. **Rags to Riches** - Protagonist rises from humble beginnings to greatness  
+3. **The Quest** - A journey with companions, trials, and a goal
+4. **Voyage and Return** - Hero enters a strange world and returns transformed
+5. **Comedy** - Confusion and miscommunication resolved in harmony
+6. **Tragedy** - A fatal flaw leads to downfall
+7. **Rebirth** - Hero is redeemed or transformed
+
+Each story type contains 3 subtypes (21 total), narrative rhythm patterns, emotional arcs, key themes, and common structural elements.
+
+### Character Archetypes
+108 character archetypes representing universal character patterns found across literature and media. Each archetype includes a name and descriptive explanation of the character's role and motivations.
+
+### Writing Styles  
+15 fundamental writing styles (Concise, Lyrical, Analytical, Whimsical, etc.) with characteristics, examples, and application guidance.
+
+### Genres and Sub-genres
+Comprehensive genre system covering Fantasy, Science Fiction, Mystery, Horror, Romance, and others, each with multiple sub-genres that contain typical archetype associations.
+
+## Data Model Relationships
+
+### Core Entity: Story Object
+The `Story` class serves as the central data container tracking user selections:
+
+```python
+class Story:
+    # Story Type selections
+    story_type_name: Optional[str]      # e.g., "The Quest"
+    subtype_name: Optional[str]         # e.g., "Spiritual Quest"  
+    key_theme: Optional[str]            # User-selected theme
+    core_arc: Optional[str]             # User-selected arc
+    
+    # Genre selections
+    genre: Optional[Genre]              # Genre object with sub-genres
+    sub_genre: Optional[SubGenre]       # Contains archetype associations
+    
+    # Style and Character selections
+    writing_style: Optional[Style]      # Writing style object
+    protagonist_archetype: Optional[str] # Single protagonist choice
+    secondary_archetypes: List[str]     # Multiple secondary characters
+```
+
+### Registry Pattern
+All narrative elements use a registry pattern for centralized access:
+- `StoryTypeRegistry` - Manages story types and subtypes
+- `ArchetypeRegistry` - Manages character archetypes  
+- `GenreRegistry` - Manages genres and sub-genres
+- `StyleRegistry` - Manages writing styles
+
+### Data Flow Dependencies
+1. **Genre → Sub-genre**: Sub-genres belong to specific genres
+2. **Sub-genre → Archetypes**: Each sub-genre has typical archetype associations
+3. **Story Type → Themes/Arcs**: Each story type defines available themes and arcs
+4. **All selections → Prompt Generation**: Complete story configuration generates structured text output
+
+## User Experience Flow
+
 The user will step through the following interfaces:
 
 1) Select story type
@@ -6,22 +80,115 @@ The user will step through the following interfaces:
 4) Select core arc (auto-proceeds to next step)
 5) Select genre (auto-proceeds to next step)
 6) Select sub-genre (auto-proceeds to next step)
-7) Select protagonist archetype (manual proceed to secondary characters)
-8) Select secondary character archetypes (manual proceed to completion)
+7) Select writing style (manual proceed to next step)
+8) Select protagonist archetype (manual proceed to secondary characters)
+9) Select secondary character archetypes (manual proceed to completion)
 
 ## User Experience Flow
 
 The UI provides a streamlined selection experience where users automatically proceed to the next step upon making their selection, eliminating the need for manual "continue" buttons.
 
-### Navigation Behavior
-- **Story Type & Subtype Selection**: Users click to navigate between these steps
-- **Key Theme Selection**: Clicking a theme card immediately submits and proceeds to core arc selection
-- **Core Arc Selection**: Clicking an arc card immediately submits and proceeds to genre selection  
-- **Genre Selection**: Selecting a radio button automatically submits and proceeds to sub-genre selection
-- **Sub-Genre Selection**: Selecting a radio button automatically submits and proceeds to archetype selection
-- **Archetype Selection**: Users can select multiple archetypes via checkboxes, then manually click "Complete Story Selection" to finish
+## Business Rules and Logic
 
-All selection steps (themes, arcs, genres, and sub-genres) use a consistent card-based UI with hover effects and visual selection states for optimal user experience.
+### Auto-progression Rules
+- **Theme/Arc/Genre Selections**: Automatically proceed to next step upon selection (no manual "continue" button)
+- **Style/Archetype Selections**: Require manual progression to allow multiple selections or careful consideration
+
+### Data Validation Rules
+- **Sub-genre Dependency**: Sub-genre must belong to selected genre; changing genre clears sub-genre
+- **Archetype Validation**: All selected archetypes must exist in the registry
+- **Story Type Consistency**: Key themes and core arcs must be available for the selected story type
+
+### Selection Clearing Logic
+When navigating back to edit a previous step:
+- Clear the edited step AND all subsequent steps
+- Preserve all steps before the edited step
+- Redirect user to appropriate selection page
+
+### Archetype Organization Rules
+- **Typical vs Other**: Sub-genres define "typical" archetypes; all others are "other"
+- **Protagonist Constraint**: Exactly one protagonist required; cannot be changed in secondary selection
+- **Secondary Optional**: Secondary character selection is completely optional
+
+## User Interface Patterns
+
+### Two-Panel Layout Architecture
+**Left Panel**: 
+- Save and load controls at top
+- "Your Story Selections" section showing completed choices
+- Each selection includes edit button (✏️) for navigation back to that step
+- Expandable details panels for story type and subtype with rich information
+- All edit buttons implement smart clearing logic
+
+**Right Panel**: 
+- Current step content and selection options
+- Progress flows from top to bottom through the selection process
+- Card-based selection UI with hover effects and visual feedback
+
+### Navigation System Principles
+- **No Breadcrumb Navigation**: Eliminated in favor of left panel edit buttons
+- **Icon-Based Edit Controls**: Clean ✏️ pencil icons rather than text buttons
+- **Smart State Management**: Edit buttons clear dependent selections automatically
+- **Progressive Disclosure**: Show only current step content in right panel
+
+### UI Component Patterns
+- **Selection Cards**: Consistent card-based interface for themes, arcs, genres, sub-genres
+- **Radio Button Groups**: Single-selection elements (genre, sub-genre, protagonist)
+- **Checkbox Groups**: Multi-selection elements (secondary characters)
+- **Expandable Panels**: Rich information display for story type and subtype details
+- **Auto-submit Forms**: Theme, arc, and genre selections automatically submit on click
+
+### Visual Design Principles
+- **Black Background Theme**: Dark theme for comfortable extended use
+- **Responsive Design**: Works on mobile and desktop
+- **Hover Effects**: Interactive feedback on all selectable elements  
+- **Progressive Enhancement**: Core functionality works without JavaScript
+
+## Data Persistence and State Management
+
+### Session State
+Flask sessions maintain story state during user interaction:
+- All selections stored in `session['story_data']` dictionary
+- Session persists across page navigation and refreshes
+- Session cleared on fresh visits from external sources
+
+### Save/Load Functionality
+- **Save**: Exports complete story configuration as JSON file download
+- **Load**: Imports JSON file, validates data, updates session, redirects to appropriate step
+- **Validation**: Ensures all loaded data references exist in current registries
+
+### Story Completion Output
+Generate structured prompt text containing:
+- Story type and subtype details with examples
+- Selected themes and arcs  
+- Genre and sub-genre information
+- Writing style with characteristics and examples
+- Character archetypes with detailed descriptions
+- Formatted for use with AI writing assistants
+
+## Technical Integration Points
+
+### Flask Route Structure
+- RESTful route naming following `/noun-verb` pattern
+- GET routes display selection forms
+- POST routes process form submissions and redirect
+- Navigation routes handle edit button functionality
+- Utility routes handle save/load operations
+
+### Template Inheritance
+- `base.html` provides core two-panel layout and session-aware left panel
+- Individual step templates extend base and focus on right panel content
+- Consistent data passing includes story object and all registry objects
+
+### Error Handling Patterns
+- Flash messages for user feedback on validation errors
+- Graceful fallbacks for missing data or invalid selections
+- Redirect chains ensure users cannot access steps without prerequisites
+
+### Data Loading Strategy
+- Registries load from JSON/JSONL files in `/data` directory at startup
+- Immutable data structures for thread safety
+- Case-insensitive lookups with exact name matching
 
 ### Navigation System
 
