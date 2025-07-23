@@ -28,6 +28,9 @@ Each story type contains 3 subtypes (21 total), narrative rhythm patterns, emoti
 ### Character Archetypes
 108 character archetypes representing universal character patterns found across literature and media. Each archetype includes a name and descriptive explanation of the character's role and motivations.
 
+### Functional Roles
+20 fundamental functional roles that define how characters function within a narrative structure (Protagonist, Antagonist, Mentor, etc.). Each functional role includes a name and description of the character's narrative purpose and relationship to the plot and other characters.
+
 ### Writing Styles  
 15 fundamental writing styles (Concise, Lyrical, Analytical, Whimsical, etc.) with characteristics, examples, and application guidance.
 
@@ -51,8 +54,13 @@ class Story:
     genre: Optional[Genre]              # Genre object with sub-genres
     sub_genre: Optional[SubGenre]       # Contains archetype associations
     
-    # Style and Character selections
+    # Writing style selection
     writing_style: Optional[Style]      # Writing style object
+    
+    # Functional role selection
+    functional_role: Optional[FunctionalRole]  # Functional role object
+    
+    # Archetype selections
     protagonist_archetype: Optional[str] # Single protagonist choice
     secondary_archetypes: List[str]     # Multiple secondary characters
 ```
@@ -63,6 +71,7 @@ All narrative elements use a registry pattern for centralized access:
 - `ArchetypeRegistry` - Manages character archetypes  
 - `GenreRegistry` - Manages genres and sub-genres
 - `StyleRegistry` - Manages writing styles
+- `FunctionalRoleRegistry` - Manages functional roles
 
 ### Data Flow Dependencies
 1. **Genre → Sub-genre**: Sub-genres belong to specific genres

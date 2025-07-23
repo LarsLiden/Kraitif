@@ -10,6 +10,7 @@ from genre import Genre, SubGenre, GenreRegistry
 from archetype import ArchetypeRegistry
 from style import Style, StyleRegistry
 from story_types import StoryTypeRegistry
+from functional_role import FunctionalRole, FunctionalRoleRegistry
 
 
 class Story:
@@ -23,6 +24,7 @@ class Story:
         self._archetype_registry = ArchetypeRegistry()
         self._style_registry = StyleRegistry()
         self._story_type_registry = StoryTypeRegistry()
+        self._functional_role_registry = FunctionalRoleRegistry()
         # Story type selections
         self.story_type_name: Optional[str] = None
         self.subtype_name: Optional[str] = None
@@ -35,6 +37,8 @@ class Story:
         self.secondary_archetypes: List[str] = []
         # Keep legacy field for backward compatibility
         self.selected_archetypes: List[str] = []
+        # Functional role selection
+        self.functional_role: Optional[FunctionalRole] = None
     
     def set_story_type_selection(self, story_type_name: str, subtype_name: str, 
                                 key_theme: Optional[str] = None, core_arc: Optional[str] = None) -> None:
@@ -64,6 +68,18 @@ class Story:
     def get_available_styles(self) -> List[Style]:
         """Get all available writing styles."""
         return self._style_registry.get_all_styles()
+    
+    def set_functional_role(self, role_name: str) -> bool:
+        """Set the functional role by name. Returns True if successful."""
+        role = self._functional_role_registry.get_functional_role(role_name)
+        if role:
+            self.functional_role = role
+            return True
+        return False
+    
+    def get_available_functional_roles(self) -> List[FunctionalRole]:
+        """Get all available functional roles."""
+        return self._functional_role_registry.get_all_functional_roles()
     
     def set_genre(self, genre_name: str) -> bool:
         """Set the story genre by name. Returns True if successful."""
@@ -324,6 +340,7 @@ class Story:
             'genre_name': self.genre.name if self.genre else None,
             'sub_genre_name': self.sub_genre.name if self.sub_genre else None,
             'writing_style_name': self.writing_style.name if self.writing_style else None,
+            'functional_role_name': self.functional_role.name if self.functional_role else None,
             'protagonist_archetype': self.protagonist_archetype,
             'secondary_archetypes': self.secondary_archetypes,
             'selected_archetypes': self.selected_archetypes  # Keep for backward compatibility
@@ -358,6 +375,11 @@ class Story:
             writing_style_name = data.get('writing_style_name')
             if writing_style_name:
                 self.set_writing_style(writing_style_name)
+            
+            # Load functional role data
+            functional_role_name = data.get('functional_role_name')
+            if functional_role_name:
+                self.set_functional_role(functional_role_name)
             
             # Load archetype selections
             protagonist_archetype = data.get('protagonist_archetype')
