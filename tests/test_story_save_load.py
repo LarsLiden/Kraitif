@@ -56,18 +56,38 @@ class TestStorySaveLoad(unittest.TestCase):
         self.assertIsNone(new_story.core_arc)
         self.assertIsNone(new_story.genre)
         self.assertIsNone(new_story.sub_genre)
-        self.assertIsNone(new_story.protagonist_archetype)
-        self.assertEqual(new_story.secondary_archetypes, [])
+        self.assertEqual(new_story.characters, [])
     
     def test_complete_story_serialization(self):
         """Test serialization of a complete story with all fields."""
+        # Import here to avoid circular import
+        from character import Character
+        from archetype import ArchetypeEnum
+        from functional_role import FunctionalRoleEnum
+        from emotional_function import EmotionalFunctionEnum
+        
         # Set up a complete story
         self.story.set_story_type_selection("Comedy", "Romantic Comedy", 
                                            "Love conquers all", "Meet-cute to marriage")
         self.story.set_genre("Romance")
         self.story.set_sub_genre("Romantic Comedy")
-        self.story.set_protagonist_archetype("Chosen One")
-        self.story.set_secondary_archetypes(["Wise Mentor", "Loyal Companion"])
+        
+        # Create characters
+        protagonist = Character(
+            name="Hero",
+            archetype=ArchetypeEnum.CHOSEN_ONE,
+            functional_role=FunctionalRoleEnum.PROTAGONIST,
+            emotional_function=EmotionalFunctionEnum.SYMPATHETIC_CHARACTER
+        )
+        secondary = Character(
+            name="Mentor",
+            archetype=ArchetypeEnum.WISE_MENTOR,
+            functional_role=FunctionalRoleEnum.MENTOR,
+            emotional_function=EmotionalFunctionEnum.CATALYST
+        )
+        
+        self.story.add_character(protagonist)
+        self.story.add_character(secondary)
         
         json_str = self.story.to_json()
         data = json.loads(json_str)
@@ -79,18 +99,44 @@ class TestStorySaveLoad(unittest.TestCase):
         self.assertEqual(data['core_arc'], "Meet-cute to marriage")
         self.assertEqual(data['genre_name'], "Romance")
         self.assertEqual(data['sub_genre_name'], "Romantic Comedy")
-        self.assertEqual(data['protagonist_archetype'], "Chosen One")
-        self.assertEqual(data['secondary_archetypes'], ["Wise Mentor", "Loyal Companion"])
+        
+        # Check characters
+        self.assertEqual(len(data['characters']), 2)
+        self.assertEqual(data['characters'][0]['name'], "Hero")
+        self.assertEqual(data['characters'][0]['archetype'], "Chosen One")
+        self.assertEqual(data['characters'][1]['name'], "Mentor")
+        self.assertEqual(data['characters'][1]['archetype'], "Wise Mentor")
     
     def test_complete_story_deserialization(self):
         """Test deserialization of a complete story."""
+        # Import here to avoid circular import
+        from character import Character
+        from archetype import ArchetypeEnum
+        from functional_role import FunctionalRoleEnum
+        from emotional_function import EmotionalFunctionEnum
+        
         # Set up and serialize a complete story
         self.story.set_story_type_selection("The Quest", "Object Quest", 
                                            "Growth through adventure", "Trust forged under pressure")
         self.story.set_genre("Fantasy")
         self.story.set_sub_genre("High Fantasy")
-        self.story.set_protagonist_archetype("Chosen One")
-        self.story.set_secondary_archetypes(["Wise Mentor", "Loyal Companion"])
+        
+        # Create characters
+        protagonist = Character(
+            name="Quest Hero",
+            archetype=ArchetypeEnum.CHOSEN_ONE,
+            functional_role=FunctionalRoleEnum.PROTAGONIST,
+            emotional_function=EmotionalFunctionEnum.SYMPATHETIC_CHARACTER
+        )
+        secondary = Character(
+            name="Wise Guide",
+            archetype=ArchetypeEnum.WISE_MENTOR,
+            functional_role=FunctionalRoleEnum.MENTOR,
+            emotional_function=EmotionalFunctionEnum.CATALYST
+        )
+        
+        self.story.add_character(protagonist)
+        self.story.add_character(secondary)
         
         json_str = self.story.to_json()
         
@@ -105,17 +151,41 @@ class TestStorySaveLoad(unittest.TestCase):
         self.assertEqual(new_story.core_arc, "Trust forged under pressure")
         self.assertEqual(new_story.genre.name, "Fantasy")
         self.assertEqual(new_story.sub_genre.name, "High Fantasy")
-        self.assertEqual(new_story.protagonist_archetype, "Chosen One")
-        self.assertEqual(new_story.secondary_archetypes, ["Wise Mentor", "Loyal Companion"])
+        
+        # Check characters
+        self.assertEqual(len(new_story.characters), 2)
+        protagonist_char = new_story.get_protagonist()
+        self.assertIsNotNone(protagonist_char)
+        self.assertEqual(protagonist_char.name, "Quest Hero")
+        self.assertEqual(protagonist_char.archetype.value, "Chosen One")
+        
+        secondary_chars = new_story.get_secondary_characters()
+        self.assertEqual(len(secondary_chars), 1)
+        self.assertEqual(secondary_chars[0].name, "Wise Guide")
+        self.assertEqual(secondary_chars[0].archetype.value, "Wise Mentor")
     
     def test_roundtrip_serialization(self):
         """Test that serialize->deserialize->serialize produces identical results."""
+        # Import here to avoid circular import
+        from character import Character
+        from archetype import ArchetypeEnum
+        from functional_role import FunctionalRoleEnum
+        from emotional_function import EmotionalFunctionEnum
+        
         # Set up a story with various fields
         self.story.set_story_type_selection("Tragedy", "Personal Tragedy", 
                                            "Pride goes before a fall", "Hubris to downfall")
         self.story.set_genre("Drama")
-        self.story.set_protagonist_archetype("Anti-Hero")
-        self.story.set_secondary_archetypes(["Loyal Companion"])
+        
+        # Create character
+        protagonist = Character(
+            name="Tragic Hero",
+            archetype=ArchetypeEnum.ANTI_HERO,
+            functional_role=FunctionalRoleEnum.PROTAGONIST,
+            emotional_function=EmotionalFunctionEnum.SYMPATHETIC_CHARACTER
+        )
+        
+        self.story.add_character(protagonist)
         
         # First serialization
         json_str1 = self.story.to_json()
@@ -200,18 +270,23 @@ class TestStorySaveLoad(unittest.TestCase):
     def test_invalid_archetype_deserialization(self):
         """Test deserialization with invalid archetype names."""
         data = {
-            "protagonist_archetype": "NonExistentArchetype",
-            "secondary_archetypes": ["ValidArchetype", "InvalidArchetype"]
+            "characters": [
+                {
+                    "name": "Invalid Hero",
+                    "archetype": "NonExistentArchetype",
+                    "functional_role": "Protagonist",
+                    "emotional_function": "Sympathetic Character"
+                }
+            ]
         }
         json_str = json.dumps(data)
         
         new_story = Story()
         success = new_story.from_json(json_str)
         
-        # Should still succeed but invalid archetypes should be ignored
+        # Should still succeed but invalid characters should be ignored
         self.assertTrue(success)
-        self.assertIsNone(new_story.protagonist_archetype)
-        self.assertEqual(new_story.secondary_archetypes, [])
+        self.assertEqual(len(new_story.characters), 0)
     
     def test_json_structure_and_formatting(self):
         """Test that JSON output has expected structure and formatting."""
@@ -236,12 +311,26 @@ class TestStorySaveLoad(unittest.TestCase):
     
     def test_string_representation_with_loaded_data(self):
         """Test string representation after loading from JSON."""
+        # Import here to avoid circular import
+        from character import Character
+        from archetype import ArchetypeEnum
+        from functional_role import FunctionalRoleEnum
+        from emotional_function import EmotionalFunctionEnum
+        
         # Create and serialize a story
         original_story = Story()
         original_story.set_story_type_selection("Rebirth", "Redemption", 
                                                "Redemption theme", "Fall to rise")
         original_story.set_genre("Drama")
-        original_story.set_protagonist_archetype("Anti-Hero")
+        
+        # Create character
+        protagonist = Character(
+            name="Redeemed Hero",
+            archetype=ArchetypeEnum.ANTI_HERO,
+            functional_role=FunctionalRoleEnum.PROTAGONIST,
+            emotional_function=EmotionalFunctionEnum.SYMPATHETIC_CHARACTER
+        )
+        original_story.add_character(protagonist)
         
         json_str = original_story.to_json()
         
@@ -253,7 +342,7 @@ class TestStorySaveLoad(unittest.TestCase):
         story_str = str(loaded_story)
         self.assertIn("Genre: Drama", story_str)
         self.assertIn("Story Type: Rebirth - Redemption", story_str)
-        self.assertIn("Protagonist: Anti-Hero", story_str)
+        self.assertIn("Protagonist: Redeemed Hero (Anti-Hero)", story_str)
     
     def test_data_type_validation(self):
         """Test handling of incorrect data types in JSON."""

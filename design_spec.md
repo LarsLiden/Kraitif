@@ -25,11 +25,25 @@ Each story type represents a fundamental narrative pattern with specific emotion
 
 Each story type contains 3 subtypes (21 total), narrative rhythm patterns, emotional arcs, key themes, and common structural elements.
 
-### Character Archetypes
-108 character archetypes representing universal character patterns found across literature and media. Each archetype includes a name and descriptive explanation of the character's role and motivations.
+### Character Archetypes and Character System
+The application uses a comprehensive character system built around:
 
+#### Character Archetypes
+108 character archetypes representing universal character patterns found across literature and media. Each archetype includes a name and descriptive explanation of the character's role and motivations. These are defined as an `ArchetypeEnum` for type safety.
 
-### Emotional Functions
+#### Character Objects
+The `Character` class represents a complete character with:
+- **name** (str): The character's name
+- **archetype** (ArchetypeEnum): The character's archetypal role
+- **functional_role** (FunctionalRoleEnum): The character's narrative function
+- **emotional_function** (EmotionalFunctionEnum): The character's emotional purpose
+- **backstory** (str): The character's background story
+- **character_arc** (str): The character's development throughout the story
+
+#### Functional Roles
+20 fundamental functional roles that define how characters function within a narrative structure (Protagonist, Antagonist, Mentor, etc.). Each functional role includes a name and description of the character's narrative purpose and relationship to the plot and other characters. These are defined as a `FunctionalRoleEnum`.
+
+#### Emotional Functions
 8 emotional functions that define the emotional role a character serves in the story:
 - **Sympathetic Character**: Evokes empathy; often deeply vulnerable
 - **Unsympathetic Character**: Hard to like but may still compel or challenge the protagonist
@@ -40,10 +54,7 @@ Each story type contains 3 subtypes (21 total), narrative rhythm patterns, emoti
 - **Aggressor**: Causes harm, either directly or through manipulation
 - **Mediator**: Resolves conflicts between other characters
 
-Each emotional function includes a name and descriptive explanation of the emotional role the character serves.
-
-### Functional Roles
-20 fundamental functional roles that define how characters function within a narrative structure (Protagonist, Antagonist, Mentor, etc.). Each functional role includes a name and description of the character's narrative purpose and relationship to the plot and other characters.
+Each emotional function includes a name and descriptive explanation of the emotional role the character serves. These are defined as an `EmotionalFunctionEnum`.
 
 ### Writing Styles  
 15 fundamental writing styles (Concise, Lyrical, Analytical, Whimsical, etc.) with characteristics, examples, and application guidance.
@@ -71,26 +82,20 @@ class Story:
     # Writing style selection
     writing_style: Optional[Style]      # Writing style object
     
-    # Functional role selection
-    functional_role: Optional[FunctionalRole]  # Functional role object
-    
-    # Archetype selections
-    protagonist_archetype: Optional[str] # Single protagonist choice
-    secondary_archetypes: List[str]     # Multiple secondary characters
-    
-    # Emotional Function selections
-    protagonist_emotional_function: Optional[str] # Protagonist's emotional role
-    secondary_emotional_functions: List[str]      # Secondary characters' emotional roles
+    # Character system
+    characters: List[Character]         # List of Character objects containing
+                                       # archetype, functional_role, emotional_function,
+                                       # backstory, and character_arc
 ```
 
 ### Registry Pattern
 All narrative elements use a registry pattern for centralized access:
 - `StoryTypeRegistry` - Manages story types and subtypes
-- `ArchetypeRegistry` - Manages character archetypes  
+- `ArchetypeRegistry` - Manages character archetypes with `ArchetypeEnum` support
 - `GenreRegistry` - Manages genres and sub-genres
 - `StyleRegistry` - Manages writing styles
-- `EmotionalFunctionRegistry` - Manages emotional functions for characters
-- `FunctionalRoleRegistry` - Manages functional roles
+- `EmotionalFunctionRegistry` - Manages emotional functions with `EmotionalFunctionEnum` support
+- `FunctionalRoleRegistry` - Manages functional roles with `FunctionalRoleEnum` support
 
 ### Data Flow Dependencies
 1. **Genre → Sub-genre**: Sub-genres belong to specific genres
