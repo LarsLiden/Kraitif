@@ -356,6 +356,13 @@ class Story:
             
             lines.append("")
         
+        # Plot Line Information
+        if self.selected_plot_line:
+            lines.append("SELECTED PLOT LINE:")
+            lines.append(f"Name: {self.selected_plot_line.name}")
+            lines.append(f"Plot Line: {self.selected_plot_line.plotline}")
+            lines.append("")
+        
         # Add a footer note
         lines.append("=" * 50)
         lines.append("Use this configuration to guide the story creation process.")

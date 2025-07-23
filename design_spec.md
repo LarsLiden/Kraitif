@@ -123,6 +123,31 @@ The user will step through the following interfaces:
 8) Select protagonist archetype (manual proceed to secondary characters)
 9) Select secondary character archetypes (manual proceed to completion)
 
+## Prompt Generation System
+
+The application includes a comprehensive prompt generation system for AI integration:
+
+### Plot Prompt Generation
+- `generate_plot_prompt()` function combines plot-specific templates with story configuration
+- Uses `plot_lines_pre.txt` and `plot_lines_post.txt` template files
+- Includes complete story configuration for plot line generation
+
+### Character Prompt Generation  
+- `generate_character_prompt()` function combines character-specific templates with story configuration
+- Uses `characters_pre.txt` and `characters_post.txt` template files
+- Includes complete story configuration for character development prompts
+- Template files contain detailed instructions for AI character creation including archetype, functional role, and emotional function specifications
+
+### Story Configuration Output
+The `to_prompt_text()` method generates comprehensive story configuration that includes:
+- Story type and subtype details with examples and emotional arcs
+- Selected themes and core arcs
+- Genre and sub-genre information with typical archetype associations
+- Writing style characteristics and examples
+- Character archetype details with descriptions
+- **Plot line information when available** - includes selected plot line name and description
+- Suggested secondary character archetypes for the genre when none are explicitly selected
+
 ## User Experience Flow
 
 The UI provides a streamlined selection experience where users automatically proceed to the next step upon making their selection, eliminating the need for manual "continue" buttons.
@@ -214,7 +239,14 @@ Generate structured prompt text containing:
   - Selected protagonist archetype
   - Selected secondary character archetypes (if any)
   - Suggested secondary character archetypes typical for the genre (when no secondary characters are explicitly selected)
+- **Plot line information when a plot line is selected** - includes plot line name and detailed description
 - Formatted for use with AI writing assistants
+
+### Prompt Generation Functions
+The application provides two specialized prompt generation functions:
+- **`generate_plot_prompt()`** - For plot line generation using plot-specific templates
+- **`generate_character_prompt()`** - For character development using character-specific templates
+- Both functions combine pre/post template files with complete story configuration via `to_prompt_text()`
 
 ## Technical Integration Points
 
