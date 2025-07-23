@@ -423,13 +423,6 @@
                                     </button>
                                 </div>
                                 {% endif %}
-                                
-                                <!-- Load indicator for plot line generation -->
-                                {% if story_data and story_data.get('protagonist_archetype') %}
-                                <div id="left-panel-loading" style="display: none;" class="loading-message">
-                                    <p>Generating potential plot lines. This could take a few moments.</p>
-                                </div>
-                                {% endif %}
                             {% else %}
                                 <div class="no-selections">
                                     No selections made yet. Start by choosing a story type.
@@ -605,22 +598,201 @@
             // Always prevent default action since this is now a button
             event.preventDefault();
             
-            // Disable right panel UI (keep save/load/new buttons enabled)
+            // Replace right panel content with intermediate page
             const rightPanel = document.querySelector('.right-panel');
             if (rightPanel) {
-                rightPanel.classList.add('ui-disabled');
+                // Store original content
+                const originalContent = rightPanel.innerHTML;
+                
+                // Replace with generating plot lines page
+                rightPanel.innerHTML = `
+                <div class="generating-plot-lines-page">
+                    <div class="page-header">
+                        <h1>Generating Plot Lines</h1>
+                        <p class="page-subtitle">Creating potential plot lines based on your story configuration...</p>
+                    </div>
+                    
+                    <div class="generating-content">
+                        <div class="loading-indicator">
+                            <div class="loading-spinner"></div>
+                            <h2>Generating potential plot lines</h2>
+                            <p>This could take a few moments while we analyze your story configuration and create personalized plot options for you.</p>
+                            
+                            <div class="progress-steps">
+                                <div class="step active">
+                                    <span class="step-number">1</span>
+                                    <span class="step-text">Analyzing your story selections</span>
+                                </div>
+                                <div class="step active">
+                                    <span class="step-number">2</span>
+                                    <span class="step-text">Generating plot variations</span>
+                                </div>
+                                <div class="step">
+                                    <span class="step-number">3</span>
+                                    <span class="step-text">Preparing your options</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <style>
+                .generating-plot-lines-page {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    justify-content: center;
+                    min-height: 60vh;
+                    text-align: center;
+                    padding: 2rem;
+                }
+
+                .page-header h1 {
+                    color: #4CAF50;
+                    font-size: 2.5rem;
+                    margin-bottom: 1rem;
+                }
+
+                .page-subtitle {
+                    color: #64B5F6;
+                    font-size: 1.2rem;
+                    margin-bottom: 3rem;
+                }
+
+                .generating-content {
+                    max-width: 600px;
+                    width: 100%;
+                }
+
+                .loading-indicator {
+                    background-color: rgba(33, 150, 243, 0.1);
+                    border: 2px solid #2196F3;
+                    border-radius: 12px;
+                    padding: 3rem 2rem;
+                    margin-bottom: 2rem;
+                }
+
+                .loading-spinner {
+                    width: 60px;
+                    height: 60px;
+                    border: 4px solid rgba(33, 150, 243, 0.3);
+                    border-left: 4px solid #2196F3;
+                    border-radius: 50%;
+                    animation: spin 1s linear infinite;
+                    margin: 0 auto 2rem;
+                }
+
+                @keyframes spin {
+                    0% { transform: rotate(0deg); }
+                    100% { transform: rotate(360deg); }
+                }
+
+                .loading-indicator h2 {
+                    color: #2196F3;
+                    font-size: 1.8rem;
+                    margin-bottom: 1rem;
+                }
+
+                .loading-indicator p {
+                    color: rgba(255, 255, 255, 0.9);
+                    font-size: 1.1rem;
+                    line-height: 1.6;
+                    margin-bottom: 2rem;
+                }
+
+                .progress-steps {
+                    display: flex;
+                    justify-content: center;
+                    gap: 2rem;
+                    flex-wrap: wrap;
+                }
+
+                .step {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    gap: 0.5rem;
+                    opacity: 0.4;
+                    transition: opacity 0.3s ease;
+                }
+
+                .step.active {
+                    opacity: 1;
+                }
+
+                .step-number {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    width: 40px;
+                    height: 40px;
+                    background-color: rgba(33, 150, 243, 0.2);
+                    border: 2px solid #2196F3;
+                    border-radius: 50%;
+                    color: #2196F3;
+                    font-weight: bold;
+                    font-size: 1.1rem;
+                }
+
+                .step.active .step-number {
+                    background-color: #2196F3;
+                    color: white;
+                }
+
+                .step-text {
+                    color: rgba(255, 255, 255, 0.8);
+                    font-size: 0.9rem;
+                    text-align: center;
+                    max-width: 120px;
+                }
+
+                .step.active .step-text {
+                    color: rgba(255, 255, 255, 1);
+                }
+
+                @media (max-width: 768px) {
+                    .page-header h1 {
+                        font-size: 2rem;
+                    }
+                    
+                    .page-subtitle {
+                        font-size: 1rem;
+                    }
+                    
+                    .loading-indicator {
+                        padding: 2rem 1rem;
+                    }
+                    
+                    .progress-steps {
+                        gap: 1rem;
+                    }
+                    
+                    .step-text {
+                        font-size: 0.8rem;
+                        max-width: 100px;
+                    }
+                }
+                </style>
+                `;
+                
+                // Animate the third step after a delay
+                setTimeout(() => {
+                    const steps = rightPanel.querySelectorAll('.step');
+                    if (steps[2]) {
+                        steps[2].classList.add('active');
+                    }
+                }, 2000);
             }
             
-            // Hide the button and note, show loading message
+            // Hide the button and note from left panel (no loading message)
             const button = document.getElementById('generate-plotlines-button');
             const notesSection = document.getElementById('secondary-notes-section');
             const plotlinesSection = document.getElementById('generate-plotlines-section');
-            const loadingIndicator = document.getElementById('left-panel-loading');
             
             if (button) button.style.display = 'none';
             if (notesSection) notesSection.style.display = 'none';
             if (plotlinesSection) plotlinesSection.style.display = 'none';
-            if (loadingIndicator) loadingIndicator.style.display = 'block';
+            
             
             // Make API call to generate plot lines
             fetch('/generate-plot-lines', {
@@ -639,36 +811,18 @@
                     // Navigate to story completion page
                     window.location.href = '/complete-story-selection';
                 } else {
-                    // Show error and restore UI
+                    // Show error and reload page to restore original state
                     alert('Error generating plot lines: ' + (data.error || 'Unknown error'));
-                    restoreGenerateButton();
+                    window.location.reload();
                 }
             })
             .catch(error => {
-                // Show error and restore UI
+                // Show error and reload page to restore original state  
                 alert('Network error: ' + error.message);
-                restoreGenerateButton();
+                window.location.reload();
             });
             
             return false;
-        }
-        
-        function restoreGenerateButton() {
-            // Re-enable right panel UI
-            const rightPanel = document.querySelector('.right-panel');
-            if (rightPanel) {
-                rightPanel.classList.remove('ui-disabled');
-            }
-            
-            const button = document.getElementById('generate-plotlines-button');
-            const notesSection = document.getElementById('secondary-notes-section');
-            const plotlinesSection = document.getElementById('generate-plotlines-section');
-            const loadingIndicator = document.getElementById('left-panel-loading');
-            
-            if (button) button.style.display = 'inline-block';
-            if (notesSection) notesSection.style.display = 'block';
-            if (plotlinesSection) plotlinesSection.style.display = 'block';
-            if (loadingIndicator) loadingIndicator.style.display = 'none';
         }
         
         // Function to update live secondary characters display
