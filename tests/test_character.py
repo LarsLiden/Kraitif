@@ -1,5 +1,5 @@
 """
-Test the new Character refactor functionality
+Test the Character class functionality
 """
 
 import unittest

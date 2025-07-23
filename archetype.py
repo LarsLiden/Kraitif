@@ -84,7 +84,7 @@ class ArchetypeEnum(Enum):
     FORBIDDEN_FLAME = "Forbidden Flame"
     LOVABLE_FOOL = "Lovable Fool"
     OVERCONFIDENT_UNDERDOG = "Overconfident Underdog"
-    NAÏVE_GENIUS = "Naïve Genius"
+    NAIVE_GENIUS = "Naive Genius"
     DEADPAN_OBSERVER = "Deadpan Observer"
     SOCIAL_CLIMBER = "Social Climber"
     DISAPPOINTED_PARENT = "Disappointed Parent"
