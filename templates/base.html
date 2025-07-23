@@ -601,6 +601,12 @@
             // Always prevent default action since this is now a button
             event.preventDefault();
             
+            // Disable right panel UI (keep save/load/new buttons enabled)
+            const rightPanel = document.querySelector('.right-panel');
+            if (rightPanel) {
+                rightPanel.classList.add('ui-disabled');
+            }
+            
             // Hide the button and note, show loading message
             const button = document.getElementById('generate-plotlines-button');
             const notesSection = document.getElementById('secondary-notes-section');
@@ -644,6 +650,12 @@
         }
         
         function restoreGenerateButton() {
+            // Re-enable right panel UI
+            const rightPanel = document.querySelector('.right-panel');
+            if (rightPanel) {
+                rightPanel.classList.remove('ui-disabled');
+            }
+            
             const button = document.getElementById('generate-plotlines-button');
             const notesSection = document.getElementById('secondary-notes-section');
             const plotlinesSection = document.getElementById('generate-plotlines-section');
