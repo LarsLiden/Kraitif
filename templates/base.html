@@ -605,6 +605,49 @@
             // Always prevent default action since this is now a button
             event.preventDefault();
             
+            // First, save secondary character selections if we're on the secondary archetype page
+            const secondaryForm = document.getElementById('secondary-form');
+            if (secondaryForm) {
+                // Collect selected secondary archetypes
+                const selectedArchetypes = [];
+                const checkboxes = secondaryForm.querySelectorAll('input[name="secondary_archetypes"]:checked');
+                checkboxes.forEach(checkbox => {
+                    selectedArchetypes.push(checkbox.value);
+                });
+                
+                // Create FormData and submit to save secondary archetypes first
+                const formData = new FormData();
+                selectedArchetypes.forEach(archetype => {
+                    formData.append('secondary_archetypes', archetype);
+                });
+                
+                // Submit secondary archetype selection first
+                fetch('/secondary-archetype-selection', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => {
+                    if (response.ok) {
+                        // After saving secondary archetypes, proceed with plot line generation
+                        startPlotLineGeneration();
+                    } else {
+                        alert('Error saving secondary character selections');
+                        return;
+                    }
+                })
+                .catch(error => {
+                    alert('Error saving secondary character selections: ' + error.message);
+                    return;
+                });
+            } else {
+                // If not on secondary archetype page, proceed directly with plot line generation
+                startPlotLineGeneration();
+            }
+            
+            return false;
+        }
+        
+        function startPlotLineGeneration() {
             // Disable right panel UI (keep save/load/new buttons enabled)
             const rightPanel = document.querySelector('.right-panel');
             if (rightPanel) {
@@ -649,8 +692,6 @@
                 alert('Network error: ' + error.message);
                 restoreGenerateButton();
             });
-            
-            return false;
         }
         
         function restoreGenerateButton() {
