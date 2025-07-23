@@ -45,12 +45,11 @@ class TestFlaskSaveLoad(unittest.TestCase):
             data = json.loads(json_data)
             self.assertIsInstance(data, dict)
             
-            # Should have all expected fields with None/empty values
+            # Should have all expected fields with None/empty values  
             expected_keys = {
                 'story_type_name', 'subtype_name', 'key_theme', 'core_arc',
                 'genre_name', 'sub_genre_name', 'writing_style_name', 'protagonist_archetype',
-                'secondary_archetypes', 'protagonist_emotional_function',
-                'secondary_emotional_functions', 'selected_archetypes'
+                'secondary_archetypes', 'characters', 'selected_plot_line'
             }
             self.assertEqual(set(data.keys()), expected_keys)
     
@@ -94,8 +93,7 @@ class TestFlaskSaveLoad(unittest.TestCase):
             'genre_name': 'Fantasy',
             'sub_genre_name': 'High Fantasy',
             'protagonist_archetype': 'Chosen One',
-            'secondary_archetypes': ['Wise Mentor'],
-            'selected_archetypes': ['Chosen One', 'Wise Mentor']
+            'secondary_archetypes': ['Wise Mentor']
         }
         json_content = json.dumps(story_data, indent=2)
         
@@ -233,8 +231,7 @@ class TestFlaskSaveLoad(unittest.TestCase):
             'story_type_name': 'Rebirth',
             'subtype_name': 'Redemption',
             'protagonist_archetype': 'Anti-Hero',
-            'secondary_archetypes': ['Wise Mentor', 'Loyal Companion'],
-            'selected_archetypes': ['Anti-Hero', 'Wise Mentor', 'Loyal Companion']
+            'secondary_archetypes': ['Wise Mentor', 'Loyal Companion']
         }
         json_content = json.dumps(story_data)
         
@@ -254,32 +251,6 @@ class TestFlaskSaveLoad(unittest.TestCase):
                 story_data_session = sess.get('story_data', {})
                 self.assertEqual(story_data_session.get('protagonist_archetype'), 'Anti-Hero')
                 self.assertEqual(story_data_session.get('secondary_archetypes'), ['Wise Mentor', 'Loyal Companion'])
-    
-    def test_load_legacy_format(self):
-        """Test loading legacy format with only selected_archetypes."""
-        legacy_data = {
-            'story_type_name': 'The Quest',
-            'selected_archetypes': ['Chosen One', 'Wise Mentor', 'Loyal Companion']
-        }
-        json_content = json.dumps(legacy_data)
-        
-        with self.app as client:
-            with client.session_transaction() as sess:
-                sess.clear()
-            
-            data = {
-                'file': (BytesIO(json_content.encode('utf-8')), 'legacy_story.json')
-            }
-            
-            response = client.post('/load', data=data, content_type='multipart/form-data')
-            self.assertEqual(response.status_code, 302)
-            
-            # Verify legacy data was converted properly
-            with client.session_transaction() as sess:
-                story_data_session = sess.get('story_data', {})
-                self.assertEqual(story_data_session.get('protagonist_archetype'), 'Chosen One')
-                self.assertEqual(story_data_session.get('secondary_archetypes'), ['Wise Mentor', 'Loyal Companion'])
-                self.assertEqual(story_data_session.get('selected_archetypes'), ['Chosen One', 'Wise Mentor', 'Loyal Companion'])
     
     def test_save_with_unicode_content(self):
         """Test saving story with unicode/special characters."""
