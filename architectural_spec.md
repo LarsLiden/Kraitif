@@ -11,9 +11,10 @@ Kraitif/
 ├── app.py                    # Main Flask application and routing
 ├── story.py                  # Core Story model and business logic
 ├── story_types.py           # Story type definitions and registry
-├── archetype.py             # Character archetype registry and models
-├── emotional_function.py    # Emotional function registry and models
-├── functional_role.py       # Functional role registry and models
+├── archetype.py             # Character archetype registry, models, and ArchetypeEnum
+├── emotional_function.py    # Emotional function registry, models, and EmotionalFunctionEnum
+├── functional_role.py       # Functional role registry, models, and FunctionalRoleEnum
+├── character.py             # Character class combining archetype, functional role, emotional function
 ├── genre.py                 # Genre/sub-genre registry and models  
 ├── style.py                 # Writing style registry and models
 ├── launch.py                # Simple application launcher
@@ -137,9 +138,25 @@ SubType:
 
 #### Character Archetype Model
 ```python
+ArchetypeEnum:
+    - CHOSEN_ONE = "Chosen One"
+    - WISE_MENTOR = "Wise Mentor"
+    - ... (108 total archetypes)
+
 Archetype:
     - name: str          # e.g., "Chosen One"
     - description: str   # Detailed character description
+```
+
+#### Character Model
+```python
+Character:
+    - name: str                         # Character's name
+    - archetype: ArchetypeEnum          # Character's archetypal role
+    - functional_role: FunctionalRoleEnum  # Character's narrative function
+    - emotional_function: EmotionalFunctionEnum  # Character's emotional purpose
+    - backstory: str                    # Character's background
+    - character_arc: str                # Character's development arc
 ```
 
 #### Genre Hierarchy
@@ -165,14 +182,34 @@ Style:
 ```
 
 #### Emotional Function Model
+```python
+EmotionalFunctionEnum:
+    - SYMPATHETIC_CHARACTER = "Sympathetic Character"
+    - UNSYMPATHETIC_CHARACTER = "Unsympathetic Character"
+    - CATALYST = "Catalyst"
+    - OBSERVER = "Observer"
+    - INSTIGATOR = "Instigator"
+    - VICTIM = "Victim"
+    - AGGRESSOR = "Aggressor"
+    - MEDIATOR = "Mediator"
+
 EmotionalFunction:
     - name: str          # e.g., "Catalyst"
     - description: str   # Emotional role description
+```
 
 #### Functional Role Model
+```python
+FunctionalRoleEnum:
+    - PROTAGONIST = "Protagonist"
+    - ANTAGONIST = "Antagonist"
+    - MENTOR = "Mentor"
+    - ... (20 total functional roles)
+
 FunctionalRole:
     - name: str          # e.g., "Protagonist"
     - description: str   # Detailed role description
+```
 
 ## Data Flow Architecture
 
