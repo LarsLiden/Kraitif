@@ -289,7 +289,7 @@ All step forms follow consistent pattern:
 - **Jinja2 Filters**: Custom filters for data formatting (e.g., arrow_format)
 - **Context Processors**: Automatic story state injection into templates
 - **Static Assets**: CSS and JavaScript for UI interactions
-- **UI State Management**: JavaScript-based enabling/disabling of interface elements during async operations
+- **UI State Management**: JavaScript-based content replacement for intermediate states during async operations
 
 ### AI Integration and Debugging
 - **Prompt Categorization**: `PromptType` enum for categorizing different AI prompts

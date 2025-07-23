@@ -176,14 +176,14 @@ When navigating back to edit a previous step:
 - **Checkbox Groups**: Multi-selection elements (secondary characters)
 - **Expandable Panels**: Rich information display for story type and subtype details
 - **Auto-submit Forms**: Theme, arc, and genre selections automatically submit on click
-- **UI Disable/Enable States**: Right panel becomes disabled during plot line generation while preserving access to Save/Load/New buttons
+- **Intermediate Page States**: Right panel content is replaced with an intermediate "generating plot lines" page during AI processing, while preserving access to Save/Load/New buttons in the left panel
 
 ### Visual Design Principles
 - **Black Background Theme**: Dark theme for comfortable extended use
 - **Responsive Design**: Works on mobile and desktop
 - **Hover Effects**: Interactive feedback on all selectable elements  
 - **Progressive Enhancement**: Core functionality works without JavaScript
-- **Loading States**: UI disabling with visual feedback during asynchronous operations like plot line generation
+- **Loading States**: Intermediate page replaces right panel content during asynchronous operations like plot line generation, providing visual feedback without disabling UI controls
 
 ### Page Title and Subtitle System
 - **Consistent Title Structure**: All selection pages use consistent titles starting with "Select" (e.g., "Select Story Type", "Select a Genre")
