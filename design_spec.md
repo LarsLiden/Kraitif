@@ -28,6 +28,20 @@ Each story type contains 3 subtypes (21 total), narrative rhythm patterns, emoti
 ### Character Archetypes
 108 character archetypes representing universal character patterns found across literature and media. Each archetype includes a name and descriptive explanation of the character's role and motivations.
 
+
+### Emotional Functions
+8 emotional functions that define the emotional role a character serves in the story:
+- **Sympathetic Character**: Evokes empathy; often deeply vulnerable
+- **Unsympathetic Character**: Hard to like but may still compel or challenge the protagonist
+- **Catalyst**: Pushes others to change without changing much themselves
+- **Observer**: Exists at the margins, often revealing truths unnoticed
+- **Instigator**: Creates disruptions that force growth or conflict
+- **Victim**: Suffers due to external forces, evoking sorrow or motivation
+- **Aggressor**: Causes harm, either directly or through manipulation
+- **Mediator**: Resolves conflicts between other characters
+
+Each emotional function includes a name and descriptive explanation of the emotional role the character serves.
+
 ### Functional Roles
 20 fundamental functional roles that define how characters function within a narrative structure (Protagonist, Antagonist, Mentor, etc.). Each functional role includes a name and description of the character's narrative purpose and relationship to the plot and other characters.
 
@@ -63,6 +77,10 @@ class Story:
     # Archetype selections
     protagonist_archetype: Optional[str] # Single protagonist choice
     secondary_archetypes: List[str]     # Multiple secondary characters
+    
+    # Emotional Function selections
+    protagonist_emotional_function: Optional[str] # Protagonist's emotional role
+    secondary_emotional_functions: List[str]      # Secondary characters' emotional roles
 ```
 
 ### Registry Pattern
@@ -71,6 +89,7 @@ All narrative elements use a registry pattern for centralized access:
 - `ArchetypeRegistry` - Manages character archetypes  
 - `GenreRegistry` - Manages genres and sub-genres
 - `StyleRegistry` - Manages writing styles
+- `EmotionalFunctionRegistry` - Manages emotional functions for characters
 - `FunctionalRoleRegistry` - Manages functional roles
 
 ### Data Flow Dependencies
