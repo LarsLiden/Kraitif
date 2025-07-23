@@ -441,7 +441,7 @@ class Story:
                     )
                     self.set_selected_plot_line(plot_line)
             
-            # Load archetype fields - convert strings to enums for backward compatibility
+            # Load archetype fields - convert strings to enums
             protagonist_archetype_str = data.get('protagonist_archetype')
             if protagonist_archetype_str:
                 self.set_protagonist_archetype(protagonist_archetype_str)
@@ -449,15 +449,6 @@ class Story:
             secondary_archetypes_strs = data.get('secondary_archetypes', [])
             if secondary_archetypes_strs:
                 self.set_secondary_archetypes(secondary_archetypes_strs)
-            
-            # Handle legacy format with 'selected_archetypes' field
-            selected_archetypes = data.get('selected_archetypes')
-            if selected_archetypes and isinstance(selected_archetypes, list) and not protagonist_archetype_str and not secondary_archetypes_strs:
-                # Convert legacy format: first archetype is protagonist, rest are secondary
-                if len(selected_archetypes) > 0:
-                    self.set_protagonist_archetype(selected_archetypes[0])
-                if len(selected_archetypes) > 1:
-                    self.set_secondary_archetypes(selected_archetypes[1:])
                 
             return True
         except (json.JSONDecodeError, KeyError, TypeError):

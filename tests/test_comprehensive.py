@@ -173,7 +173,6 @@ class TestEdgeCases(unittest.TestCase):
         malformed_cases = [
             '{"story_type_name": "Valid", "secondary_archetypes": "should_be_list"}',
             '{"story_type_name": 123}',  # Wrong type
-            '{"selected_archetypes": {"not": "a_list"}}',  # Wrong type
             '{"story_type_name": "Test", "extra_unknown_field": "ignored"}',  # Extra fields
         ]
         

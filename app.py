@@ -128,7 +128,6 @@ def save_story_to_session(story):
         'writing_style_name': story.writing_style.name if story.writing_style else None,
         'protagonist_archetype': story.protagonist_archetype.value if story.protagonist_archetype else None,
         'secondary_archetypes': [archetype.value for archetype in story.secondary_archetypes],
-        'selected_archetypes': ([story.protagonist_archetype.value] + [archetype.value for archetype in story.secondary_archetypes]) if story.protagonist_archetype else [archetype.value for archetype in story.secondary_archetypes],
         'selected_plot_line': story.selected_plot_line.to_dict() if story.selected_plot_line else None
     }
     session.modified = True
