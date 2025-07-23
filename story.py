@@ -288,6 +288,17 @@ class Story:
                     lines.append(f"  • {archetype_name}")
                     if archetype:
                         lines.append(f"    Description: {archetype.description}")
+            elif self.protagonist_archetype and self.sub_genre:
+                # If no secondary characters are selected, suggest typical ones for the sub-genre
+                typical_secondary = [arch for arch in self.get_typical_archetypes() 
+                                   if arch != self.protagonist_archetype]
+                if typical_secondary:
+                    lines.append("Suggested Secondary Characters (typical for this genre):")
+                    for archetype_name in typical_secondary:
+                        archetype = self._archetype_registry.get_archetype(archetype_name)
+                        lines.append(f"  • {archetype_name}")
+                        if archetype:
+                            lines.append(f"    Description: {archetype.description}")
             
             # Legacy fallback
             elif self.selected_archetypes and not self.protagonist_archetype:
