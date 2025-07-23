@@ -509,6 +509,48 @@ h3 {
     background-color: #357abd;
 }
 
+/* Plot lines panel specific styles */
+#plotlines-panel .section-content {
+    max-height: 150px;
+    overflow-y: auto;
+    line-height: 1.4;
+    margin-top: 5px;
+}
+
+#plotlines-panel .section-title {
+    color: #4CAF50;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+/* Regenerate button styling */
+#regenerate-plotlines-button {
+    background: none;
+    border: none;
+    color: #4CAF50;
+    font-size: 1.1em;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 3px;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+}
+
+#regenerate-plotlines-button:hover {
+    background-color: rgba(76, 175, 80, 0.2);
+    color: #5CBF60;
+    transform: scale(1.1);
+}
+
+#regenerate-plotlines-button:active {
+    transform: scale(0.95);
+}
+
 /* Flash messages */
 .flash-messages {
     margin-bottom: 20px;

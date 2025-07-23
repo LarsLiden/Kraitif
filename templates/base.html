@@ -388,6 +388,21 @@
                                 {% endif %}
                                 {% endif %}
 
+                                <!-- Plot Lines expandable panel - appears after plot lines are generated -->
+                                <div class="expandable-panel" id="plotlines-panel" style="display: none;">
+                                    <div class="expandable-panel-header" onclick="togglePlotlineDetails()">
+                                        <div class="expandable-panel-label">
+                                            <strong>Generated Plot Lines:</strong> <span id="plotlines-count">5 plot ideas</span>
+                                        </div>
+                                        <div class="panel-controls">
+                                            <button class="edit-button" id="regenerate-plotlines-button" onclick="regeneratePlotLines(event)" title="Regenerate Plot Lines">🔄</button>
+                                            <span class="expand-arrow" id="plotlines-expand-arrow">▶</span>
+                                        </div>
+                                    </div>
+                                    <div class="expandable-panel-content" id="plotline-details-content">
+                                        <div id="plotlines-list"></div>
+                                    </div>
+                                </div>
                                 
                                 <!-- Note and Generate plot lines button - appears when user has reached protagonist archetype selection -->
                                 {% if story_data and story_data.get('protagonist_archetype') %}
@@ -575,6 +590,100 @@
             }
         }
         
+        function togglePlotlineDetails() {
+            const content = document.getElementById('plotline-details-content');
+            const arrow = document.getElementById('plotlines-expand-arrow');
+            
+            if (content && arrow) {
+                if (content.style.display === 'none' || content.style.display === '') {
+                    content.style.display = 'block';
+                    arrow.textContent = '▼';
+                } else {
+                    content.style.display = 'none';
+                    arrow.textContent = '▶';
+                }
+            }
+        }
+        
+        function displayGeneratedPlotLines(plotLines) {
+            const plotlinesPanel = document.getElementById('plotlines-panel');
+            const plotlinesList = document.getElementById('plotlines-list');
+            const plotlinesCount = document.getElementById('plotlines-count');
+            
+            if (!plotlinesPanel || !plotlinesList || !plotlinesCount) return;
+            
+            // Update count
+            plotlinesCount.textContent = `${plotLines.length} plot ideas`;
+            
+            // Clear and populate plot lines list
+            plotlinesList.innerHTML = '';
+            plotLines.forEach((plotLine, index) => {
+                const plotLineElement = document.createElement('div');
+                plotLineElement.className = 'section';
+                
+                const titleElement = document.createElement('div');
+                titleElement.className = 'section-title';
+                titleElement.textContent = `${index + 1}. ${plotLine.name}`;
+                
+                const contentElement = document.createElement('div');
+                contentElement.className = 'section-content';
+                contentElement.textContent = plotLine.plotline;
+                
+                plotLineElement.appendChild(titleElement);
+                plotLineElement.appendChild(contentElement);
+                plotlinesList.appendChild(plotLineElement);
+            });
+            
+            // Show the panel
+            plotlinesPanel.style.display = 'block';
+        }
+        
+        function regeneratePlotLines(event) {
+            event.preventDefault();
+            event.stopPropagation(); // Prevent the toggle from firing
+            
+            // Confirm with user
+            if (!confirm('Are you sure you want to regenerate the plot lines? This will replace the current ones.')) {
+                return;
+            }
+            
+            // Hide the plot lines panel and show loading
+            const plotlinesPanel = document.getElementById('plotlines-panel');
+            const loadingIndicator = document.getElementById('left-panel-loading');
+            
+            if (plotlinesPanel) plotlinesPanel.style.display = 'none';
+            if (loadingIndicator) loadingIndicator.style.display = 'block';
+            
+            // Make API call to regenerate plot lines
+            fetch('/generate-plot-lines', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (loadingIndicator) loadingIndicator.style.display = 'none';
+                
+                if (data.success && data.plot_lines) {
+                    displayGeneratedPlotLines(data.plot_lines);
+                    // Also store in sessionStorage for the completion page
+                    sessionStorage.setItem('generated_plot_lines', JSON.stringify(data.plot_lines));
+                    sessionStorage.setItem('plot_lines_generated', 'true');
+                } else {
+                    alert('Error regenerating plot lines: ' + (data.error || 'Unknown error'));
+                    // Show the panel again if there was an error
+                    if (plotlinesPanel) plotlinesPanel.style.display = 'block';
+                }
+            })
+            .catch(error => {
+                if (loadingIndicator) loadingIndicator.style.display = 'none';
+                alert('Network error: ' + error.message);
+                // Show the panel again if there was an error
+                if (plotlinesPanel) plotlinesPanel.style.display = 'block';
+            });
+        }
+        
         function handleGeneratePlotLines(event) {
             // Always prevent default action since this is now a button
             event.preventDefault();
@@ -599,13 +708,14 @@
             })
             .then(response => response.json())
             .then(data => {
+                if (loadingIndicator) loadingIndicator.style.display = 'none';
+                
                 if (data.success && data.plot_lines) {
+                    // Display plot lines in the sidebar
+                    displayGeneratedPlotLines(data.plot_lines);
                     // Store plot lines in sessionStorage for the completion page
                     sessionStorage.setItem('generated_plot_lines', JSON.stringify(data.plot_lines));
                     sessionStorage.setItem('plot_lines_generated', 'true');
-                    
-                    // Navigate to story completion page
-                    window.location.href = '/complete-story-selection';
                 } else {
                     // Show error and restore UI
                     alert('Error generating plot lines: ' + (data.error || 'Unknown error'));
