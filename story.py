@@ -415,7 +415,6 @@ class Story:
             'secondary_archetypes': self.secondary_archetypes,
             'protagonist_emotional_function': self.protagonist_emotional_function,
             'secondary_emotional_functions': self.secondary_emotional_functions,
-            'selected_archetypes': self.selected_archetypes  # Keep for backward compatibility
             'selected_archetypes': self.selected_archetypes,  # Keep for backward compatibility
             'selected_plot_line': self.selected_plot_line.to_dict() if self.selected_plot_line else None
         }
