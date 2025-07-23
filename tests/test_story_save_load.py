@@ -229,9 +229,8 @@ class TestStorySaveLoad(unittest.TestCase):
         data = json.loads(json_str)
         expected_keys = {
             'story_type_name', 'subtype_name', 'key_theme', 'core_arc',
-            'genre_name', 'sub_genre_name', 'writing_style_name', 'protagonist_archetype',
-            'secondary_archetypes', 'protagonist_emotional_function',
-            'secondary_emotional_functions',
+            'genre_name', 'sub_genre_name', 'writing_style_name', 'characters',
+            'selected_plot_line',
         }
         self.assertEqual(set(data.keys()), expected_keys)
     

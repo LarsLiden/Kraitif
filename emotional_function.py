@@ -6,8 +6,21 @@ This module implements emotional functions for character development in stories.
 
 from typing import List, Optional
 from dataclasses import dataclass
+from enum import Enum
 import json
 import os
+
+
+class EmotionalFunctionEnum(Enum):
+    """Enum for emotional function names."""
+    SYMPATHETIC_CHARACTER = "Sympathetic Character"
+    UNSYMPATHETIC_CHARACTER = "Unsympathetic Character"
+    CATALYST = "Catalyst"
+    OBSERVER = "Observer"
+    INSTIGATOR = "Instigator"
+    VICTIM = "Victim"
+    AGGRESSOR = "Aggressor"
+    MEDIATOR = "Mediator"
 
 
 @dataclass
