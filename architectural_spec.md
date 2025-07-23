@@ -12,6 +12,7 @@ Kraitif/
 ├── story.py                  # Core Story model and business logic
 ├── story_types.py           # Story type definitions and registry
 ├── archetype.py             # Character archetype registry and models
+├── functional_role.py       # Functional role registry and models
 ├── genre.py                 # Genre/sub-genre registry and models  
 ├── style.py                 # Writing style registry and models
 ├── launch.py                # Simple application launcher
@@ -19,6 +20,7 @@ Kraitif/
 ├── requirements.txt         # Python dependencies
 ├── data/                    # Narrative data files
 │   ├── archetypes.jsonl     # Character archetype definitions
+│   ├── functional_roles.json # Functional role definitions
 │   └── [other data files]  # Genre, style data (JSON format)
 ├── templates/               # Jinja2 HTML templates
 │   ├── base.html           # Base layout with two-panel structure
@@ -38,6 +40,7 @@ Kraitif/
     ├── test_story_types.py
     ├── test_comprehensive.py
     ├── test_flask_save_load.py
+    ├── test_functional_role.py
     └── [other test files]
 ```
 
@@ -98,6 +101,11 @@ Kraitif/
 - Provides search across style descriptions and characteristics
 - Supports style-based guidance for writing approach
 
+**FunctionalRoleRegistry** (`functional_role.py`):
+- Manages 20 functional roles defining narrative character functions
+- Provides case-insensitive lookup with name normalization
+- Supports search across role names and descriptions
+
 ### Data Models
 
 #### Story Type Hierarchy
@@ -145,6 +153,13 @@ Style:
     - description: str             # Style overview
     - characteristics: List[str]   # Specific traits
     - examples: List[str]         # Example authors/works
+```
+
+#### Functional Role Model
+```python
+FunctionalRole:
+    - name: str          # e.g., "Protagonist"
+    - description: str   # Detailed role description
 ```
 
 ## Data Flow Architecture
