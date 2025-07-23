@@ -17,14 +17,19 @@ Kraitif/
 ├── character.py             # Character class combining archetype, functional role, emotional function
 ├── genre.py                 # Genre/sub-genre registry and models  
 ├── style.py                 # Writing style registry and models
+├── prompt_types.py          # Prompt type enumeration for AI debugging
 ├── launch.py                # Simple application launcher
 ├── demo.py                  # Command-line demo script
 ├── requirements.txt         # Python dependencies
+├── ai/                      # AI integration module
+│   └── ai_client.py         # Azure OpenAI client with debugging support
 ├── data/                    # Narrative data files
 │   ├── archetypes.jsonl     # Character archetype definitions
 │   ├── emotional_functions.json # Emotional function definitions
 │   ├── functional_roles.json # Functional role definitions
 │   └── [other data files]  # Genre, style data (JSON format)
+├── debug/                   # AI prompt debugging files (excluded from git)
+│   └── plot_lines.txt       # Latest plot generation prompt and response
 ├── templates/               # Jinja2 HTML templates
 │   ├── base.html           # Base layout with two-panel structure
 │   ├── story_types.html    # Story type selection page
@@ -45,6 +50,7 @@ Kraitif/
     ├── test_comprehensive.py
     ├── test_flask_save_load.py
     ├── test_functional_role.py
+    ├── test_prompt_debugging.py  # AI debugging functionality tests
     └── [other test files]
 ```
 
@@ -61,6 +67,7 @@ Kraitif/
 - Form processing and validation
 - File upload/download for save/load functionality
 - Asynchronous plot line generation with UI state management
+- AI integration with prompt type categorization for debugging
 
 **Key Functions**:
 - `get_story_from_session()` - Reconstruct Story object from session data
@@ -181,6 +188,13 @@ Style:
     - examples: List[str]         # Example authors/works
 ```
 
+#### Prompt Type Model
+```python
+PromptType(Enum):
+    - PLOT_LINES = "plot_lines"
+    # Additional types can be added as needed
+```
+
 #### Emotional Function Model
 ```python
 EmotionalFunctionEnum:
@@ -267,12 +281,20 @@ All step forms follow consistent pattern:
 - **JSON/JSONL Files**: Narrative data loaded at application startup
 - **File System**: Save/load functionality for story configurations
 - **Session Storage**: Flask session for temporary state persistence
+- **Azure OpenAI**: AI service integration for plot generation with debugging
+- **Debug Files**: Local file system storage for AI prompt/response debugging
 
 ### Template Integration
 - **Jinja2 Filters**: Custom filters for data formatting (e.g., arrow_format)
 - **Context Processors**: Automatic story state injection into templates
 - **Static Assets**: CSS and JavaScript for UI interactions
 - **UI State Management**: JavaScript-based enabling/disabling of interface elements during async operations
+
+### AI Integration and Debugging
+- **Prompt Categorization**: `PromptType` enum for categorizing different AI prompts
+- **Debug File Management**: Automatic saving of prompts and responses to categorized files
+- **Error Handling**: Graceful handling of AI service failures with debug logging
+- **File Organization**: Debug files named by prompt type for easy identification
 
 ### Testing Integration
 - **Unit Tests**: Individual component validation

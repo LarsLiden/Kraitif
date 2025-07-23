@@ -2,6 +2,8 @@
 
 # Required packages
 import base64
+import os
+from datetime import datetime
 from openai import AzureOpenAI
 from azure.identity import (
     ChainedTokenCredential,
@@ -9,6 +11,7 @@ from azure.identity import (
     ManagedIdentityCredential,
     get_bearer_token_provider,
 )
+from prompt_types import PromptType
 
 # Global client instance
 _client = None
@@ -41,12 +44,13 @@ def get_ai_client():
     return _client
 
 
-def get_ai_response(prompt, chat_history=None, context_data=None, selected_context=None):
+def get_ai_response(prompt, prompt_type, chat_history=None, context_data=None, selected_context=None):
     """
-    Get AI response with optional structured data extraction.
+    Get AI response with optional structured data extraction and debugging.
 
     Args:
         prompt (str): The user's message
+        prompt_type (PromptType): The type of prompt for debugging categorization
         chat_history (list): Optional list of previous messages
         context_data (dict): Optional context data (can be all available topics or specific context)
         selected_context (dict): Optional selected context from user selections
@@ -91,9 +95,59 @@ def get_ai_response(prompt, chat_history=None, context_data=None, selected_conte
         print("===============RESPONSE=================")
         print(response)
 
+        # Save prompt and response to debug files
+        _save_debug_files(prompt, response, prompt_type)
+
         return response
 
     except Exception as e:
         # Return error message instead of raising
-        return f"Error: {str(e)}"
+        error_msg = f"Error: {str(e)}"
+        # Still save debug files for errors
+        try:
+            _save_debug_files(prompt, error_msg, prompt_type)
+        except:
+            pass  # Don't let debug file saving errors break the main flow
+        return error_msg
+
+
+def _save_debug_files(prompt, response, prompt_type):
+    """
+    Save prompt and response to debug files for debugging purposes.
+    
+    Args:
+        prompt (str): The prompt text sent to AI
+        response (str): The response received from AI
+        prompt_type (PromptType): The type of prompt for file naming
+    """
+    try:
+        # Create debug directory if it doesn't exist
+        debug_dir = "debug"
+        if not os.path.exists(debug_dir):
+            os.makedirs(debug_dir)
+        
+        # Use prompt type value for filename
+        filename = f"{prompt_type.value}.txt"
+        filepath = os.path.join(debug_dir, filename)
+        
+        # Create content with timestamp, prompt, and response
+        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        content = f"""Timestamp: {timestamp}
+Prompt Type: {prompt_type.value}
+
+===============PROMPT=================
+{prompt}
+
+===============RESPONSE=================
+{response}
+"""
+        
+        # Write to file (overwrite existing)
+        with open(filepath, 'w', encoding='utf-8') as f:
+            f.write(content)
+            
+    except Exception as e:
+        # Don't let debug file saving errors break the main flow
+        print(f"Warning: Could not save debug files: {e}")
+        pass
 

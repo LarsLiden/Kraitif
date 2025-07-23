@@ -224,11 +224,20 @@ Generate structured prompt text containing:
 - Individual step templates extend base and focus on right panel content
 - Consistent data passing includes story object and all registry objects
 
+### AI Integration and Debugging
+- AI prompts are categorized using `PromptType` enum for debugging purposes
+- All AI interactions are logged to debug files in `/debug` folder
+- Debug files are named using the prompt type (e.g., `plot_lines.txt`)
+- Each debug file contains timestamp, prompt type, original prompt, and AI response
+- Debug files are overwritten on each request to maintain only the latest interaction
+- The `/debug` folder is excluded from version control
+
 ### Error Handling Patterns
 - Flash messages for user feedback on validation errors
 - Graceful fallbacks for missing data or invalid selections
 - Redirect chains ensure users cannot access steps without prerequisites
 - UI state restoration after failed asynchronous operations (e.g., plot line generation failures)
+- Debug file creation errors are handled gracefully without breaking main application flow
 
 ### Data Loading Strategy
 - Registries load from JSON/JSONL files in `/data` directory at startup
