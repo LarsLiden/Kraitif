@@ -13,6 +13,7 @@ Kraitif/
 ├── story_types.py           # Story type definitions and registry
 ├── archetype.py             # Character archetype registry and models
 ├── emotional_function.py    # Emotional function registry and models
+├── functional_role.py       # Functional role registry and models
 ├── genre.py                 # Genre/sub-genre registry and models  
 ├── style.py                 # Writing style registry and models
 ├── launch.py                # Simple application launcher
@@ -21,6 +22,7 @@ Kraitif/
 ├── data/                    # Narrative data files
 │   ├── archetypes.jsonl     # Character archetype definitions
 │   ├── emotional_functions.json # Emotional function definitions
+│   ├── functional_roles.json # Functional role definitions
 │   └── [other data files]  # Genre, style data (JSON format)
 ├── templates/               # Jinja2 HTML templates
 │   ├── base.html           # Base layout with two-panel structure
@@ -41,6 +43,7 @@ Kraitif/
     ├── test_emotional_function.py
     ├── test_comprehensive.py
     ├── test_flask_save_load.py
+    ├── test_functional_role.py
     └── [other test files]
 ```
 
@@ -106,6 +109,11 @@ Kraitif/
 - Provides lookup and search functionality for emotional functions
 - Supports emotional characterization in story development
 
+**FunctionalRoleRegistry** (`functional_role.py`):
+- Manages 20 functional roles defining narrative character functions
+- Provides case-insensitive lookup with name normalization
+- Supports search across role names and descriptions
+
 ### Data Models
 
 #### Story Type Hierarchy
@@ -156,11 +164,14 @@ Style:
 ```
 
 #### Emotional Function Model
-```python
 EmotionalFunction:
     - name: str          # e.g., "Catalyst"
     - description: str   # Emotional role description
-```
+
+#### Functional Role Model
+FunctionalRole:
+    - name: str          # e.g., "Protagonist"
+    - description: str   # Detailed role description
 
 ## Data Flow Architecture
 

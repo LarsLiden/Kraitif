@@ -1,0 +1,84 @@
+{
+  "functional_roles": [
+    {
+      "name": "Protagonist",
+      "description": "Central character whose journey drives the plot."
+    },
+    {
+      "name": "Antagonist", 
+      "description": "Opposes the protagonist; creates conflict and tension."
+    },
+    {
+      "name": "Deuteragonist",
+      "description": "Second most important character; often ally or rival to protagonist."
+    },
+    {
+      "name": "Tritagonist",
+      "description": "Third-tier character; may offer support, contrast, or narrative depth."
+    },
+    {
+      "name": "Foil",
+      "description": "Highlights traits of another character through contrast."
+    },
+    {
+      "name": "Supporting Character",
+      "description": "Adds richness and helps progress the story; friends, sidekicks, mentors, etc."
+    },
+    {
+      "name": "Confidant(e)",
+      "description": "Trusted character with whom the protagonist shares secrets."
+    },
+    {
+      "name": "Narrator",
+      "description": "Tells the story; may be involved or external to action."
+    },
+    {
+      "name": "Love Interest",
+      "description": "Romantic counterpart that impacts emotional stakes."
+    },
+    {
+      "name": "Comic Relief",
+      "description": "Injects humor and alleviates tension."
+    },
+    {
+      "name": "Mentor",
+      "description": "Guides the protagonist with wisdom or skills."
+    },
+    {
+      "name": "Sidekick",
+      "description": "Loyal companion who supports the protagonist's quest."
+    },
+    {
+      "name": "Guardian / Gatekeeper",
+      "description": "Controls access to information or thresholds in the story."
+    },
+    {
+      "name": "Herald",
+      "description": "Signals change or calls the protagonist to action."
+    },
+    {
+      "name": "Shapeshifter",
+      "description": "Ambiguous or unstable allegiance; may switch sides."
+    },
+    {
+      "name": "Tempter / Temptress",
+      "description": "Entices the protagonist toward distraction or destruction."
+    },
+    {
+      "name": "Trickster",
+      "description": "Mischievous and unpredictable, often disrupting order."
+    },
+    {
+      "name": "Villain",
+      "description": "Principal antagonist with malicious intent or opposing goals."
+    },
+    {
+      "name": "Anti-Hero",
+      "description": "Flawed protagonist lacking traditional heroic qualities."
+    },
+    {
+      "name": "Everyman",
+      "description": "Relatable character who represents the ordinary person."
+    }
+  ]
+}

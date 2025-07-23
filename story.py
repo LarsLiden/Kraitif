@@ -11,7 +11,8 @@ from archetype import ArchetypeRegistry
 from style import Style, StyleRegistry
 from story_types import StoryTypeRegistry
 from emotional_function import EmotionalFunction, EmotionalFunctionRegistry
-
+from plot_line import PlotLine
+from functional_role import FunctionalRole, FunctionalRoleRegistry
 
 class Story:
     """Represents a story with user-selected genre and sub-genre."""
@@ -25,6 +26,8 @@ class Story:
         self._style_registry = StyleRegistry()
         self._story_type_registry = StoryTypeRegistry()
         self._emotional_function_registry = EmotionalFunctionRegistry()
+        self._functional_role_registry = FunctionalRoleRegistry()
+
         # Story type selections
         self.story_type_name: Optional[str] = None
         self.subtype_name: Optional[str] = None
@@ -40,6 +43,12 @@ class Story:
         self.secondary_emotional_functions: List[str] = []
         # Keep legacy field for backward compatibility
         self.selected_archetypes: List[str] = []
+
+        # Plot line selection
+        self.selected_plot_line: Optional[PlotLine] = None
+
+        # Functional role selection
+        self.functional_role: Optional[FunctionalRole] = None
     
     def set_story_type_selection(self, story_type_name: str, subtype_name: str, 
                                 key_theme: Optional[str] = None, core_arc: Optional[str] = None) -> None:
@@ -95,6 +104,18 @@ class Story:
     def get_available_emotional_functions(self) -> List[EmotionalFunction]:
         """Get all available emotional functions."""
         return self._emotional_function_registry.get_all_emotional_functions()
+      
+    def set_functional_role(self, role_name: str) -> bool:
+        """Set the functional role by name. Returns True if successful."""
+        role = self._functional_role_registry.get_functional_role(role_name)
+        if role:
+            self.functional_role = role
+            return True
+        return False
+    
+    def get_available_functional_roles(self) -> List[FunctionalRole]:
+        """Get all available functional roles."""
+        return self._functional_role_registry.get_all_functional_roles()
     
     def set_genre(self, genre_name: str) -> bool:
         """Set the story genre by name. Returns True if successful."""
@@ -364,6 +385,21 @@ class Story:
         
         return "\n".join(lines)
     
+    def set_selected_plot_line(self, plot_line: PlotLine) -> bool:
+        """Set the selected plot line for the story."""
+        if plot_line and hasattr(plot_line, 'name') and hasattr(plot_line, 'plotline'):
+            self.selected_plot_line = plot_line
+            return True
+        return False
+    
+    def get_selected_plot_line(self) -> Optional[PlotLine]:
+        """Get the selected plot line."""
+        return self.selected_plot_line
+    
+    def clear_selected_plot_line(self) -> None:
+        """Clear the selected plot line."""
+        self.selected_plot_line = None
+    
     def to_json(self) -> str:
         """Serialize story to JSON string."""
         data = {
@@ -374,11 +410,14 @@ class Story:
             'genre_name': self.genre.name if self.genre else None,
             'sub_genre_name': self.sub_genre.name if self.sub_genre else None,
             'writing_style_name': self.writing_style.name if self.writing_style else None,
+            'functional_role_name': self.functional_role.name if self.functional_role else None,
             'protagonist_archetype': self.protagonist_archetype,
             'secondary_archetypes': self.secondary_archetypes,
             'protagonist_emotional_function': self.protagonist_emotional_function,
             'secondary_emotional_functions': self.secondary_emotional_functions,
             'selected_archetypes': self.selected_archetypes  # Keep for backward compatibility
+            'selected_archetypes': self.selected_archetypes,  # Keep for backward compatibility
+            'selected_plot_line': self.selected_plot_line.to_dict() if self.selected_plot_line else None
         }
         return json.dumps(data, indent=2)
     
@@ -411,6 +450,11 @@ class Story:
             if writing_style_name:
                 self.set_writing_style(writing_style_name)
             
+            # Load functional role data
+            functional_role_name = data.get('functional_role_name')
+            if functional_role_name:
+                self.set_functional_role(functional_role_name)
+            
             # Load archetype selections
             protagonist_archetype = data.get('protagonist_archetype')
             if protagonist_archetype:
@@ -433,6 +477,16 @@ class Story:
             selected_archetypes = data.get('selected_archetypes', [])
             if selected_archetypes and not self.protagonist_archetype and not self.secondary_archetypes:
                 self.set_archetypes(selected_archetypes)
+            
+            # Load selected plot line
+            selected_plot_line_data = data.get('selected_plot_line')
+            if selected_plot_line_data and isinstance(selected_plot_line_data, dict):
+                if 'name' in selected_plot_line_data and 'plotline' in selected_plot_line_data:
+                    plot_line = PlotLine(
+                        name=selected_plot_line_data['name'],
+                        plotline=selected_plot_line_data['plotline']
+                    )
+                    self.set_selected_plot_line(plot_line)
                 
             return True
         except (json.JSONDecodeError, KeyError, TypeError):
