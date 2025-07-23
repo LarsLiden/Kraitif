@@ -336,6 +336,23 @@
                                 {% endif %}
                                 {% endif %}
                                 
+                                <!-- Live Secondary Characters selection (on secondary selection page) -->
+                                {% if is_secondary_selection_page and story_data and story_data.get('protagonist_archetype') %}
+                                <div class="expandable-panel">
+                                    <div class="expandable-panel-header" onclick="toggleLiveSecondaryDetails()">
+                                        <div class="expandable-panel-label">
+                                            <strong>Secondary Characters:</strong> <span id="live-secondary-list">none</span>
+                                        </div>
+                                        <div class="panel-controls">
+                                            <span class="expand-arrow" id="live-secondary-expand-arrow">▶</span>
+                                        </div>
+                                    </div>
+                                    <div class="expandable-panel-content" id="live-secondary-details-content">
+                                        <div id="live-secondary-descriptions"></div>
+                                    </div>
+                                </div>
+                                {% endif %}
+                                
                                 <!-- Secondary Characters with expandable details -->
                                 {% if story_data.get('secondary_archetypes') %}
                                 {% if secondary_archetype_objs %}
@@ -370,16 +387,7 @@
                                 </div>
                                 {% endif %}
                                 {% endif %}
-                                {% if story_data.get('selected_archetypes') and not story_data.get('protagonist_archetype') %}
-                                <div class="selection-item">
-                                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                                        <div>
-                                            <strong>Archetypes:</strong> {{ story_data.get('selected_archetypes') | join(', ') }}
-                                        </div>
-                                        <a href="{{ url_for('archetype_selection') }}" class="edit-button" title="Edit Archetypes">✏️</a>
-                                    </div>
-                                </div>
-                                {% endif %}
+
                                 
                                 <!-- Note and Generate plot lines button - appears when user has reached protagonist archetype selection -->
                                 {% if story_data and story_data.get('protagonist_archetype') %}
@@ -552,6 +560,21 @@
             }
         }
         
+        function toggleLiveSecondaryDetails() {
+            const content = document.getElementById('live-secondary-details-content');
+            const arrow = document.getElementById('live-secondary-expand-arrow');
+            
+            if (content && arrow) {
+                if (content.style.display === 'none' || content.style.display === '') {
+                    content.style.display = 'block';
+                    arrow.textContent = '▼';
+                } else {
+                    content.style.display = 'none';
+                    arrow.textContent = '▶';
+                }
+            }
+        }
+        
         function handleGeneratePlotLines(event) {
             // Always prevent default action since this is now a button
             event.preventDefault();
@@ -609,6 +632,64 @@
             if (plotlinesSection) plotlinesSection.style.display = 'block';
             if (loadingIndicator) loadingIndicator.style.display = 'none';
         }
+        
+        // Function to update live secondary characters display
+        function updateLiveSecondaryCharacters() {
+            const checkboxes = document.querySelectorAll('input[name="secondary_archetypes"]:checked');
+            const liveList = document.getElementById('live-secondary-list');
+            const liveDescriptions = document.getElementById('live-secondary-descriptions');
+            
+            if (!liveList || !liveDescriptions) return;
+            
+            if (checkboxes.length === 0) {
+                liveList.textContent = 'none';
+                liveDescriptions.innerHTML = '';
+            } else {
+                const selectedNames = [];
+                const descriptions = [];
+                
+                checkboxes.forEach(checkbox => {
+                    const archetypeCard = checkbox.closest('.archetype-card');
+                    if (archetypeCard) {
+                        const nameElement = archetypeCard.querySelector('.archetype-name');
+                        const descElement = archetypeCard.querySelector('.archetype-description');
+                        if (nameElement && descElement) {
+                            selectedNames.push(nameElement.textContent.trim());
+                            descriptions.push({
+                                name: nameElement.textContent.trim(),
+                                description: descElement.textContent.trim()
+                            });
+                        }
+                    }
+                });
+                
+                liveList.textContent = selectedNames.join(', ');
+                
+                // Build descriptions HTML
+                let descriptionsHtml = '';
+                descriptions.forEach(item => {
+                    descriptionsHtml += `
+                        <div class="section">
+                            <div class="section-title">${item.name}</div>
+                            <div class="section-content">${item.description}</div>
+                        </div>
+                    `;
+                });
+                liveDescriptions.innerHTML = descriptionsHtml;
+            }
+        }
+        
+        // Initialize live secondary characters monitoring on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            // Monitor secondary archetype checkboxes
+            const checkboxes = document.querySelectorAll('input[name="secondary_archetypes"]');
+            checkboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', updateLiveSecondaryCharacters);
+            });
+            
+            // Initial update
+            updateLiveSecondaryCharacters();
+        });
     </script>
 </body>
 </html>
