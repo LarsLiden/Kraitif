@@ -30,7 +30,6 @@
             <pre class="prompt-text">{{ prompt_text }}</pre>
         </div>
         <div class="prompt-actions" id="prompt-actions">
-            <button id="generate-plot-lines-btn" onclick="generatePlotLines()" class="generate-button">🤖 Generate Plot Lines</button>
             <button id="show-prompt-btn" onclick="showPromptText()" class="copy-button" style="display: none;">📝 Show Prompt Text</button>
             <button onclick="copyPromptText()" class="copy-button">📋 Copy Prompt to Clipboard</button>
             <a href="{{ url_for('save_story') }}" class="btn btn-save">💾 Save Story Configuration</a>
@@ -254,8 +253,8 @@ function copyPromptText() {
     }
 }
 
-function generatePlotLines() {
-    const generateBtn = document.getElementById('generate-plot-lines-btn');
+// Global function to be called from left panel button
+function generatePlotLinesFromLeftPanel() {
     const loadingIndicator = document.getElementById('loading-indicator');
     const errorMessage = document.getElementById('error-message');
     const plotLinesContainer = document.getElementById('plot-lines-container');
@@ -263,8 +262,7 @@ function generatePlotLines() {
     const showPromptBtn = document.getElementById('show-prompt-btn');
     const completionMessage = document.querySelector('.completion-message');
     
-    // Hide the button and the note (completion message)
-    generateBtn.style.display = 'none';
+    // Hide the completion message
     if (completionMessage) {
         completionMessage.style.display = 'none';
     }
@@ -293,13 +291,12 @@ function generatePlotLines() {
             // Display plot lines
             displayPlotLines(data.plot_lines);
         } else {
-            // Show error and restore UI
+            // Show error and restore completion message
             const errorText = document.getElementById('error-text');
             errorText.textContent = data.error || 'Unknown error occurred';
             errorMessage.style.display = 'block';
             
-            // Restore button and note on error
-            generateBtn.style.display = 'inline-block';
+            // Restore completion message on error
             if (completionMessage) {
                 completionMessage.style.display = 'block';
             }
@@ -312,8 +309,7 @@ function generatePlotLines() {
         errorText.textContent = 'Network error: ' + error.message;
         errorMessage.style.display = 'block';
         
-        // Restore button and note on error
-        generateBtn.style.display = 'inline-block';
+        // Restore completion message on error
         if (completionMessage) {
             completionMessage.style.display = 'block';
         }
@@ -346,14 +342,12 @@ function showPromptText() {
     const plotLinesContainer = document.getElementById('plot-lines-container');
     const promptContainer = document.getElementById('prompt-text-container');
     const showPromptBtn = document.getElementById('show-prompt-btn');
-    const generateBtn = document.getElementById('generate-plot-lines-btn');
     const completionMessage = document.querySelector('.completion-message');
     
     // Show prompt text and hide plot lines
     plotLinesContainer.style.display = 'none';
     promptContainer.style.display = 'block';
     showPromptBtn.style.display = 'none';
-    generateBtn.style.display = 'inline-block';
     
     // Restore the completion message
     if (completionMessage) {
