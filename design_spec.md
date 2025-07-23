@@ -165,12 +165,14 @@ When navigating back to edit a previous step:
 - **Checkbox Groups**: Multi-selection elements (secondary characters)
 - **Expandable Panels**: Rich information display for story type and subtype details
 - **Auto-submit Forms**: Theme, arc, and genre selections automatically submit on click
+- **UI Disable/Enable States**: Right panel becomes disabled during plot line generation while preserving access to Save/Load/New buttons
 
 ### Visual Design Principles
 - **Black Background Theme**: Dark theme for comfortable extended use
 - **Responsive Design**: Works on mobile and desktop
 - **Hover Effects**: Interactive feedback on all selectable elements  
 - **Progressive Enhancement**: Core functionality works without JavaScript
+- **Loading States**: UI disabling with visual feedback during asynchronous operations like plot line generation
 
 ### Page Title and Subtitle System
 - **Consistent Title Structure**: All selection pages use consistent titles starting with "Select" (e.g., "Select Story Type", "Select a Genre")
@@ -221,6 +223,7 @@ Generate structured prompt text containing:
 - Flash messages for user feedback on validation errors
 - Graceful fallbacks for missing data or invalid selections
 - Redirect chains ensure users cannot access steps without prerequisites
+- UI state restoration after failed asynchronous operations (e.g., plot line generation failures)
 
 ### Data Loading Strategy
 - Registries load from JSON/JSONL files in `/data` directory at startup
