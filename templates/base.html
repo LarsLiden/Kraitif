@@ -417,7 +417,7 @@
                                         <p><strong>Note:</strong> Selection of secondary character archetypes is optional. You can select multiple archetypes or none at all. These will be some of supporting characters in your story. If you don't select any, they will be chosen for you.</p>
                                     </div>
                                 </div>
-                                <div class="generate-plotlines-section" id="generate-plotlines-section">
+                                <div class="generate-plotlines-section" id="generate-plotlines-section" {% if is_story_complete %}style="display: none;"{% endif %}>
                                     <button class="generate-plotlines-button" id="generate-plotlines-button" onclick="handleGeneratePlotLines(event)">
                                         📋 Generate plot lines
                                     </button>
@@ -585,6 +585,21 @@
         function toggleLiveSecondaryDetails() {
             const content = document.getElementById('live-secondary-details-content');
             const arrow = document.getElementById('live-secondary-expand-arrow');
+            
+            if (content && arrow) {
+                if (content.style.display === 'none' || content.style.display === '') {
+                    content.style.display = 'block';
+                    arrow.textContent = '▼';
+                } else {
+                    content.style.display = 'none';
+                    arrow.textContent = '▶';
+                }
+            }
+        }
+        
+        function togglePlotLineDetails() {
+            const content = document.getElementById('plotline-details-content');
+            const arrow = document.getElementById('plotline-expand-arrow');
             
             if (content && arrow) {
                 if (content.style.display === 'none' || content.style.display === '') {
