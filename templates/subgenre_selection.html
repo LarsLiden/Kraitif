@@ -6,9 +6,9 @@
 
 
 <h1>Select a Sub-Genre</h1>
+<p class="page-subtitle">Available {{ story.genre.name }} Sub-Genres</p>
 
 <div class="section">
-    <div class="section-title">Available {{ story.genre.name }} Sub-Genres</div>
     <div class="section-content">
         <form method="POST" action="{{ url_for('update_subgenre_selection') }}" class="story-selection-form">
             <div class="selection-section">

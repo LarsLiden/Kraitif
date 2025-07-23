@@ -137,9 +137,8 @@
 {% block content %}
 
 
-<h1>{{ story_type.name }}</h1>
-
-<h2>Subtypes</h2>
+<h1>Select Story Sub-Type</h1>
+<p class="page-subtitle">Available {{ story_type.name }} Sub-Genres</p>
 <div class="subtypes-grid">
     {% for subtype in story_type.subtypes %}
     <div class="subtype-card" onclick="location.href='{{ url_for('subtype_detail', story_type_name=story_type.name, subtype_name=subtype.name) }}'">
