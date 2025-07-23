@@ -42,7 +42,6 @@ class TestStorySaveLoad(unittest.TestCase):
         self.assertIsNone(data.get('sub_genre_name'))
         self.assertIsNone(data.get('protagonist_archetype'))
         self.assertEqual(data.get('secondary_archetypes', []), [])
-        self.assertEqual(data.get('selected_archetypes', []), [])
     
     def test_empty_story_deserialization(self):
         """Test deserialization of an empty story."""
@@ -59,7 +58,6 @@ class TestStorySaveLoad(unittest.TestCase):
         self.assertIsNone(new_story.sub_genre)
         self.assertIsNone(new_story.protagonist_archetype)
         self.assertEqual(new_story.secondary_archetypes, [])
-        self.assertEqual(new_story.selected_archetypes, [])
     
     def test_complete_story_serialization(self):
         """Test serialization of a complete story with all fields."""
@@ -83,7 +81,6 @@ class TestStorySaveLoad(unittest.TestCase):
         self.assertEqual(data['sub_genre_name'], "Romantic Comedy")
         self.assertEqual(data['protagonist_archetype'], "Chosen One")
         self.assertEqual(data['secondary_archetypes'], ["Wise Mentor", "Loyal Companion"])
-        self.assertEqual(data['selected_archetypes'], ["Chosen One", "Wise Mentor", "Loyal Companion"])
     
     def test_complete_story_deserialization(self):
         """Test deserialization of a complete story."""
@@ -110,7 +107,6 @@ class TestStorySaveLoad(unittest.TestCase):
         self.assertEqual(new_story.sub_genre.name, "High Fantasy")
         self.assertEqual(new_story.protagonist_archetype, "Chosen One")
         self.assertEqual(new_story.secondary_archetypes, ["Wise Mentor", "Loyal Companion"])
-        self.assertEqual(new_story.selected_archetypes, ["Chosen One", "Wise Mentor", "Loyal Companion"])
     
     def test_roundtrip_serialization(self):
         """Test that serialize->deserialize->serialize produces identical results."""
@@ -205,8 +201,7 @@ class TestStorySaveLoad(unittest.TestCase):
         """Test deserialization with invalid archetype names."""
         data = {
             "protagonist_archetype": "NonExistentArchetype",
-            "secondary_archetypes": ["ValidArchetype", "InvalidArchetype"],
-            "selected_archetypes": ["AnotherInvalidArchetype"]
+            "secondary_archetypes": ["ValidArchetype", "InvalidArchetype"]
         }
         json_str = json.dumps(data)
         
@@ -217,51 +212,6 @@ class TestStorySaveLoad(unittest.TestCase):
         self.assertTrue(success)
         self.assertIsNone(new_story.protagonist_archetype)
         self.assertEqual(new_story.secondary_archetypes, [])
-        self.assertEqual(new_story.selected_archetypes, [])
-    
-    def test_legacy_format_compatibility(self):
-        """Test backward compatibility with legacy save format."""
-        # Simulate an old save format with only selected_archetypes
-        legacy_data = {
-            "story_type_name": "The Quest",
-            "subtype_name": "Object Quest",
-            "key_theme": "Adventure theme",
-            "core_arc": "Journey arc",
-            "genre_name": "Fantasy",
-            "sub_genre_name": "High Fantasy",
-            "selected_archetypes": ["Chosen One", "Wise Mentor", "Loyal Companion"]
-            # No protagonist_archetype or secondary_archetypes fields
-        }
-        json_str = json.dumps(legacy_data)
-        
-        new_story = Story()
-        success = new_story.from_json(json_str)
-        
-        self.assertTrue(success)
-        self.assertEqual(new_story.story_type_name, "The Quest")
-        self.assertEqual(new_story.genre.name, "Fantasy")
-        self.assertEqual(new_story.selected_archetypes, ["Chosen One", "Wise Mentor", "Loyal Companion"])
-        # Should set protagonist as first archetype and rest as secondary
-        self.assertEqual(new_story.protagonist_archetype, "Chosen One")
-        self.assertEqual(new_story.secondary_archetypes, ["Wise Mentor", "Loyal Companion"])
-    
-    def test_mixed_legacy_and_new_format(self):
-        """Test handling when both legacy and new archetype fields are present."""
-        mixed_data = {
-            "protagonist_archetype": "Anti-Hero",
-            "secondary_archetypes": ["Loyal Companion"],
-            "selected_archetypes": ["Chosen One", "Wise Mentor"]  # Legacy field
-        }
-        json_str = json.dumps(mixed_data)
-        
-        new_story = Story()
-        success = new_story.from_json(json_str)
-        
-        self.assertTrue(success)
-        # New format should take precedence
-        self.assertEqual(new_story.protagonist_archetype, "Anti-Hero")
-        self.assertEqual(new_story.secondary_archetypes, ["Loyal Companion"])
-        self.assertEqual(new_story.selected_archetypes, ["Anti-Hero", "Loyal Companion"])
     
     def test_json_structure_and_formatting(self):
         """Test that JSON output has expected structure and formatting."""
@@ -279,8 +229,8 @@ class TestStorySaveLoad(unittest.TestCase):
         data = json.loads(json_str)
         expected_keys = {
             'story_type_name', 'subtype_name', 'key_theme', 'core_arc',
-            'genre_name', 'sub_genre_name', 'protagonist_archetype',
-            'secondary_archetypes', 'selected_archetypes'
+            'genre_name', 'sub_genre_name', 'writing_style_name', 'functional_role_name',
+            'protagonist_archetype', 'secondary_archetypes', 'selected_plot_line'
         }
         self.assertEqual(set(data.keys()), expected_keys)
     
@@ -310,7 +260,7 @@ class TestStorySaveLoad(unittest.TestCase):
         invalid_data_types = [
             {"story_type_name": 123},  # Number instead of string
             {"secondary_archetypes": "string"},  # String instead of list
-            {"selected_archetypes": {"key": "value"}},  # Object instead of list
+            {"protagonist_archetype": {"key": "value"}},  # Object instead of string
         ]
         
         for invalid_data in invalid_data_types:
