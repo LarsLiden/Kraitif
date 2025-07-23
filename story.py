@@ -38,11 +38,11 @@ class Story:
         # Archetype selections - separate protagonist and secondary characters
         self.protagonist_archetype: Optional[str] = None
         self.secondary_archetypes: List[str] = []
+
         # Emotional function selections
         self.protagonist_emotional_function: Optional[str] = None
         self.secondary_emotional_functions: List[str] = []
-        # Keep legacy field for backward compatibility
-        self.selected_archetypes: List[str] = []
+
 
         # Plot line selection
         self.selected_plot_line: Optional[PlotLine] = None
@@ -143,28 +143,11 @@ class Story:
             return self.genre.subgenres
         return []
     
-    def add_archetype(self, archetype_name: str) -> bool:
-        """Add an archetype to the selection. Returns True if successful."""
-        archetype = self._archetype_registry.get_archetype(archetype_name)
-        if archetype and archetype_name not in self.selected_archetypes:
-            self.selected_archetypes.append(archetype_name)
-            return True
-        return False
-    
-    def remove_archetype(self, archetype_name: str) -> bool:
-        """Remove an archetype from the selection. Returns True if successful."""
-        if archetype_name in self.selected_archetypes:
-            self.selected_archetypes.remove(archetype_name)
-            return True
-        return False
-    
     def set_protagonist_archetype(self, archetype_name: str) -> bool:
         """Set the protagonist archetype. Returns True if successful."""
         archetype = self._archetype_registry.get_archetype(archetype_name)
         if archetype:
             self.protagonist_archetype = archetype_name
-            # Update legacy field for backward compatibility
-            self._update_legacy_selected_archetypes()
             return True
         return False
     
@@ -179,36 +162,6 @@ class Story:
         
         if len(valid_archetypes) == len(archetype_names):
             self.secondary_archetypes = valid_archetypes
-            # Update legacy field for backward compatibility
-            self._update_legacy_selected_archetypes()
-            return True
-        return False
-    
-    def _update_legacy_selected_archetypes(self):
-        """Update the legacy selected_archetypes field for backward compatibility."""
-        self.selected_archetypes = []
-        if self.protagonist_archetype:
-            self.selected_archetypes.append(self.protagonist_archetype)
-        self.selected_archetypes.extend(self.secondary_archetypes)
-
-    def set_archetypes(self, archetype_names: List[str]) -> bool:
-        """Legacy method - Set the archetype selection list. Returns True if successful."""
-        # Validate all archetypes exist
-        valid_archetypes = []
-        for name in archetype_names:
-            archetype = self._archetype_registry.get_archetype(name)
-            if archetype:
-                valid_archetypes.append(name)
-        
-        if len(valid_archetypes) == len(archetype_names):
-            self.selected_archetypes = valid_archetypes
-            # For legacy compatibility, treat first as protagonist, rest as secondary
-            if valid_archetypes:
-                self.protagonist_archetype = valid_archetypes[0]
-                self.secondary_archetypes = valid_archetypes[1:] if len(valid_archetypes) > 1 else []
-            else:
-                self.protagonist_archetype = None
-                self.secondary_archetypes = []
             return True
         return False
     
@@ -240,13 +193,12 @@ class Story:
             parts.append(f"Protagonist: {self.protagonist_archetype}")
         if self.secondary_archetypes:
             parts.append(f"Secondary: {', '.join(self.secondary_archetypes)}")
+
         if self.protagonist_emotional_function:
             parts.append(f"Protagonist Function: {self.protagonist_emotional_function}")
         if self.secondary_emotional_functions:
             parts.append(f"Secondary Functions: {', '.join(self.secondary_emotional_functions)}")
-        # Legacy fallback
-        elif self.selected_archetypes:
-            parts.append(f"Archetypes: {', '.join(self.selected_archetypes)}")
+
         return " | ".join(parts) if parts else "Story with no selections"
     
     def to_prompt_text(self) -> str:
@@ -325,7 +277,7 @@ class Story:
             lines.append("")
         
         # Character Archetypes with detailed descriptions
-        if self.protagonist_archetype or self.secondary_archetypes or self.selected_archetypes:
+        if self.protagonist_archetype or self.secondary_archetypes:
             lines.append("CHARACTER ARCHETYPES:")
             
             if self.protagonist_archetype:
@@ -368,15 +320,6 @@ class Story:
                         if archetype:
                             lines.append(f"    Description: {archetype.description}")
             
-            # Legacy fallback
-            elif self.selected_archetypes and not self.protagonist_archetype:
-                lines.append("Selected Archetypes:")
-                for archetype_name in self.selected_archetypes:
-                    archetype = self._archetype_registry.get_archetype(archetype_name)
-                    lines.append(f"  • {archetype_name}")
-                    if archetype:
-                        lines.append(f"    Description: {archetype.description}")
-            
             lines.append("")
         
         # Add a footer note
@@ -413,10 +356,9 @@ class Story:
             'functional_role_name': self.functional_role.name if self.functional_role else None,
             'protagonist_archetype': self.protagonist_archetype,
             'secondary_archetypes': self.secondary_archetypes,
+
             'protagonist_emotional_function': self.protagonist_emotional_function,
             'secondary_emotional_functions': self.secondary_emotional_functions,
-            'selected_archetypes': self.selected_archetypes  # Keep for backward compatibility
-            'selected_archetypes': self.selected_archetypes,  # Keep for backward compatibility
             'selected_plot_line': self.selected_plot_line.to_dict() if self.selected_plot_line else None
         }
         return json.dumps(data, indent=2)
@@ -472,11 +414,6 @@ class Story:
             secondary_emotional_functions = data.get('secondary_emotional_functions', [])
             if secondary_emotional_functions:
                 self.set_secondary_emotional_functions(secondary_emotional_functions)
-            
-            # Legacy support for old save format
-            selected_archetypes = data.get('selected_archetypes', [])
-            if selected_archetypes and not self.protagonist_archetype and not self.secondary_archetypes:
-                self.set_archetypes(selected_archetypes)
             
             # Load selected plot line
             selected_plot_line_data = data.get('selected_plot_line')
