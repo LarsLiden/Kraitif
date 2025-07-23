@@ -83,8 +83,8 @@ class Story:
     writing_style: Optional[Style]      # Writing style object
     
     # Archetype selections - separate protagonist and secondary characters
-    protagonist_archetype: Optional[str]  # e.g., "Chosen One"
-    secondary_archetypes: List[str]       # e.g., ["Wise Mentor", "Loyal Companion"]
+    protagonist_archetype: Optional[ArchetypeEnum]  # e.g., "Chosen One"
+    secondary_archetypes: List[ArchetypeEnum]       # e.g., ["Wise Mentor", "Loyal Companion"]
     
     # Character selections
     characters: List[Character]         # List of Character objects containing
@@ -195,14 +195,14 @@ When navigating back to edit a previous step:
 
 ### Session State
 Flask sessions maintain story state during user interaction:
-- All selections stored in `session['story_data']` dictionary
+- All selections stored in `session['story_data']` dictionary with archetype fields as enum values converted to strings for session storage
 - Session persists across page navigation and refreshes
 - Session cleared on fresh visits from external sources
 
 ### Save/Load Functionality
-- **Save**: Exports complete story configuration as JSON file download
-- **Load**: Imports JSON file, validates data, updates session, redirects to appropriate step
-- **Validation**: Ensures all loaded data references exist in current registries
+- **Save**: Exports complete story configuration as JSON file download with archetype enums converted to strings
+- **Load**: Imports JSON file, validates data, converts archetype strings to enums, updates session, redirects to appropriate step
+- **Validation**: Ensures all loaded data references exist in current registries and archetype strings are valid enum values
 
 ### Story Completion Output
 Generate structured prompt text containing:
