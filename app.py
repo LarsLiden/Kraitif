@@ -76,10 +76,6 @@ def get_story_from_session():
         secondary_archetypes = story_data.get('secondary_archetypes', [])
         if secondary_archetypes:
             story.set_secondary_archetypes(secondary_archetypes)
-        # Legacy support
-        selected_archetypes = story_data.get('selected_archetypes', [])
-        if selected_archetypes and not story.protagonist_archetype and not story.secondary_archetypes:
-            story.set_archetypes(selected_archetypes)
         
         # Load selected plot line
         selected_plot_line_data = story_data.get('selected_plot_line')
@@ -131,7 +127,6 @@ def save_story_to_session(story):
         'writing_style_name': story.writing_style.name if story.writing_style else None,
         'protagonist_archetype': story.protagonist_archetype,
         'secondary_archetypes': story.secondary_archetypes,
-        'selected_archetypes': story.selected_archetypes,  # Keep for backward compatibility
         'selected_plot_line': story.selected_plot_line.to_dict() if story.selected_plot_line else None
     }
     session.modified = True
@@ -612,60 +607,6 @@ def update_secondary_archetype_selection():
     else:
         flash('Error saving secondary archetype selection.', 'error')
         return redirect(url_for('secondary_archetype_selection'))
-
-
-@app.route('/archetype-selection')
-def archetype_selection():
-    """Show archetype selection page."""
-    story = get_story_from_session()
-    
-    # Check if story has required data (story type selections, genre, sub-genre, and writing style)
-    if not story.story_type_name or not story.subtype_name or not story.genre or not story.sub_genre or not story.writing_style:
-        flash('Please complete story type, genre, sub-genre, and writing style selection first.', 'error')
-        return redirect(url_for('index'))
-    
-    # Get typical and other archetypes
-    typical_archetypes = story.get_typical_archetypes()
-    other_archetype_names = story.get_other_archetypes()
-    
-    # Get archetype objects with descriptions
-    typical_archetype_objects = []
-    for name in typical_archetypes:
-        archetype = archetype_registry.get_archetype(name)
-        if archetype:
-            typical_archetype_objects.append(archetype)
-    
-    other_archetype_objects = []
-    for name in other_archetype_names:
-        archetype = archetype_registry.get_archetype(name)
-        if archetype:
-            other_archetype_objects.append(archetype)
-    
-    return render_template('archetype_selection.html', 
-                         story=story, 
-                         typical_archetypes=typical_archetype_objects,
-                         other_archetypes=other_archetype_objects,
-                         protagonist_archetype_obj=get_protagonist_archetype_object(story),
-                         writing_style_obj=get_writing_style_object(story),
-                         secondary_archetype_objs=get_secondary_archetype_objects(story))
-
-
-@app.route('/archetype-selection', methods=['POST'])
-def update_archetype_selection():
-    """Handle archetype selection form submission."""
-    selected_archetypes = request.form.getlist('archetypes')
-    
-    # Get story from session
-    story = get_story_from_session()
-    
-    # Set archetypes (can be empty list if none selected)
-    if story.set_archetypes(selected_archetypes):
-        save_story_to_session(story)
-        # Redirect to the story completion page
-        return redirect(url_for('complete_story_selection'))
-    else:
-        flash('Error saving archetype selection.', 'error')
-        return redirect(url_for('archetype_selection'))
 
 
 @app.route('/navigate-to-step/<step>')
