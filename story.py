@@ -10,10 +10,9 @@ from genre import Genre, SubGenre, GenreRegistry
 from archetype import ArchetypeRegistry
 from style import Style, StyleRegistry
 from story_types import StoryTypeRegistry
+from emotional_function import EmotionalFunction, EmotionalFunctionRegistry
 from plot_line import PlotLine
 from functional_role import FunctionalRole, FunctionalRoleRegistry
-
-
 
 class Story:
     """Represents a story with user-selected genre and sub-genre."""
@@ -26,7 +25,9 @@ class Story:
         self._archetype_registry = ArchetypeRegistry()
         self._style_registry = StyleRegistry()
         self._story_type_registry = StoryTypeRegistry()
+        self._emotional_function_registry = EmotionalFunctionRegistry()
         self._functional_role_registry = FunctionalRoleRegistry()
+
         # Story type selections
         self.story_type_name: Optional[str] = None
         self.subtype_name: Optional[str] = None
@@ -37,6 +38,11 @@ class Story:
         # Archetype selections - separate protagonist and secondary characters
         self.protagonist_archetype: Optional[str] = None
         self.secondary_archetypes: List[str] = []
+
+        # Emotional function selections
+        self.protagonist_emotional_function: Optional[str] = None
+        self.secondary_emotional_functions: List[str] = []
+
 
         # Plot line selection
         self.selected_plot_line: Optional[PlotLine] = None
@@ -73,6 +79,32 @@ class Story:
         """Get all available writing styles."""
         return self._style_registry.get_all_styles()
     
+    def set_protagonist_emotional_function(self, function_name: str) -> bool:
+        """Set the protagonist emotional function. Returns True if successful."""
+        emotional_function = self._emotional_function_registry.get_emotional_function(function_name)
+        if emotional_function:
+            self.protagonist_emotional_function = function_name
+            return True
+        return False
+    
+    def set_secondary_emotional_functions(self, function_names: List[str]) -> bool:
+        """Set the secondary emotional function selection list. Returns True if successful."""
+        # Validate all emotional functions exist
+        valid_functions = []
+        for name in function_names:
+            emotional_function = self._emotional_function_registry.get_emotional_function(name)
+            if emotional_function:
+                valid_functions.append(name)
+        
+        if len(valid_functions) == len(function_names):
+            self.secondary_emotional_functions = valid_functions
+            return True
+        return False
+    
+    def get_available_emotional_functions(self) -> List[EmotionalFunction]:
+        """Get all available emotional functions."""
+        return self._emotional_function_registry.get_all_emotional_functions()
+      
     def set_functional_role(self, role_name: str) -> bool:
         """Set the functional role by name. Returns True if successful."""
         role = self._functional_role_registry.get_functional_role(role_name)
@@ -161,6 +193,12 @@ class Story:
             parts.append(f"Protagonist: {self.protagonist_archetype}")
         if self.secondary_archetypes:
             parts.append(f"Secondary: {', '.join(self.secondary_archetypes)}")
+
+        if self.protagonist_emotional_function:
+            parts.append(f"Protagonist Function: {self.protagonist_emotional_function}")
+        if self.secondary_emotional_functions:
+            parts.append(f"Secondary Functions: {', '.join(self.secondary_emotional_functions)}")
+
         return " | ".join(parts) if parts else "Story with no selections"
     
     def to_prompt_text(self) -> str:
@@ -247,14 +285,29 @@ class Story:
                 lines.append(f"Protagonist: {self.protagonist_archetype}")
                 if protagonist:
                     lines.append(f"  Description: {protagonist.description}")
+                
+                # Add emotional function for protagonist if available
+                if self.protagonist_emotional_function:
+                    emotion_func = self._emotional_function_registry.get_emotional_function(self.protagonist_emotional_function)
+                    lines.append(f"  Emotional Function: {self.protagonist_emotional_function}")
+                    if emotion_func:
+                        lines.append(f"    Description: {emotion_func.description}")
             
             if self.secondary_archetypes:
                 lines.append("Secondary Characters:")
-                for archetype_name in self.secondary_archetypes:
+                for i, archetype_name in enumerate(self.secondary_archetypes):
                     archetype = self._archetype_registry.get_archetype(archetype_name)
                     lines.append(f"  • {archetype_name}")
                     if archetype:
                         lines.append(f"    Description: {archetype.description}")
+                    
+                    # Add emotional function for secondary character if available
+                    if i < len(self.secondary_emotional_functions):
+                        emotion_func_name = self.secondary_emotional_functions[i]
+                        emotion_func = self._emotional_function_registry.get_emotional_function(emotion_func_name)
+                        lines.append(f"    Emotional Function: {emotion_func_name}")
+                        if emotion_func:
+                            lines.append(f"      Description: {emotion_func.description}")
             elif self.protagonist_archetype and self.sub_genre:
                 # If no secondary characters are selected, suggest typical ones for the sub-genre
                 typical_secondary = [arch for arch in self.get_typical_archetypes() 
@@ -303,6 +356,9 @@ class Story:
             'functional_role_name': self.functional_role.name if self.functional_role else None,
             'protagonist_archetype': self.protagonist_archetype,
             'secondary_archetypes': self.secondary_archetypes,
+
+            'protagonist_emotional_function': self.protagonist_emotional_function,
+            'secondary_emotional_functions': self.secondary_emotional_functions,
             'selected_plot_line': self.selected_plot_line.to_dict() if self.selected_plot_line else None
         }
         return json.dumps(data, indent=2)
@@ -349,6 +405,15 @@ class Story:
             secondary_archetypes = data.get('secondary_archetypes', [])
             if secondary_archetypes:
                 self.set_secondary_archetypes(secondary_archetypes)
+            
+            # Load emotional function selections
+            protagonist_emotional_function = data.get('protagonist_emotional_function')
+            if protagonist_emotional_function:
+                self.set_protagonist_emotional_function(protagonist_emotional_function)
+                
+            secondary_emotional_functions = data.get('secondary_emotional_functions', [])
+            if secondary_emotional_functions:
+                self.set_secondary_emotional_functions(secondary_emotional_functions)
             
             # Load selected plot line
             selected_plot_line_data = data.get('selected_plot_line')
