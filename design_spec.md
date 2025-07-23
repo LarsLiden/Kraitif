@@ -144,6 +144,12 @@ When navigating back to edit a previous step:
 - **Hover Effects**: Interactive feedback on all selectable elements  
 - **Progressive Enhancement**: Core functionality works without JavaScript
 
+### Page Title and Subtitle System
+- **Consistent Title Structure**: All selection pages use consistent titles starting with "Select" (e.g., "Select Story Type", "Select a Genre")
+- **Blue Subtitles**: Each page includes a blue subtitle using the `.page-subtitle` CSS class that provides context about available options
+- **Dynamic Content**: Subtitles include dynamic content like story type or genre names (e.g., "Available Fantasy Sub-Genres", "Available Overcoming the Monster Themes")
+- **Shared Styling**: The `.page-subtitle` class ensures consistent blue color (#64B5F6), typography, and spacing across all pages
+
 ## Data Persistence and State Management
 
 ### Session State
