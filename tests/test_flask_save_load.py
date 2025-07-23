@@ -45,12 +45,11 @@ class TestFlaskSaveLoad(unittest.TestCase):
             data = json.loads(json_data)
             self.assertIsInstance(data, dict)
             
-            # Should have all expected fields with None/empty values
+            # Should have all expected fields with None/empty values  
             expected_keys = {
                 'story_type_name', 'subtype_name', 'key_theme', 'core_arc',
                 'genre_name', 'sub_genre_name', 'writing_style_name', 'protagonist_archetype',
-                'secondary_archetypes', 'protagonist_emotional_function',
-                'secondary_emotional_functions', 'selected_archetypes'
+                'secondary_archetypes', 'characters', 'selected_plot_line'
             }
             self.assertEqual(set(data.keys()), expected_keys)
     

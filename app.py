@@ -95,7 +95,7 @@ def get_story_from_session():
 def get_protagonist_archetype_object(story):
     """Get the protagonist archetype object from the story."""
     if story.protagonist_archetype:
-        return archetype_registry.get_archetype(story.protagonist_archetype)
+        return archetype_registry.get_archetype(story.protagonist_archetype.value)
     return None
 
 
@@ -108,8 +108,8 @@ def get_secondary_archetype_objects(story):
     """Get the secondary archetype objects from the story."""
     if story.secondary_archetypes:
         secondary_objects = []
-        for archetype_name in story.secondary_archetypes:
-            archetype = archetype_registry.get_archetype(archetype_name)
+        for archetype_enum in story.secondary_archetypes:
+            archetype = archetype_registry.get_archetype(archetype_enum.value)
             if archetype:
                 secondary_objects.append(archetype)
         return secondary_objects
@@ -126,8 +126,9 @@ def save_story_to_session(story):
         'genre_name': story.genre.name if story.genre else None,
         'sub_genre_name': story.sub_genre.name if story.sub_genre else None,
         'writing_style_name': story.writing_style.name if story.writing_style else None,
-        'protagonist_archetype': story.protagonist_archetype,
-        'secondary_archetypes': story.secondary_archetypes,
+        'protagonist_archetype': story.protagonist_archetype.value if story.protagonist_archetype else None,
+        'secondary_archetypes': [archetype.value for archetype in story.secondary_archetypes],
+        'selected_archetypes': ([story.protagonist_archetype.value] + [archetype.value for archetype in story.secondary_archetypes]) if story.protagonist_archetype else [archetype.value for archetype in story.secondary_archetypes],
         'selected_plot_line': story.selected_plot_line.to_dict() if story.selected_plot_line else None
     }
     session.modified = True

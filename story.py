@@ -5,9 +5,9 @@ This module implements a Story object that backs user choices like genre and sub
 """
 
 import json
-from typing import Optional, Dict, Any, List
+from typing import Optional, Dict, Any, List, Union
 from genre import Genre, SubGenre, GenreRegistry
-from archetype import ArchetypeRegistry
+from archetype import ArchetypeRegistry, ArchetypeEnum
 from style import Style, StyleRegistry
 from story_types import StoryTypeRegistry
 from emotional_function import EmotionalFunction, EmotionalFunctionRegistry
@@ -38,8 +38,8 @@ class Story:
         self.writing_style: Optional[Style] = None
         
         # Archetype selections - separate protagonist and secondary characters
-        self.protagonist_archetype: Optional[str] = None
-        self.secondary_archetypes: List[str] = []
+        self.protagonist_archetype: Optional[ArchetypeEnum] = None
+        self.secondary_archetypes: List[ArchetypeEnum] = []
 
         # Character selections
         self.characters: List[Character] = []
@@ -158,19 +158,41 @@ class Story:
         other_archetypes = [name for name in all_archetypes if name not in typical_archetypes]
         return sorted(other_archetypes)
     
-    def set_protagonist_archetype(self, archetype_name: str) -> bool:
-        """Set the protagonist archetype by name. Returns True if successful."""
-        if archetype_name and isinstance(archetype_name, str):
-            self.protagonist_archetype = archetype_name
-            return True
+    def set_protagonist_archetype(self, archetype: Union[str, ArchetypeEnum]) -> bool:
+        """Set the protagonist archetype by name or enum. Returns True if successful."""
+        if archetype:
+            if isinstance(archetype, str):
+                # Convert string to enum
+                try:
+                    enum_value = ArchetypeEnum(archetype)
+                    self.protagonist_archetype = enum_value
+                    return True
+                except ValueError:
+                    return False
+            elif isinstance(archetype, ArchetypeEnum):
+                self.protagonist_archetype = archetype
+                return True
         return False
     
-    def set_secondary_archetypes(self, archetype_names: List[str]) -> bool:
-        """Set secondary archetypes by names. Returns True if successful."""
-        if isinstance(archetype_names, list):
-            # Filter out empty/None values and ensure all are strings
-            valid_archetypes = [name for name in archetype_names if name and isinstance(name, str)]
-            self.secondary_archetypes = valid_archetypes
+    def set_secondary_archetypes(self, archetypes: Union[List[str], List[ArchetypeEnum]]) -> bool:
+        """Set secondary archetypes by names or enums. Returns True if successful."""
+        if isinstance(archetypes, list):
+            # Convert all items to enum values
+            enum_archetypes = []
+            for archetype in archetypes:
+                if archetype and isinstance(archetype, str):
+                    try:
+                        enum_value = ArchetypeEnum(archetype)
+                        enum_archetypes.append(enum_value)
+                    except ValueError:
+                        # If any archetype is invalid, return False
+                        return False
+                elif isinstance(archetype, ArchetypeEnum):
+                    enum_archetypes.append(archetype)
+                elif archetype:  # Any non-empty invalid type
+                    return False
+            
+            self.secondary_archetypes = enum_archetypes
             return True
         return False
     
@@ -198,10 +220,11 @@ class Story:
         
         # Also show simple archetype fields (separate from character objects)
         if self.protagonist_archetype:
-            parts.append(f"Protagonist Archetype: {self.protagonist_archetype}")
+            parts.append(f"Protagonist Archetype: {self.protagonist_archetype.value}")
         
         if self.secondary_archetypes:
-            parts.append(f"Secondary Archetypes: {', '.join(self.secondary_archetypes)}")
+            archetype_names = [archetype.value for archetype in self.secondary_archetypes]
+            parts.append(f"Secondary Archetypes: {', '.join(archetype_names)}")
 
         return " | ".join(parts) if parts else "Story with no selections"
     
@@ -364,8 +387,8 @@ class Story:
             'genre_name': self.genre.name if self.genre else None,
             'sub_genre_name': self.sub_genre.name if self.sub_genre else None,
             'writing_style_name': self.writing_style.name if self.writing_style else None,
-            'protagonist_archetype': self.protagonist_archetype,
-            'secondary_archetypes': self.secondary_archetypes,
+            'protagonist_archetype': self.protagonist_archetype.value if self.protagonist_archetype else None,
+            'secondary_archetypes': [archetype.value for archetype in self.secondary_archetypes],
             'characters': [char.to_dict() for char in self.characters],
             'selected_plot_line': self.selected_plot_line.to_dict() if self.selected_plot_line else None
         }
@@ -418,9 +441,23 @@ class Story:
                     )
                     self.set_selected_plot_line(plot_line)
             
-            # Load archetype fields
-            self.protagonist_archetype = data.get('protagonist_archetype')
-            self.secondary_archetypes = data.get('secondary_archetypes', [])
+            # Load archetype fields - convert strings to enums for backward compatibility
+            protagonist_archetype_str = data.get('protagonist_archetype')
+            if protagonist_archetype_str:
+                self.set_protagonist_archetype(protagonist_archetype_str)
+            
+            secondary_archetypes_strs = data.get('secondary_archetypes', [])
+            if secondary_archetypes_strs:
+                self.set_secondary_archetypes(secondary_archetypes_strs)
+            
+            # Handle legacy format with 'selected_archetypes' field
+            selected_archetypes = data.get('selected_archetypes')
+            if selected_archetypes and isinstance(selected_archetypes, list) and not protagonist_archetype_str and not secondary_archetypes_strs:
+                # Convert legacy format: first archetype is protagonist, rest are secondary
+                if len(selected_archetypes) > 0:
+                    self.set_protagonist_archetype(selected_archetypes[0])
+                if len(selected_archetypes) > 1:
+                    self.set_secondary_archetypes(selected_archetypes[1:])
                 
             return True
         except (json.JSONDecodeError, KeyError, TypeError):
