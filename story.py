@@ -37,7 +37,11 @@ class Story:
         # Writing style selection
         self.writing_style: Optional[Style] = None
         
-        # Character selections - using new Character objects
+        # Archetype selections - separate protagonist and secondary characters
+        self.protagonist_archetype: Optional[str] = None
+        self.secondary_archetypes: List[str] = []
+
+        # Character selections
         self.characters: List[Character] = []
 
         # Plot line selection
@@ -154,6 +158,22 @@ class Story:
         other_archetypes = [name for name in all_archetypes if name not in typical_archetypes]
         return sorted(other_archetypes)
     
+    def set_protagonist_archetype(self, archetype_name: str) -> bool:
+        """Set the protagonist archetype by name. Returns True if successful."""
+        if archetype_name and isinstance(archetype_name, str):
+            self.protagonist_archetype = archetype_name
+            return True
+        return False
+    
+    def set_secondary_archetypes(self, archetype_names: List[str]) -> bool:
+        """Set secondary archetypes by names. Returns True if successful."""
+        if isinstance(archetype_names, list):
+            # Filter out empty/None values and ensure all are strings
+            valid_archetypes = [name for name in archetype_names if name and isinstance(name, str)]
+            self.secondary_archetypes = valid_archetypes
+            return True
+        return False
+    
     def __str__(self) -> str:
         """String representation of the story."""
         parts = []
@@ -175,6 +195,13 @@ class Story:
             if secondary_chars:
                 char_names = [f"{char.name} ({char.archetype.value})" for char in secondary_chars]
                 parts.append(f"Secondary: {', '.join(char_names)}")
+        
+        # Also show simple archetype fields (separate from character objects)
+        if self.protagonist_archetype:
+            parts.append(f"Protagonist Archetype: {self.protagonist_archetype}")
+        
+        if self.secondary_archetypes:
+            parts.append(f"Secondary Archetypes: {', '.join(self.secondary_archetypes)}")
 
         return " | ".join(parts) if parts else "Story with no selections"
     
@@ -327,102 +354,6 @@ class Story:
         """Clear the selected plot line."""
         self.selected_plot_line = None
     
-    # Backward compatibility methods for protagonist_archetype and secondary_archetypes
-    @property
-    def protagonist_archetype(self) -> Optional[str]:
-        """Get the protagonist archetype as a string for backward compatibility."""
-        protagonist = self.get_protagonist()
-        if protagonist:
-            return protagonist.archetype.value
-        return None
-    
-    def set_protagonist_archetype(self, archetype_name: str) -> bool:
-        """Set the protagonist archetype by name. Returns True if successful."""
-        if not archetype_name:
-            return False
-            
-        # Import here to avoid circular imports
-        from archetype import ArchetypeEnum
-        from functional_role import FunctionalRoleEnum
-        from emotional_function import EmotionalFunctionEnum
-        
-        # Find the archetype enum value
-        archetype_enum = None
-        for arch in ArchetypeEnum:
-            if arch.value == archetype_name:
-                archetype_enum = arch
-                break
-        
-        if not archetype_enum:
-            return False
-        
-        # Remove existing protagonist if any
-        existing_protagonist = self.get_protagonist()
-        if existing_protagonist:
-            self.remove_character(existing_protagonist.name)
-        
-        # Create new protagonist character
-        protagonist = Character(
-            name="Protagonist",
-            archetype=archetype_enum,
-            functional_role=FunctionalRoleEnum.PROTAGONIST,
-            emotional_function=EmotionalFunctionEnum.SYMPATHETIC_CHARACTER  # Default emotional function
-        )
-        
-        return self.add_character(protagonist)
-    
-    @property
-    def secondary_archetypes(self) -> List[str]:
-        """Get secondary character archetypes as a list of strings for backward compatibility."""
-        secondary_chars = self.get_secondary_characters()
-        return [char.archetype.value for char in secondary_chars]
-    
-    def set_secondary_archetypes(self, archetype_names: List[str]) -> bool:
-        """Set secondary archetypes by names. Returns True if successful."""
-        if not isinstance(archetype_names, list):
-            return False
-            
-        # Import here to avoid circular imports
-        from archetype import ArchetypeEnum
-        from functional_role import FunctionalRoleEnum
-        from emotional_function import EmotionalFunctionEnum
-        
-        # Validate all archetype names first
-        archetype_enums = []
-        for archetype_name in archetype_names:
-            if not archetype_name:
-                continue
-                
-            archetype_enum = None
-            for arch in ArchetypeEnum:
-                if arch.value == archetype_name:
-                    archetype_enum = arch
-                    break
-            
-            if not archetype_enum:
-                return False
-                
-            archetype_enums.append(archetype_enum)
-        
-        # Remove existing secondary characters
-        secondary_chars = self.get_secondary_characters().copy()
-        for char in secondary_chars:
-            self.remove_character(char.name)
-        
-        # Add new secondary characters
-        for i, archetype_enum in enumerate(archetype_enums):
-            character = Character(
-                name=f"Secondary Character {i+1}",
-                archetype=archetype_enum,
-                functional_role=FunctionalRoleEnum.SUPPORTING_CHARACTER,
-                emotional_function=EmotionalFunctionEnum.SYMPATHETIC_CHARACTER  # Default emotional function
-            )
-            
-            if not self.add_character(character):
-                return False
-        
-        return True
-    
     def to_json(self) -> str:
         """Serialize story to JSON string."""
         data = {
@@ -433,11 +364,10 @@ class Story:
             'genre_name': self.genre.name if self.genre else None,
             'sub_genre_name': self.sub_genre.name if self.sub_genre else None,
             'writing_style_name': self.writing_style.name if self.writing_style else None,
-            'characters': [char.to_dict() for char in self.characters],
-            'selected_plot_line': self.selected_plot_line.to_dict() if self.selected_plot_line else None,
-            # Backward compatibility fields
             'protagonist_archetype': self.protagonist_archetype,
-            'secondary_archetypes': self.secondary_archetypes
+            'secondary_archetypes': self.secondary_archetypes,
+            'characters': [char.to_dict() for char in self.characters],
+            'selected_plot_line': self.selected_plot_line.to_dict() if self.selected_plot_line else None
         }
         return json.dumps(data, indent=2)
     
@@ -487,18 +417,10 @@ class Story:
                         plotline=selected_plot_line_data['plotline']
                     )
                     self.set_selected_plot_line(plot_line)
-                
-            # Load backward compatibility fields if characters weren't loaded
-            if not self.characters:
-                # Load protagonist archetype
-                protagonist_archetype = data.get('protagonist_archetype')
-                if protagonist_archetype:
-                    self.set_protagonist_archetype(protagonist_archetype)
-                
-                # Load secondary archetypes
-                secondary_archetypes = data.get('secondary_archetypes', [])
-                if secondary_archetypes:
-                    self.set_secondary_archetypes(secondary_archetypes)
+            
+            # Load archetype fields
+            self.protagonist_archetype = data.get('protagonist_archetype')
+            self.secondary_archetypes = data.get('secondary_archetypes', [])
                 
             return True
         except (json.JSONDecodeError, KeyError, TypeError):

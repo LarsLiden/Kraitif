@@ -72,6 +72,7 @@ Kraitif/
 **Purpose**: Central business object managing user selections and data validation
 **Key Features**:
 - Tracks all user selections (story type, genre, archetypes, etc.)
+- Maintains separate archetype fields (`protagonist_archetype`, `secondary_archetypes`) and Character system (`characters`)
 - Validates data consistency across selections
 - Provides business logic for typical vs other archetype classification
 - Generates structured prompt text for AI writing assistants
