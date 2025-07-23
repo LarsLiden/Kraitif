@@ -80,6 +80,18 @@ def get_story_from_session():
         selected_archetypes = story_data.get('selected_archetypes', [])
         if selected_archetypes and not story.protagonist_archetype and not story.secondary_archetypes:
             story.set_archetypes(selected_archetypes)
+        
+        # Load selected plot line
+        selected_plot_line_data = story_data.get('selected_plot_line')
+        if selected_plot_line_data and isinstance(selected_plot_line_data, dict):
+            if 'name' in selected_plot_line_data and 'plotline' in selected_plot_line_data:
+                from plot_line import PlotLine
+                plot_line = PlotLine(
+                    name=selected_plot_line_data['name'],
+                    plotline=selected_plot_line_data['plotline']
+                )
+                story.set_selected_plot_line(plot_line)
+    
     return story
 
 
@@ -119,7 +131,8 @@ def save_story_to_session(story):
         'writing_style_name': story.writing_style.name if story.writing_style else None,
         'protagonist_archetype': story.protagonist_archetype,
         'secondary_archetypes': story.secondary_archetypes,
-        'selected_archetypes': story.selected_archetypes  # Keep for backward compatibility
+        'selected_archetypes': story.selected_archetypes,  # Keep for backward compatibility
+        'selected_plot_line': story.selected_plot_line.to_dict() if story.selected_plot_line else None
     }
     session.modified = True
 
