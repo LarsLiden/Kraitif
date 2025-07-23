@@ -228,6 +228,46 @@
 </style>
 
 <script>
+// Check if plot lines were generated and stored
+document.addEventListener('DOMContentLoaded', function() {
+    const plotLinesGenerated = sessionStorage.getItem('plot_lines_generated');
+    const storedPlotLines = sessionStorage.getItem('generated_plot_lines');
+    
+    if (plotLinesGenerated === 'true' && storedPlotLines) {
+        // Clear the sessionStorage
+        sessionStorage.removeItem('plot_lines_generated');
+        sessionStorage.removeItem('generated_plot_lines');
+        
+        // Parse and display the plot lines
+        try {
+            const plotLines = JSON.parse(storedPlotLines);
+            showGeneratedPlotLines(plotLines);
+        } catch (error) {
+            console.error('Error parsing stored plot lines:', error);
+        }
+    }
+});
+
+function showGeneratedPlotLines(plotLines) {
+    const plotLinesContainer = document.getElementById('plot-lines-container');
+    const promptContainer = document.getElementById('prompt-text-container');
+    const showPromptBtn = document.getElementById('show-prompt-btn');
+    const completionMessage = document.querySelector('.completion-message');
+    
+    // Hide completion message and prompt text
+    if (completionMessage) {
+        completionMessage.style.display = 'none';
+    }
+    promptContainer.style.display = 'none';
+    
+    // Show plot lines container and toggle button
+    plotLinesContainer.style.display = 'block';
+    showPromptBtn.style.display = 'inline-block';
+    
+    // Display the plot lines
+    displayPlotLines(plotLines);
+}
+
 function copyPromptText() {
     const promptText = document.querySelector('.prompt-text').textContent;
     
@@ -251,69 +291,6 @@ function copyPromptText() {
         // Fallback for older browsers
         fallbackCopyTextToClipboard(promptText);
     }
-}
-
-// Global function to be called from left panel button
-function generatePlotLinesFromLeftPanel() {
-    const loadingIndicator = document.getElementById('loading-indicator');
-    const errorMessage = document.getElementById('error-message');
-    const plotLinesContainer = document.getElementById('plot-lines-container');
-    const promptContainer = document.getElementById('prompt-text-container');
-    const showPromptBtn = document.getElementById('show-prompt-btn');
-    const completionMessage = document.querySelector('.completion-message');
-    
-    // Hide the completion message
-    if (completionMessage) {
-        completionMessage.style.display = 'none';
-    }
-    
-    // Show loading message
-    loadingIndicator.style.display = 'block';
-    errorMessage.style.display = 'none';
-    
-    // Make API call
-    fetch('/generate-plot-lines', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        }
-    })
-    .then(response => response.json())
-    .then(data => {
-        loadingIndicator.style.display = 'none';
-        
-        if (data.success && data.plot_lines) {
-            // Hide prompt text and show plot lines
-            promptContainer.style.display = 'none';
-            showPromptBtn.style.display = 'inline-block';
-            plotLinesContainer.style.display = 'block';
-            
-            // Display plot lines
-            displayPlotLines(data.plot_lines);
-        } else {
-            // Show error and restore completion message
-            const errorText = document.getElementById('error-text');
-            errorText.textContent = data.error || 'Unknown error occurred';
-            errorMessage.style.display = 'block';
-            
-            // Restore completion message on error
-            if (completionMessage) {
-                completionMessage.style.display = 'block';
-            }
-        }
-    })
-    .catch(error => {
-        loadingIndicator.style.display = 'none';
-        
-        const errorText = document.getElementById('error-text');
-        errorText.textContent = 'Network error: ' + error.message;
-        errorMessage.style.display = 'block';
-        
-        // Restore completion message on error
-        if (completionMessage) {
-            completionMessage.style.display = 'block';
-        }
-    });
 }
 
 function displayPlotLines(plotLines) {

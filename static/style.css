@@ -491,22 +491,22 @@ h3 {
 
 .generate-plotlines-button {
     display: block;
+    width: 100%;
     background-color: #4a90e2;
     color: white;
-    text-decoration: none;
+    border: none;
     text-align: center;
     padding: 12px 20px;
     border-radius: 8px;
     font-size: 1.1rem;
     font-weight: bold;
+    cursor: pointer;
     transition: background-color 0.2s ease;
     margin: 0;
 }
 
 .generate-plotlines-button:hover {
     background-color: #357abd;
-    text-decoration: none;
-    color: white;
 }
 
 /* Flash messages */
