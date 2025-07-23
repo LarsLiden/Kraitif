@@ -410,18 +410,22 @@
                                 </div>
                                 {% endif %}
                                 
-                                <!-- Note and Generate plot lines button - appears when user has reached protagonist archetype selection -->
-                                {% if story_data and story_data.get('protagonist_archetype') %}
-                                <div class="secondary-notes-section" id="secondary-notes-section" {% if is_story_complete %}style="display: none;"{% endif %}>
+                                <!-- Note and Generate plot lines button - appears only on secondary character selection page -->
+                                {% if is_secondary_selection_page and story_data and story_data.get('protagonist_archetype') %}
+                                <div class="secondary-notes-section" id="secondary-notes-section">
                                     <div class="archetype-selection-info">
                                         <p><strong>Note:</strong> Selection of secondary character archetypes is optional. You can select multiple archetypes or none at all. These will be some of supporting characters in your story. If you don't select any, they will be chosen for you.</p>
                                     </div>
                                 </div>
-                                <div class="generate-plotlines-section" id="generate-plotlines-section" {% if is_story_complete %}style="display: none;"{% endif %}>
+                                <div class="generate-plotlines-section" id="generate-plotlines-section">
                                     <button class="generate-plotlines-button" id="generate-plotlines-button" onclick="handleGeneratePlotLines(event)">
                                         📋 Generate plot lines
                                     </button>
                                 </div>
+                                {% endif %}
+                                
+                                <!-- Load indicator for plot line generation -->
+                                {% if story_data and story_data.get('protagonist_archetype') %}
                                 <div id="left-panel-loading" style="display: none;" class="loading-message">
                                     <p>Generating potential plot lines. This could take a few moments.</p>
                                 </div>
@@ -597,21 +601,6 @@
             }
         }
         
-        function togglePlotLineDetails() {
-            const content = document.getElementById('plotline-details-content');
-            const arrow = document.getElementById('plotline-expand-arrow');
-            
-            if (content && arrow) {
-                if (content.style.display === 'none' || content.style.display === '') {
-                    content.style.display = 'block';
-                    arrow.textContent = '▼';
-                } else {
-                    content.style.display = 'none';
-                    arrow.textContent = '▶';
-                }
-            }
-        }
-        
         function handleGeneratePlotLines(event) {
             // Always prevent default action since this is now a button
             event.preventDefault();
@@ -727,6 +716,22 @@
             // Initial update
             updateLiveSecondaryCharacters();
         });
+        
+        // Toggle plot line details expansion
+        function togglePlotLineDetails() {
+            const content = document.getElementById('plotline-details-content');
+            const arrow = document.getElementById('plotline-expand-arrow');
+            
+            if (content && arrow) {
+                if (content.style.display === 'none' || content.style.display === '') {
+                    content.style.display = 'block';
+                    arrow.textContent = '▼';
+                } else {
+                    content.style.display = 'none';
+                    arrow.textContent = '▶';
+                }
+            }
+        }
     </script>
 </body>
 </html>
