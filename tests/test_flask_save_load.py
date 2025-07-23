@@ -48,8 +48,9 @@ class TestFlaskSaveLoad(unittest.TestCase):
             # Should have all expected fields with None/empty values
             expected_keys = {
                 'story_type_name', 'subtype_name', 'key_theme', 'core_arc',
-                'genre_name', 'sub_genre_name', 'protagonist_archetype',
-                'secondary_archetypes', 'selected_archetypes'
+                'genre_name', 'sub_genre_name', 'writing_style_name', 'protagonist_archetype',
+                'secondary_archetypes', 'protagonist_emotional_function',
+                'secondary_emotional_functions', 'selected_archetypes'
             }
             self.assertEqual(set(data.keys()), expected_keys)
     

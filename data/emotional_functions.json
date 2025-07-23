@@ -1,0 +1,36 @@
+{
+  "emotional_functions": [
+    {
+      "name": "Sympathetic Character",
+      "description": "Evokes empathy; often deeply vulnerable."
+    },
+    {
+      "name": "Unsympathetic Character",
+      "description": "Hard to like but may still compel or challenge the protagonist."
+    },
+    {
+      "name": "Catalyst",
+      "description": "Pushes others to change without changing much themselves."
+    },
+    {
+      "name": "Observer",
+      "description": "Exists at the margins, often revealing truths unnoticed."
+    },
+    {
+      "name": "Instigator",
+      "description": "Creates disruptions that force growth or conflict."
+    },
+    {
+      "name": "Victim",
+      "description": "Suffers due to external forces, evoking sorrow or motivation."
+    },
+    {
+      "name": "Aggressor",
+      "description": "Causes harm, either directly or through manipulation."
+    },
+    {
+      "name": "Mediator",
+      "description": "Resolves conflicts between other characters."
+    }
+  ]
+}
