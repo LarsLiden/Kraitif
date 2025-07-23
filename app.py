@@ -19,6 +19,8 @@ from genre import GenreRegistry
 from archetype import ArchetypeRegistry
 from style import StyleRegistry
 from prompt import Prompt
+from plot_line import PlotLine, parse_plot_lines_from_ai_response
+from ai.ai_client import get_ai_response
 
 app = Flask(__name__)
 app.secret_key = 'kraitif_story_selection_key'  # For session management
@@ -783,9 +785,44 @@ def new_story():
     return redirect(url_for('index'))
 
 
+@app.route('/generate-plot-lines', methods=['POST'])
+def generate_plot_lines():
+    """Generate plot lines using AI based on the current story configuration."""
+    story = get_story_from_session()
+    
+    # Check if we have a reasonably complete story
+    if not story.story_type_name or not story.subtype_name:
+        return jsonify({'error': 'Please complete at least the story type and subtype selection first.'}), 400
+    
+    try:
+        # Generate the prompt text
+        prompt_text = prompt_generator.generate_plot_prompt(story)
+        
+        # Get AI response
+        ai_response = get_ai_response(prompt_text)
+        
+        # Parse plot lines from the response
+        plot_lines = parse_plot_lines_from_ai_response(ai_response)
+        
+        # Convert to dictionaries for JSON response
+        plot_lines_data = [plot_line.to_dict() for plot_line in plot_lines]
+        
+        return jsonify({
+            'success': True,
+            'plot_lines': plot_lines_data,
+            'ai_response': ai_response  # Include for debugging if needed
+        })
+    
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        })
+
+
 @app.route('/complete-story-selection')
 def complete_story_selection():
-    """Show the completed story selection with generated prompt text."""
+    """Show the completed story selection with interactive plot line generation."""
     story = get_story_from_session()
     
     # Check if we have a reasonably complete story

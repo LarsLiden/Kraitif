@@ -381,17 +381,20 @@
                                 </div>
                                 {% endif %}
                                 
-                                <!-- Note and Generate plot lines button - appears when user has reached secondary archetype selection but not on story complete page -->
-                                {% if story_data and story_data.get('protagonist_archetype') and not is_story_complete %}
-                                <div class="secondary-notes-section">
+                                <!-- Note and Generate plot lines button - appears when user has reached protagonist archetype selection -->
+                                {% if story_data and story_data.get('protagonist_archetype') %}
+                                <div class="secondary-notes-section" id="secondary-notes-section" {% if is_story_complete %}style="display: none;"{% endif %}>
                                     <div class="archetype-selection-info">
                                         <p><strong>Note:</strong> Selection of secondary character archetypes is optional. You can select multiple archetypes or none at all. These will be some of supporting characters in your story. If you don't select any, they will be chosen for you.</p>
                                     </div>
                                 </div>
-                                <div class="generate-plotlines-section">
-                                    <a href="{{ url_for('complete_story_selection') }}" class="generate-plotlines-button" onclick="return handleGeneratePlotLines(event)">
+                                <div class="generate-plotlines-section" id="generate-plotlines-section">
+                                    <button class="generate-plotlines-button" id="generate-plotlines-button" onclick="handleGeneratePlotLines(event)">
                                         📋 Generate plot lines
-                                    </a>
+                                    </button>
+                                </div>
+                                <div id="left-panel-loading" style="display: none;" class="loading-message">
+                                    <p>Generating potential plot lines. This could take a few moments.</p>
                                 </div>
                                 {% endif %}
                             {% else %}
@@ -550,21 +553,61 @@
         }
         
         function handleGeneratePlotLines(event) {
-            // Check if we're on the secondary archetype selection page
-            if (window.location.pathname === '/secondary-archetype-selection') {
-                // Prevent the default link action
-                event.preventDefault();
-                
-                // Submit the secondary archetype form
-                const form = document.getElementById('secondary-form');
-                if (form) {
-                    form.submit();
-                    return false;
-                }
-            }
+            // Always prevent default action since this is now a button
+            event.preventDefault();
             
-            // For other pages, allow normal navigation
-            return true;
+            // Hide the button and note, show loading message
+            const button = document.getElementById('generate-plotlines-button');
+            const notesSection = document.getElementById('secondary-notes-section');
+            const plotlinesSection = document.getElementById('generate-plotlines-section');
+            const loadingIndicator = document.getElementById('left-panel-loading');
+            
+            if (button) button.style.display = 'none';
+            if (notesSection) notesSection.style.display = 'none';
+            if (plotlinesSection) plotlinesSection.style.display = 'none';
+            if (loadingIndicator) loadingIndicator.style.display = 'block';
+            
+            // Make API call to generate plot lines
+            fetch('/generate-plot-lines', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success && data.plot_lines) {
+                    // Store plot lines in sessionStorage for the completion page
+                    sessionStorage.setItem('generated_plot_lines', JSON.stringify(data.plot_lines));
+                    sessionStorage.setItem('plot_lines_generated', 'true');
+                    
+                    // Navigate to story completion page
+                    window.location.href = '/complete-story-selection';
+                } else {
+                    // Show error and restore UI
+                    alert('Error generating plot lines: ' + (data.error || 'Unknown error'));
+                    restoreGenerateButton();
+                }
+            })
+            .catch(error => {
+                // Show error and restore UI
+                alert('Network error: ' + error.message);
+                restoreGenerateButton();
+            });
+            
+            return false;
+        }
+        
+        function restoreGenerateButton() {
+            const button = document.getElementById('generate-plotlines-button');
+            const notesSection = document.getElementById('secondary-notes-section');
+            const plotlinesSection = document.getElementById('generate-plotlines-section');
+            const loadingIndicator = document.getElementById('left-panel-loading');
+            
+            if (button) button.style.display = 'inline-block';
+            if (notesSection) notesSection.style.display = 'block';
+            if (plotlinesSection) plotlinesSection.style.display = 'block';
+            if (loadingIndicator) loadingIndicator.style.display = 'none';
         }
     </script>
 </body>

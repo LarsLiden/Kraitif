@@ -491,22 +491,22 @@ h3 {
 
 .generate-plotlines-button {
     display: block;
+    width: 100%;
     background-color: #4a90e2;
     color: white;
-    text-decoration: none;
+    border: none;
     text-align: center;
     padding: 12px 20px;
     border-radius: 8px;
     font-size: 1.1rem;
     font-weight: bold;
+    cursor: pointer;
     transition: background-color 0.2s ease;
     margin: 0;
 }
 
 .generate-plotlines-button:hover {
     background-color: #357abd;
-    text-decoration: none;
-    color: white;
 }
 
 /* Flash messages */
@@ -651,4 +651,19 @@ h3 {
     border-radius: 8px;
     color: #90EE90;
     font-size: 1.1em;
+}
+
+.loading-message {
+    background-color: rgba(33, 150, 243, 0.2);
+    border: 2px solid #2196F3;
+    border-radius: 8px;
+    padding: 1rem;
+    margin: 1rem 0;
+    text-align: center;
+}
+
+.loading-message p {
+    margin: 0;
+    color: #E8F5E8;
+}
 }

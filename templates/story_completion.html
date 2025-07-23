@@ -21,14 +21,24 @@
 </div>
 
 <div class="section">
-    <div class="section-title">Generated Prompt Text</div>
+    <div class="section-title">Generated Plot Lines</div>
     <div class="section-content">
-        <div class="prompt-text-container">
+        <div id="plot-lines-container" style="display: none;">
+            <div id="plot-lines-list"></div>
+        </div>
+        <div id="prompt-text-container" class="prompt-text-container">
             <pre class="prompt-text">{{ prompt_text }}</pre>
         </div>
-        <div class="prompt-actions">
-            <button onclick="copyPromptText()" class="copy-button">📋 Copy to Clipboard</button>
+        <div class="prompt-actions" id="prompt-actions">
+            <button id="show-prompt-btn" onclick="showPromptText()" class="copy-button" style="display: none;">📝 Show Prompt Text</button>
+            <button onclick="copyPromptText()" class="copy-button">📋 Copy Prompt to Clipboard</button>
             <a href="{{ url_for('save_story') }}" class="btn btn-save">💾 Save Story Configuration</a>
+        </div>
+        <div id="loading-indicator" style="display: none;" class="loading-message">
+            <p>Generating potential plot lines. This could take a few moments.</p>
+        </div>
+        <div id="error-message" style="display: none;" class="error-message">
+            <p id="error-text"></p>
         </div>
     </div>
 </div>
@@ -115,6 +125,77 @@
     background-color: #0D47A1;
 }
 
+.generate-button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: bold;
+    transition: background-color 0.2s ease;
+}
+
+.generate-button:hover {
+    background-color: #45a049;
+}
+
+.generate-button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+
+.loading-message {
+    background-color: rgba(33, 150, 243, 0.2);
+    border: 2px solid #2196F3;
+    border-radius: 8px;
+    padding: 1rem;
+    margin: 1rem 0;
+    text-align: center;
+}
+
+.loading-message p {
+    margin: 0;
+    color: #E8F5E8;
+}
+
+.error-message {
+    background-color: rgba(244, 67, 54, 0.2);
+    border: 2px solid #f44336;
+    border-radius: 8px;
+    padding: 1rem;
+    margin: 1rem 0;
+    text-align: center;
+}
+
+.error-message p {
+    margin: 0;
+    color: #ffebee;
+}
+
+.plot-line-item {
+    background-color: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.plot-line-name {
+    color: #4CAF50;
+    font-size: 1.1rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+.plot-line-content {
+    color: #E0E0E0;
+    line-height: 1.6;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
 .navigation-actions {
     display: flex;
     justify-content: space-between;
@@ -147,6 +228,46 @@
 </style>
 
 <script>
+// Check if plot lines were generated and stored
+document.addEventListener('DOMContentLoaded', function() {
+    const plotLinesGenerated = sessionStorage.getItem('plot_lines_generated');
+    const storedPlotLines = sessionStorage.getItem('generated_plot_lines');
+    
+    if (plotLinesGenerated === 'true' && storedPlotLines) {
+        // Clear the sessionStorage
+        sessionStorage.removeItem('plot_lines_generated');
+        sessionStorage.removeItem('generated_plot_lines');
+        
+        // Parse and display the plot lines
+        try {
+            const plotLines = JSON.parse(storedPlotLines);
+            showGeneratedPlotLines(plotLines);
+        } catch (error) {
+            console.error('Error parsing stored plot lines:', error);
+        }
+    }
+});
+
+function showGeneratedPlotLines(plotLines) {
+    const plotLinesContainer = document.getElementById('plot-lines-container');
+    const promptContainer = document.getElementById('prompt-text-container');
+    const showPromptBtn = document.getElementById('show-prompt-btn');
+    const completionMessage = document.querySelector('.completion-message');
+    
+    // Hide completion message and prompt text
+    if (completionMessage) {
+        completionMessage.style.display = 'none';
+    }
+    promptContainer.style.display = 'none';
+    
+    // Show plot lines container and toggle button
+    plotLinesContainer.style.display = 'block';
+    showPromptBtn.style.display = 'inline-block';
+    
+    // Display the plot lines
+    displayPlotLines(plotLines);
+}
+
 function copyPromptText() {
     const promptText = document.querySelector('.prompt-text').textContent;
     
@@ -169,6 +290,45 @@ function copyPromptText() {
     } else {
         // Fallback for older browsers
         fallbackCopyTextToClipboard(promptText);
+    }
+}
+
+function displayPlotLines(plotLines) {
+    const plotLinesList = document.getElementById('plot-lines-list');
+    plotLinesList.innerHTML = '';
+    
+    plotLines.forEach((plotLine, index) => {
+        const plotLineElement = document.createElement('div');
+        plotLineElement.className = 'plot-line-item';
+        
+        const nameElement = document.createElement('div');
+        nameElement.className = 'plot-line-name';
+        nameElement.textContent = `${index + 1}. ${plotLine.name}`;
+        
+        const contentElement = document.createElement('div');
+        contentElement.className = 'plot-line-content';
+        contentElement.textContent = plotLine.plotline;
+        
+        plotLineElement.appendChild(nameElement);
+        plotLineElement.appendChild(contentElement);
+        plotLinesList.appendChild(plotLineElement);
+    });
+}
+
+function showPromptText() {
+    const plotLinesContainer = document.getElementById('plot-lines-container');
+    const promptContainer = document.getElementById('prompt-text-container');
+    const showPromptBtn = document.getElementById('show-prompt-btn');
+    const completionMessage = document.querySelector('.completion-message');
+    
+    // Show prompt text and hide plot lines
+    plotLinesContainer.style.display = 'none';
+    promptContainer.style.display = 'block';
+    showPromptBtn.style.display = 'none';
+    
+    // Restore the completion message
+    if (completionMessage) {
+        completionMessage.style.display = 'block';
     }
 }
 

@@ -94,5 +94,6 @@ def get_ai_response(prompt, chat_history=None, context_data=None, selected_conte
         return response
 
     except Exception as e:
-        # DO SOMETHING HERE
+        # Return error message instead of raising
+        return f"Error: {str(e)}"
 
