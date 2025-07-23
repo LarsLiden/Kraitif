@@ -72,7 +72,7 @@ Kraitif/
 **Key Methods**:
 - `set_*()` methods with validation and dependency management
 - `get_available_*()` methods for filtered selection options
-- `to_prompt_text()` - Generate structured output for external use
+- `to_prompt_text()` - Generate structured output for external use, including suggested secondary character archetypes when none are explicitly selected
 - `to_json()` / `from_json()` - Persistence functionality
 
 #### 3. Registry Components

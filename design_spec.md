@@ -163,7 +163,10 @@ Generate structured prompt text containing:
 - Selected themes and arcs  
 - Genre and sub-genre information
 - Writing style with characteristics and examples
-- Character archetypes with detailed descriptions
+- Character archetypes with detailed descriptions:
+  - Selected protagonist archetype
+  - Selected secondary character archetypes (if any)
+  - Suggested secondary character archetypes typical for the genre (when no secondary characters are explicitly selected)
 - Formatted for use with AI writing assistants
 
 ## Technical Integration Points
