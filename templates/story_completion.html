@@ -246,6 +246,12 @@
 <script>
 // Check if plot lines were generated and stored
 document.addEventListener('DOMContentLoaded', function() {
+    // Always ensure UI is enabled when story completion page loads
+    const rightPanel = document.querySelector('.right-panel');
+    if (rightPanel) {
+        rightPanel.classList.remove('ui-disabled');
+    }
+    
     const plotLinesGenerated = sessionStorage.getItem('plot_lines_generated');
     const storedPlotLines = sessionStorage.getItem('generated_plot_lines');
     

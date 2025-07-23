@@ -37,7 +37,7 @@ Kraitif/
 │   ├── secondary_archetype_selection.html
 │   └── story_completion.html
 ├── static/                  # CSS, JavaScript, images
-│   └── style.css           # Main stylesheet (black theme)
+│   └── style.css           # Main stylesheet (black theme, UI disable states)
 └── tests/                   # Test suite
     ├── test_story_types.py
     ├── test_emotional_function.py
@@ -59,6 +59,7 @@ Kraitif/
 - Template rendering with context data
 - Form processing and validation
 - File upload/download for save/load functionality
+- Asynchronous plot line generation with UI state management
 
 **Key Functions**:
 - `get_story_from_session()` - Reconstruct Story object from session data
@@ -234,6 +235,7 @@ All step forms follow consistent pattern:
 - **Jinja2 Filters**: Custom filters for data formatting (e.g., arrow_format)
 - **Context Processors**: Automatic story state injection into templates
 - **Static Assets**: CSS and JavaScript for UI interactions
+- **UI State Management**: JavaScript-based enabling/disabling of interface elements during async operations
 
 ### Testing Integration
 - **Unit Tests**: Individual component validation
