@@ -10,6 +10,7 @@ from genre import Genre, SubGenre, GenreRegistry
 from archetype import ArchetypeRegistry
 from style import Style, StyleRegistry
 from story_types import StoryTypeRegistry
+from plot_line import PlotLine
 
 
 class Story:
@@ -35,6 +36,8 @@ class Story:
         self.secondary_archetypes: List[str] = []
         # Keep legacy field for backward compatibility
         self.selected_archetypes: List[str] = []
+        # Plot line selection
+        self.selected_plot_line: Optional[PlotLine] = None
     
     def set_story_type_selection(self, story_type_name: str, subtype_name: str, 
                                 key_theme: Optional[str] = None, core_arc: Optional[str] = None) -> None:
@@ -303,6 +306,21 @@ class Story:
         
         return "\n".join(lines)
     
+    def set_selected_plot_line(self, plot_line: PlotLine) -> bool:
+        """Set the selected plot line for the story."""
+        if plot_line and hasattr(plot_line, 'name') and hasattr(plot_line, 'plotline'):
+            self.selected_plot_line = plot_line
+            return True
+        return False
+    
+    def get_selected_plot_line(self) -> Optional[PlotLine]:
+        """Get the selected plot line."""
+        return self.selected_plot_line
+    
+    def clear_selected_plot_line(self) -> None:
+        """Clear the selected plot line."""
+        self.selected_plot_line = None
+    
     def to_json(self) -> str:
         """Serialize story to JSON string."""
         data = {
@@ -315,7 +333,8 @@ class Story:
             'writing_style_name': self.writing_style.name if self.writing_style else None,
             'protagonist_archetype': self.protagonist_archetype,
             'secondary_archetypes': self.secondary_archetypes,
-            'selected_archetypes': self.selected_archetypes  # Keep for backward compatibility
+            'selected_archetypes': self.selected_archetypes,  # Keep for backward compatibility
+            'selected_plot_line': self.selected_plot_line.to_dict() if self.selected_plot_line else None
         }
         return json.dumps(data, indent=2)
     
@@ -361,6 +380,16 @@ class Story:
             selected_archetypes = data.get('selected_archetypes', [])
             if selected_archetypes and not self.protagonist_archetype and not self.secondary_archetypes:
                 self.set_archetypes(selected_archetypes)
+            
+            # Load selected plot line
+            selected_plot_line_data = data.get('selected_plot_line')
+            if selected_plot_line_data and isinstance(selected_plot_line_data, dict):
+                if 'name' in selected_plot_line_data and 'plotline' in selected_plot_line_data:
+                    plot_line = PlotLine(
+                        name=selected_plot_line_data['name'],
+                        plotline=selected_plot_line_data['plotline']
+                    )
+                    self.set_selected_plot_line(plot_line)
                 
             return True
         except (json.JSONDecodeError, KeyError, TypeError):

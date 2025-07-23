@@ -381,6 +381,27 @@
                                 </div>
                                 {% endif %}
                                 
+                                <!-- Selected Plot Line with expandable details -->
+                                {% if story and story.selected_plot_line %}
+                                <div class="expandable-panel">
+                                    <div class="expandable-panel-header" onclick="togglePlotLineDetails()">
+                                        <div class="expandable-panel-label">
+                                            <strong>Selected Plot Line:</strong> {{ story.selected_plot_line.name }}
+                                        </div>
+                                        <div class="panel-controls">
+                                            <a href="{{ url_for('complete_story_selection') }}" class="edit-button" title="Change Plot Line">✏️</a>
+                                            <span class="expand-arrow" id="plotline-expand-arrow">▶</span>
+                                        </div>
+                                    </div>
+                                    <div class="expandable-panel-content" id="plotline-details-content">
+                                        <div class="section">
+                                            <div class="section-title">Plot Line</div>
+                                            <div class="section-content">{{ story.selected_plot_line.plotline }}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endif %}
+                                
                                 <!-- Note and Generate plot lines button - appears when user has reached protagonist archetype selection -->
                                 {% if story_data and story_data.get('protagonist_archetype') %}
                                 <div class="secondary-notes-section" id="secondary-notes-section" {% if is_story_complete %}style="display: none;"{% endif %}>
@@ -540,6 +561,21 @@
         function toggleSecondaryDetails() {
             const content = document.getElementById('secondary-details-content');
             const arrow = document.getElementById('secondary-expand-arrow');
+            
+            if (content && arrow) {
+                if (content.style.display === 'none' || content.style.display === '') {
+                    content.style.display = 'block';
+                    arrow.textContent = '▼';
+                } else {
+                    content.style.display = 'none';
+                    arrow.textContent = '▶';
+                }
+            }
+        }
+        
+        function togglePlotLineDetails() {
+            const content = document.getElementById('plotline-details-content');
+            const arrow = document.getElementById('plotline-expand-arrow');
             
             if (content && arrow) {
                 if (content.style.display === 'none' || content.style.display === '') {

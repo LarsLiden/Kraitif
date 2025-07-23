@@ -703,6 +703,9 @@ def navigate_to_step(step):
         elif clear_step == 'secondary_archetypes':
             story.secondary_archetypes = []
     
+    # Clear selected plot line when any step is changed
+    story.clear_selected_plot_line()
+    
     save_story_to_session(story)
     
     # Redirect to the appropriate selection page
@@ -818,6 +821,44 @@ def generate_plot_lines():
             'success': False,
             'error': str(e)
         })
+
+
+@app.route('/select-plot-line', methods=['POST'])
+def select_plot_line():
+    """Select a plot line and save it to the story."""
+    try:
+        data = request.get_json()
+        
+        if not data or 'name' not in data or 'plotline' not in data:
+            return jsonify({
+                'success': False,
+                'error': 'Invalid plot line data provided'
+            }), 400
+        
+        # Get story from session
+        story = get_story_from_session()
+        
+        # Create plot line object
+        plot_line = PlotLine(name=data['name'], plotline=data['plotline'])
+        
+        # Set the selected plot line
+        if story.set_selected_plot_line(plot_line):
+            save_story_to_session(story)
+            return jsonify({
+                'success': True,
+                'message': 'Plot line selected successfully'
+            })
+        else:
+            return jsonify({
+                'success': False,
+                'error': 'Failed to set selected plot line'
+            }), 400
+    
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
 
 
 @app.route('/complete-story-selection')

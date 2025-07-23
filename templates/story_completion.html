@@ -180,6 +180,22 @@
     border-radius: 8px;
     padding: 1.5rem;
     margin-bottom: 1rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.plot-line-item:hover {
+    background-color: rgba(0, 0, 0, 0.5);
+    border-color: rgba(76, 175, 80, 0.5);
+}
+
+.plot-line-item.selected {
+    background-color: rgba(76, 175, 80, 0.2);
+    border-color: #4CAF50;
+}
+
+.plot-line-item.selected .plot-line-name {
+    color: #4CAF50;
 }
 
 .plot-line-name {
@@ -300,6 +316,12 @@ function displayPlotLines(plotLines) {
     plotLines.forEach((plotLine, index) => {
         const plotLineElement = document.createElement('div');
         plotLineElement.className = 'plot-line-item';
+        plotLineElement.dataset.plotLineIndex = index;
+        
+        // Add click handler for plot line selection
+        plotLineElement.addEventListener('click', function() {
+            selectPlotLine(plotLine, plotLineElement);
+        });
         
         const nameElement = document.createElement('div');
         nameElement.className = 'plot-line-name';
@@ -312,6 +334,42 @@ function displayPlotLines(plotLines) {
         plotLineElement.appendChild(nameElement);
         plotLineElement.appendChild(contentElement);
         plotLinesList.appendChild(plotLineElement);
+    });
+}
+
+function selectPlotLine(plotLine, plotLineElement) {
+    // Remove selected class from all plot line items
+    document.querySelectorAll('.plot-line-item').forEach(item => {
+        item.classList.remove('selected');
+    });
+    
+    // Add selected class to clicked item
+    plotLineElement.classList.add('selected');
+    
+    // Send selection to server
+    fetch('/select-plot-line', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            name: plotLine.name,
+            plotline: plotLine.plotline
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Reload the page to update the left panel
+            window.location.reload();
+        } else {
+            console.error('Error selecting plot line:', data.error);
+            alert('Error selecting plot line: ' + data.error);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error selecting plot line. Please try again.');
     });
 }
 
