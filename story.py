@@ -37,7 +37,11 @@ class Story:
         # Writing style selection
         self.writing_style: Optional[Style] = None
         
-        # Character selections - using new Character objects
+        # Archetype selections - separate protagonist and secondary characters
+        self.protagonist_archetype: Optional[str] = None
+        self.secondary_archetypes: List[str] = []
+
+        # Character selections
         self.characters: List[Character] = []
 
         # Plot line selection
@@ -154,6 +158,22 @@ class Story:
         other_archetypes = [name for name in all_archetypes if name not in typical_archetypes]
         return sorted(other_archetypes)
     
+    def set_protagonist_archetype(self, archetype_name: str) -> bool:
+        """Set the protagonist archetype by name. Returns True if successful."""
+        if archetype_name and isinstance(archetype_name, str):
+            self.protagonist_archetype = archetype_name
+            return True
+        return False
+    
+    def set_secondary_archetypes(self, archetype_names: List[str]) -> bool:
+        """Set secondary archetypes by names. Returns True if successful."""
+        if isinstance(archetype_names, list):
+            # Filter out empty/None values and ensure all are strings
+            valid_archetypes = [name for name in archetype_names if name and isinstance(name, str)]
+            self.secondary_archetypes = valid_archetypes
+            return True
+        return False
+    
     def __str__(self) -> str:
         """String representation of the story."""
         parts = []
@@ -175,6 +195,13 @@ class Story:
             if secondary_chars:
                 char_names = [f"{char.name} ({char.archetype.value})" for char in secondary_chars]
                 parts.append(f"Secondary: {', '.join(char_names)}")
+        
+        # Also show simple archetype fields (separate from character objects)
+        if self.protagonist_archetype:
+            parts.append(f"Protagonist Archetype: {self.protagonist_archetype}")
+        
+        if self.secondary_archetypes:
+            parts.append(f"Secondary Archetypes: {', '.join(self.secondary_archetypes)}")
 
         return " | ".join(parts) if parts else "Story with no selections"
     
@@ -337,6 +364,8 @@ class Story:
             'genre_name': self.genre.name if self.genre else None,
             'sub_genre_name': self.sub_genre.name if self.sub_genre else None,
             'writing_style_name': self.writing_style.name if self.writing_style else None,
+            'protagonist_archetype': self.protagonist_archetype,
+            'secondary_archetypes': self.secondary_archetypes,
             'characters': [char.to_dict() for char in self.characters],
             'selected_plot_line': self.selected_plot_line.to_dict() if self.selected_plot_line else None
         }
@@ -388,6 +417,10 @@ class Story:
                         plotline=selected_plot_line_data['plotline']
                     )
                     self.set_selected_plot_line(plot_line)
+            
+            # Load archetype fields
+            self.protagonist_archetype = data.get('protagonist_archetype')
+            self.secondary_archetypes = data.get('secondary_archetypes', [])
                 
             return True
         except (json.JSONDecodeError, KeyError, TypeError):

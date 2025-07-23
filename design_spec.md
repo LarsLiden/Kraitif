@@ -82,11 +82,17 @@ class Story:
     # Writing style selection
     writing_style: Optional[Style]      # Writing style object
     
-    # Character system
+    # Archetype selections - separate protagonist and secondary characters
+    protagonist_archetype: Optional[str]  # e.g., "Chosen One"
+    secondary_archetypes: List[str]       # e.g., ["Wise Mentor", "Loyal Companion"]
+    
+    # Character selections
     characters: List[Character]         # List of Character objects containing
                                        # archetype, functional_role, emotional_function,
                                        # backstory, and character_arc
 ```
+
+**Note**: The `protagonist_archetype` and `secondary_archetypes` fields are separate from and unrelated to the `characters` list. The archetype fields are used by the current web UI, while the `characters` list is for future UI implementation.
 
 ### Registry Pattern
 All narrative elements use a registry pattern for centralized access:
