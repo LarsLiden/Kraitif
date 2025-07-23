@@ -21,6 +21,7 @@ from style import StyleRegistry
 from prompt import Prompt
 from plot_line import PlotLine, parse_plot_lines_from_ai_response
 from ai.ai_client import get_ai_response
+from prompt_types import PromptType
 
 app = Flask(__name__)
 app.secret_key = 'kraitif_story_selection_key'  # For session management
@@ -756,7 +757,7 @@ def generate_plot_lines():
         prompt_text = prompt_generator.generate_plot_prompt(story)
         
         # Get AI response
-        ai_response = get_ai_response(prompt_text)
+        ai_response = get_ai_response(prompt_text, PromptType.PLOT_LINES)
         
         # Parse plot lines from the response
         plot_lines = parse_plot_lines_from_ai_response(ai_response)
