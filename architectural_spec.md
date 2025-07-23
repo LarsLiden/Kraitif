@@ -78,18 +78,18 @@ Kraitif/
 #### 2. Story Model (`story.py`)
 **Purpose**: Central business object managing user selections and data validation
 **Key Features**:
-- Tracks all user selections (story type, genre, archetypes, etc.)
-- Maintains separate archetype fields (`protagonist_archetype`, `secondary_archetypes`) and Character system (`characters`)
-- Validates data consistency across selections
+- Tracks all user selections (story type, genre, archetypes using ArchetypeEnum, etc.)
+- Maintains separate archetype fields (`protagonist_archetype: Optional[ArchetypeEnum]`, `secondary_archetypes: List[ArchetypeEnum]`) and Character system (`characters`)
+- Validates data consistency across selections including archetype enum validation
 - Provides business logic for typical vs other archetype classification
 - Generates structured prompt text for AI writing assistants
-- JSON serialization/deserialization for persistence
+- JSON serialization/deserialization for persistence with automatic enum to string conversion
 
 **Key Methods**:
-- `set_*()` methods with validation and dependency management
+- `set_*()` methods with validation and dependency management including archetype enum conversion
 - `get_available_*()` methods for filtered selection options
 - `to_prompt_text()` - Generate structured output for external use, including suggested secondary character archetypes when none are explicitly selected
-- `to_json()` / `from_json()` - Persistence functionality
+- `to_json()` / `from_json()` - Persistence functionality with automatic enum to string conversion and string to enum parsing
 
 #### 3. Registry Components
 **Purpose**: Centralized access to narrative data with consistent interfaces
@@ -289,7 +289,7 @@ All step forms follow consistent pattern:
 - **Jinja2 Filters**: Custom filters for data formatting (e.g., arrow_format)
 - **Context Processors**: Automatic story state injection into templates
 - **Static Assets**: CSS and JavaScript for UI interactions
-- **UI State Management**: JavaScript-based enabling/disabling of interface elements during async operations
+- **UI State Management**: JavaScript-based content replacement for intermediate states during async operations
 
 ### AI Integration and Debugging
 - **Prompt Categorization**: `PromptType` enum for categorizing different AI prompts

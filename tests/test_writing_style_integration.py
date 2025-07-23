@@ -8,6 +8,7 @@ import os
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 
 from story import Story
+from archetype import ArchetypeEnum
 
 
 def test_complete_writing_style_flow():
@@ -40,7 +41,7 @@ def test_complete_writing_style_flow():
     assert story.genre.name == "Fantasy"
     assert story.sub_genre.name == "High Fantasy"
     assert story.writing_style.name == "Lyrical"
-    assert story.protagonist_archetype == "Chosen One"
+    assert story.protagonist_archetype.value == "Chosen One"
     assert len(story.secondary_archetypes) == 2
     
     print("✓ Complete story flow with writing style works")
@@ -72,7 +73,7 @@ def test_complete_writing_style_flow():
         story.genre.name,
         story.sub_genre.name,
         story.writing_style.name,  # NEW: Writing style comes here
-        story.protagonist_archetype
+        story.protagonist_archetype.value
     ]
     
     print("✓ Writing style fits correctly in the story flow sequence")

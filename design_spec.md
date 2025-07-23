@@ -83,8 +83,8 @@ class Story:
     writing_style: Optional[Style]      # Writing style object
     
     # Archetype selections - separate protagonist and secondary characters
-    protagonist_archetype: Optional[str]  # e.g., "Chosen One"
-    secondary_archetypes: List[str]       # e.g., ["Wise Mentor", "Loyal Companion"]
+    protagonist_archetype: Optional[ArchetypeEnum]  # e.g., "Chosen One"
+    secondary_archetypes: List[ArchetypeEnum]       # e.g., ["Wise Mentor", "Loyal Companion"]
     
     # Character selections
     characters: List[Character]         # List of Character objects containing
@@ -176,14 +176,14 @@ When navigating back to edit a previous step:
 - **Checkbox Groups**: Multi-selection elements (secondary characters)
 - **Expandable Panels**: Rich information display for story type and subtype details
 - **Auto-submit Forms**: Theme, arc, and genre selections automatically submit on click
-- **UI Disable/Enable States**: Right panel becomes disabled during plot line generation while preserving access to Save/Load/New buttons
+- **Intermediate Page States**: Right panel content is replaced with an intermediate "generating plot lines" page during AI processing, while preserving access to Save/Load/New buttons in the left panel
 
 ### Visual Design Principles
 - **Black Background Theme**: Dark theme for comfortable extended use
 - **Responsive Design**: Works on mobile and desktop
 - **Hover Effects**: Interactive feedback on all selectable elements  
 - **Progressive Enhancement**: Core functionality works without JavaScript
-- **Loading States**: UI disabling with visual feedback during asynchronous operations like plot line generation
+- **Loading States**: Intermediate page replaces right panel content during asynchronous operations like plot line generation, providing visual feedback without disabling UI controls
 
 ### Page Title and Subtitle System
 - **Consistent Title Structure**: All selection pages use consistent titles starting with "Select" (e.g., "Select Story Type", "Select a Genre")
@@ -195,14 +195,14 @@ When navigating back to edit a previous step:
 
 ### Session State
 Flask sessions maintain story state during user interaction:
-- All selections stored in `session['story_data']` dictionary
+- All selections stored in `session['story_data']` dictionary with archetype fields as enum values converted to strings for session storage
 - Session persists across page navigation and refreshes
 - Session cleared on fresh visits from external sources
 
 ### Save/Load Functionality
-- **Save**: Exports complete story configuration as JSON file download
-- **Load**: Imports JSON file, validates data, updates session, redirects to appropriate step
-- **Validation**: Ensures all loaded data references exist in current registries
+- **Save**: Exports complete story configuration as JSON file download with archetype enums converted to strings
+- **Load**: Imports JSON file, validates data, converts archetype strings to enums, updates session, redirects to appropriate step
+- **Validation**: Ensures all loaded data references exist in current registries and archetype strings are valid enum values
 
 ### Story Completion Output
 Generate structured prompt text containing:
