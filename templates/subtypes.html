@@ -138,7 +138,7 @@
 
 
 <h1>Select Story Sub-Type</h1>
-<p class="page-subtitle">Available {{ story_type.name }} Sub-Genres</p>
+<div class="section-title">Available {{ story_type.name }} Sub-Genres</div>
 <div class="subtypes-grid">
     {% for subtype in story_type.subtypes %}
     <div class="subtype-card" onclick="location.href='{{ url_for('subtype_detail', story_type_name=story_type.name, subtype_name=subtype.name) }}'">
