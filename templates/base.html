@@ -387,16 +387,7 @@
                                 </div>
                                 {% endif %}
                                 {% endif %}
-                                {% if story_data.get('selected_archetypes') and not story_data.get('protagonist_archetype') %}
-                                <div class="selection-item">
-                                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                                        <div>
-                                            <strong>Archetypes:</strong> {{ story_data.get('selected_archetypes') | join(', ') }}
-                                        </div>
-                                        <a href="{{ url_for('archetype_selection') }}" class="edit-button" title="Edit Archetypes">✏️</a>
-                                    </div>
-                                </div>
-                                {% endif %}
+
                                 
                                 <!-- Note and Generate plot lines button - appears when user has reached protagonist archetype selection -->
                                 {% if story_data and story_data.get('protagonist_archetype') %}
