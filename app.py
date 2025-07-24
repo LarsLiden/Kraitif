@@ -184,11 +184,17 @@ def get_next_incomplete_step(story):
     if not story.protagonist_archetype:
         return 'protagonist_archetype_selection'
     
-    # Step 9: Secondary archetypes (optional step)
-    # If we have protagonist but no secondary archetypes or characters,
-    # go to secondary archetype selection
-    if not story.secondary_archetypes and not story.characters:
+    # Step 9: Plot line selection
+    # If protagonist archetype is set but no plot line is selected,
+    # go to secondary archetype selection (where plot lines can be generated)
+    if not story.selected_plot_line:
         return 'secondary_archetype_selection'
+    
+    # Step 10: Character generation
+    # If plot line is selected but no characters generated,
+    # go to the selected plot line page (where characters can be generated)
+    if not story.characters:
+        return 'plot_line_selected'
     
     # If all steps are complete, go to story completion
     return 'complete_story_selection'
@@ -808,6 +814,8 @@ def load_story():
                     return redirect(url_for('protagonist_archetype_selection'))
                 elif next_step == 'secondary_archetype_selection':
                     return redirect(url_for('secondary_archetype_selection'))
+                elif next_step == 'plot_line_selected':
+                    return redirect(url_for('plot_line_selected'))
                 elif next_step == 'complete_story_selection':
                     return redirect(url_for('complete_story_selection'))
                 else:

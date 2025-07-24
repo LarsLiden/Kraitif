@@ -396,6 +396,8 @@ At the top of the left panel is a load and save button:
     - Examples:
       - If genre is set but sub-genre isn't: redirects to sub-genre selection
       - If sub-genre is set but writing style isn't: redirects to writing style selection
+      - If protagonist archetype is set but no plot line selected: redirects to secondary archetype selection (where plot lines can be generated)
+      - If plot line is selected but no characters generated: redirects to plot line selected page (where characters can be generated)
       - If story is complete: redirects to story completion page
 
 ## Archetype Selection
