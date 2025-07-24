@@ -1,0 +1,11 @@
+Your task is to write a full 1000-word chapter for a novel based on the CHAPTER OUTLINE and STORY CONTEXT provided below. The prose must reflect the selected genre, writing style, character dynamics, and narrative tone.
+
+After the chapter text, output a structured summary object <STRUCTURED_DATA> that tracks key continuity details to ensure consistency across future chapters.
+
+CHAPTER GOALS
+Write 1000 words of immersive prose that follow the provided outline.
+
+Maintain consistency with character personalities, past events, emotional arcs, and object locations.
+
+Use the selected point-of-view and capture the emotional stakes and narrative function described.
+

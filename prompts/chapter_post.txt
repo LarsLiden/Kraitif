@@ -1,0 +1,45 @@
+**OUTPUT FORMAT:**  
+Return your chapters in the following structured format and include **only** this structure:
+
+```json
+<STRUCTURED_DATA>
+Reflect the chosen writing style (e.g. lyrical, whimsical, descriptive) in tone and language.
+
+OUTPUT FORMAT
+Return your output as follows. Do not include anything outside this JSON block:
+<STRUCTURED_DATA>
+{
+  "chapter_text": "Full prose chapter (~1000 words)",
+
+  "chapter_summary": "One-paragraph recap of key events",
+
+  "continuity_state": {
+    "characters": [
+      {
+        "name": "Character Name",
+        "current_location": "Where they are now",
+        "status": "Updated emotional or physical state",
+        "inventory": ["Held items or artifacts"]
+      }
+    ],
+    "objects": [
+      {
+        "name": "Artifact or item name",
+        "holder": "Who possesses it (or null)",
+        "location": "If dropped, hidden, or undiscovered"
+      }
+    ],
+    "locations_visited": ["locations introduced or revisited"],
+    "open_plot_threads": [
+      {
+        "id": "ThreadIdentifier",
+        "description": "Brief summary of unresolved issue or arc",
+        "status": "pending | resolved | escalated"
+      }
+    ]
+  }
+}
+</STRUCTURED_DATA>
+```
+
+**Do not** include any commentary, explanation, or formatting outside this JSON block.
