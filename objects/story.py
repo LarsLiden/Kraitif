@@ -231,8 +231,16 @@ class Story:
 
         return " | ".join(parts) if parts else "Story with no selections"
     
-    def to_prompt_text(self) -> str:
-        """Convert story selections to a formatted text suitable for LLM prompts."""
+    def to_prompt_text(self, exclude_selected_plot_line: bool = False, 
+                       exclude_archetype_fallbacks: bool = False, 
+                       include_expanded_plot_line: bool = False) -> str:
+        """Convert story selections to a formatted text suitable for LLM prompts.
+        
+        Args:
+            exclude_selected_plot_line: If True, excludes the selected_plot_line section
+            exclude_archetype_fallbacks: If True, excludes protagonist_archetype and secondary_archetypes fallback fields
+            include_expanded_plot_line: If True, includes the expanded_plot_line section
+        """
         lines = []
         lines.append("STORY CONFIGURATION:")
         lines.append("=" * 50)
@@ -361,8 +369,8 @@ class Story:
             lines.append("")
         
 
-        # Plot Line Information
-        if self.selected_plot_line:
+        # Plot Line Information (conditionally included)
+        if not exclude_selected_plot_line and self.selected_plot_line:
             lines.append("SELECTED PLOT LINE:")
             lines.append(f"Name: {self.selected_plot_line.name}")
             lines.append(f"Plot Line: {self.selected_plot_line.plotline}")
@@ -370,8 +378,9 @@ class Story:
 
         # Show archetype selections from web UI (protagonist_archetype and secondary_archetypes fields)
         # These are separate from the Character objects and used by the current web UI
-        # Only show these if there are NO Character objects
-        if not self.characters and (self.protagonist_archetype or self.secondary_archetypes):
+        # Only show these if there are NO Character objects and not excluded
+        if (not exclude_archetype_fallbacks and not self.characters and 
+            (self.protagonist_archetype or self.secondary_archetypes)):
             lines.append("CHARACTER ARCHETYPES:")
             
             # Show protagonist archetype
@@ -404,6 +413,12 @@ class Story:
             
             lines.append("")
         
+        # Add expanded plot line if requested
+        if include_expanded_plot_line and self.expanded_plot_line:
+            lines.append("EXPANDED PLOT LINE:")
+            lines.append(self.expanded_plot_line)
+            lines.append("")
+        
         # Add a footer note
         lines.append("=" * 50)
         lines.append("Use this configuration to guide the story creation process.")
@@ -415,144 +430,11 @@ class Story:
         Convert story selections to a formatted text suitable for chapter outline prompts.
         This version excludes protagonist_archetype, secondary_archetypes, and selected_plot_line fields.
         """
-        lines = []
-        lines.append("STORY CONFIGURATION:")
-        lines.append("=" * 50)
-        
-        # Story Type and Subtype with detailed information
-        if self.story_type_name and self.subtype_name:
-            story_type = self._story_type_registry.get_story_type(self.story_type_name)
-            if story_type:
-                lines.append(f"Story Type: {self.story_type_name}")
-                lines.append(f"Description: {story_type.description}")
-                if story_type.examples:
-                    lines.append(f"Examples: {', '.join(story_type.examples)}")
-                
-                # Add subtype details
-                subtype = story_type.get_subtype(self.subtype_name)
-                if subtype:
-                    lines.append(f"Story Subtype: {self.subtype_name}")
-                    lines.append(f"Subtype Description: {subtype.description}")
-                    if subtype.examples:
-                        lines.append(f"Subtype Examples: {', '.join(subtype.examples)}")
-                
-                # Add story type specific details
-                if story_type.narrative_rhythm:
-                    lines.append(f"Narrative Rhythm: {story_type.narrative_rhythm}")
-                
-                if story_type.emotional_arc:
-                    lines.append(f"Emotional Arc: {' → '.join(story_type.emotional_arc)}")
-                
-                if story_type.key_moment:
-                    lines.append("Key Moments:")
-                    for moment in story_type.key_moment:
-                        lines.append(f"  • {moment}")
-                
-                # Add user-selected theme and core arc
-                if self.key_theme:
-                    lines.append(f"Selected Key Theme: {self.key_theme}")
-                
-                if self.core_arc:
-                    lines.append(f"Selected Core Arc: {self.core_arc}")
-                
-                lines.append("")
-        
-        # Genre Information with detailed information
-        if self.genre:
-            lines.append(f"Genre: {self.genre.name}")
-            
-            if self.sub_genre:
-                lines.append(f"Sub-Genre: {self.sub_genre.name}")
-                
-                # Add sub-genre details if available
-                if hasattr(self.sub_genre, 'plot') and self.sub_genre.plot:
-                    lines.append(f"Plot Type: {self.sub_genre.plot}")
-                    
-                if hasattr(self.sub_genre, 'examples') and self.sub_genre.examples:
-                    lines.append(f"Genre Examples: {', '.join(self.sub_genre.examples)}")
-            
-            lines.append("")
-        
-        # Writing Style with detailed information
-        if self.writing_style:
-            lines.append(f"Writing Style: {self.writing_style.name}")
-            lines.append(f"Style Description: {self.writing_style.description}")
-            
-            if hasattr(self.writing_style, 'characteristics') and self.writing_style.characteristics:
-                lines.append("Style Characteristics:")
-                for characteristic in self.writing_style.characteristics:
-                    lines.append(f"  • {characteristic}")
-            
-            if hasattr(self.writing_style, 'examples') and self.writing_style.examples:
-                lines.append(f"Style Examples: {', '.join(self.writing_style.examples)}")
-            
-            lines.append("")
-        
-        # Character Archetypes with detailed descriptions - ONLY show full Character objects if they exist
-        # Exclude protagonist_archetype, secondary_archetypes, and selected_plot_line fields
-        if self.characters:
-            lines.append("CHARACTER ARCHETYPES:")
-            
-            protagonist = self.get_protagonist()
-            if protagonist:
-                archetype_obj = self._archetype_registry.get_archetype(protagonist.archetype.value)
-                lines.append(f"Protagonist: {protagonist.name}")
-                lines.append(f"  Archetype: {protagonist.archetype.value}")
-                if archetype_obj:
-                    lines.append(f"  Description: {archetype_obj.description}")
-                lines.append(f"  Functional Role: {protagonist.functional_role.value}")
-                lines.append(f"  Emotional Function: {protagonist.emotional_function.value}")
-                emotion_func = self._emotional_function_registry.get_emotional_function(protagonist.emotional_function.value)
-                if emotion_func:
-                    lines.append(f"    Description: {emotion_func.description}")
-                if protagonist.backstory:
-                    lines.append(f"  Backstory: {protagonist.backstory}")
-                if protagonist.character_arc:
-                    lines.append(f"  Character Arc: {protagonist.character_arc}")
-            
-            secondary_chars = self.get_secondary_characters()
-            if secondary_chars:
-                lines.append("Secondary Characters:")
-                for character in secondary_chars:
-                    archetype_obj = self._archetype_registry.get_archetype(character.archetype.value)
-                    lines.append(f"  • {character.name}")
-                    lines.append(f"    Archetype: {character.archetype.value}")
-                    if archetype_obj:
-                        lines.append(f"    Description: {archetype_obj.description}")
-                    lines.append(f"    Functional Role: {character.functional_role.value}")
-                    lines.append(f"    Emotional Function: {character.emotional_function.value}")
-                    emotion_func = self._emotional_function_registry.get_emotional_function(character.emotional_function.value)
-                    if emotion_func:
-                        lines.append(f"      Description: {emotion_func.description}")
-                    if character.backstory:
-                        lines.append(f"    Backstory: {character.backstory}")
-                    if character.character_arc:
-                        lines.append(f"    Character Arc: {character.character_arc}")
-            elif protagonist and self.sub_genre:
-                # If no secondary characters are defined, suggest typical ones for the sub-genre
-                typical_secondary = [arch for arch in self.get_typical_archetypes() 
-                                   if arch != protagonist.archetype.value]
-                if typical_secondary:
-                    lines.append("Suggested Secondary Characters (typical for this genre):")
-                    for archetype_name in typical_secondary:
-                        archetype = self._archetype_registry.get_archetype(archetype_name)
-                        lines.append(f"  • {archetype_name}")
-                        if archetype:
-                            lines.append(f"    Description: {archetype.description}")
-            
-            lines.append("")
-        
-        # Add expanded plot line if available (excludes selected_plot_line)
-        if self.expanded_plot_line:
-            lines.append("EXPANDED PLOT LINE:")
-            lines.append(self.expanded_plot_line)
-            lines.append("")
-        
-        # Add a footer note
-        lines.append("=" * 50)
-        lines.append("Use this configuration to guide the story creation process.")
-        
-        return "\n".join(lines)
+        return self.to_prompt_text(
+            exclude_selected_plot_line=True,
+            exclude_archetype_fallbacks=True,
+            include_expanded_plot_line=True
+        )
     
     def set_selected_plot_line(self, plot_line: PlotLine) -> bool:
         """Set the selected plot line for the story."""
