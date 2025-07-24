@@ -55,12 +55,12 @@ body {
     display: flex;
     align-items: flex-start;
     margin-bottom: 12px;
-    gap: 8px;
+    gap: 2px;
 }
 
 /* Panel without edit button - needs left spacing to align with panels that have edit buttons */
 .panel-no-edit {
-    margin-left: 32px; /* Width (24px) + gap (8px) to match selection-wrapper spacing */
+    margin-left: 26px; /* Width (24px) + gap (2px) to match selection-wrapper spacing */
     margin-bottom: 12px;
 }
 
@@ -81,7 +81,7 @@ body {
     width: 24px;
     height: 24px;
     flex-shrink: 0;
-    margin-top: 4px; /* Align with the top of the panel */
+    margin-top: 0; /* Align with the top of the panel */
 }
 
 .edit-button-external:hover {
