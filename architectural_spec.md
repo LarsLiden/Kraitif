@@ -84,6 +84,7 @@ Kraitif/
 **Key Functions**:
 - `get_story_from_session()` - Reconstruct Story object from session data
 - `save_story_to_session()` - Persist Story object to session
+- `get_next_incomplete_step()` - Determine the next incomplete step in story creation process for smart post-load navigation
 - Route handlers for each step in the user flow
 - Navigation handler for edit button functionality
 

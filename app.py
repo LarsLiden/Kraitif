@@ -148,6 +148,52 @@ def save_story_to_session(story):
     session.modified = True
 
 
+def get_next_incomplete_step(story):
+    """Determine the next incomplete step in the story creation process."""
+    # Check each step in order and return the first incomplete one
+    
+    # Step 1: Story type
+    if not story.story_type_name:
+        return 'index'
+    
+    # Step 2: Story subtype
+    if not story.subtype_name:
+        return 'story_type'
+    
+    # Step 3: Key theme
+    if not story.key_theme:
+        return 'key_theme_selection'
+    
+    # Step 4: Core arc
+    if not story.core_arc:
+        return 'core_arc_selection'
+    
+    # Step 5: Genre
+    if not story.genre:
+        return 'genre_selection'
+    
+    # Step 6: Sub-genre
+    if not story.sub_genre:
+        return 'subgenre_selection'
+    
+    # Step 7: Writing style
+    if not story.writing_style:
+        return 'writing_style_selection'
+    
+    # Step 8: Protagonist archetype
+    if not story.protagonist_archetype:
+        return 'protagonist_archetype_selection'
+    
+    # Step 9: Secondary archetypes (optional step)
+    # If we have protagonist but no secondary archetypes or characters,
+    # go to secondary archetype selection
+    if not story.secondary_archetypes and not story.characters:
+        return 'secondary_archetype_selection'
+    
+    # If all steps are complete, go to story completion
+    return 'complete_story_selection'
+
+
 @app.route('/')
 def index():
     """Main page showing all story types."""
@@ -735,15 +781,42 @@ def load_story():
             story = Story()
             if story.from_json(content):
                 save_story_to_session(story)
-                # Redirect to the loaded story's subtype page if story data exists
-                if story.story_type_name and story.subtype_name:
-                    return redirect(url_for('subtype_detail', 
-                                          story_type_name=story.story_type_name, 
-                                          subtype_name=story.subtype_name))
+                flash('Story loaded successfully!', 'success')
+                
+                # Determine the next incomplete step and redirect appropriately
+                next_step = get_next_incomplete_step(story)
+                
+                if next_step == 'index':
+                    return redirect(url_for('index'))
+                elif next_step == 'story_type':
+                    # If we have a story type name, redirect to that story type detail page
+                    if story.story_type_name:
+                        return redirect(url_for('story_type_detail', story_type_name=story.story_type_name))
+                    else:
+                        return redirect(url_for('index'))
+                elif next_step == 'key_theme_selection':
+                    return redirect(url_for('key_theme_selection'))
+                elif next_step == 'core_arc_selection':
+                    return redirect(url_for('core_arc_selection'))
+                elif next_step == 'genre_selection':
+                    return redirect(url_for('genre_selection'))
+                elif next_step == 'subgenre_selection':
+                    return redirect(url_for('subgenre_selection'))
+                elif next_step == 'writing_style_selection':
+                    return redirect(url_for('writing_style_selection'))
+                elif next_step == 'protagonist_archetype_selection':
+                    return redirect(url_for('protagonist_archetype_selection'))
+                elif next_step == 'secondary_archetype_selection':
+                    return redirect(url_for('secondary_archetype_selection'))
+                elif next_step == 'complete_story_selection':
+                    return redirect(url_for('complete_story_selection'))
+                else:
+                    # Fallback to index if something goes wrong
+                    return redirect(url_for('index'))
             else:
                 flash('Invalid story file format', 'error')
         except Exception as e:
-            flash('Error loading file', 'error')
+            flash(f'Error loading file: {str(e)}', 'error')
     else:
         flash('Please select a JSON file', 'error')
     
