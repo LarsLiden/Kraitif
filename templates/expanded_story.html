@@ -62,24 +62,7 @@
 </div>
 {% endif %}
 
-<div class="section">
-    <div class="section-title">What's Next?</div>
-    <div class="section-content">
-        <p>You can now:</p>
-        <ul>
-            <li>Use this expanded plot line and character details to guide your story writing</li>
-            <li>Save your complete story configuration for later use</li>
-            <li>Go back and modify any of your selections if needed</li>
-            <li>Start a new story configuration</li>
-        </ul>
-    </div>
-</div>
 
-<div class="navigation-actions">
-    <a href="{{ url_for('complete_story_selection') }}" class="back-link">← Back to Story Completion</a>
-    <a href="{{ url_for('save_story') }}" class="submit-button">💾 Save Story Configuration</a>
-    <a href="{{ url_for('index') }}" class="submit-button">🆕 Start New Story</a>
-</div>
 
 <style>
 .page-header {
@@ -189,39 +172,15 @@
     font-size: 0.95rem;
 }
 
-.navigation-actions {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 3rem;
-    flex-wrap: wrap;
-    gap: 1rem;
-}
-
-.section ul {
-    margin: 1rem 0;
-    padding-left: 2rem;
-}
-
-.section li {
-    margin-bottom: 0.5rem;
-    color: rgba(255, 255, 255, 0.9);
-}
-
 @media (max-width: 768px) {
     .characters-grid {
         grid-template-columns: 1fr;
     }
-    
-    .navigation-actions {
-        flex-direction: column;
-        align-items: stretch;
-    }
-    
-    .navigation-actions a {
-        text-align: center;
-    }
 }
+
+
+
+
 </style>
 
 <script>

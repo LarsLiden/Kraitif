@@ -128,29 +128,74 @@ def _create_character_from_dict(data: Dict[str, Any]) -> Optional[Character]:
             character_arc=character_arc
         )
     
-    except (KeyError, TypeError, AttributeError):
+    except (KeyError, TypeError, AttributeError) as e:
         return None
 
 
 def _find_archetype_enum(archetype_str: str) -> Optional[ArchetypeEnum]:
-    """Find ArchetypeEnum by string value."""
+    """Find ArchetypeEnum by string value with flexible matching."""
+    archetype_str_clean = archetype_str.strip()
+    
+    # First try exact match
     for archetype in ArchetypeEnum:
-        if archetype.value == archetype_str:
+        if archetype.value == archetype_str_clean:
             return archetype
+    
+    # Try case-insensitive match
+    for archetype in ArchetypeEnum:
+        if archetype.value.lower() == archetype_str_clean.lower():
+            return archetype
+    
+    # Try partial match (if the AI value is contained in or contains the enum value)
+    for archetype in ArchetypeEnum:
+        if (archetype_str_clean.lower() in archetype.value.lower() or 
+            archetype.value.lower() in archetype_str_clean.lower()):
+            return archetype
+    
     return None
 
 
 def _find_functional_role_enum(role_str: str) -> Optional[FunctionalRoleEnum]:
-    """Find FunctionalRoleEnum by string value."""
+    """Find FunctionalRoleEnum by string value with flexible matching."""
+    role_str_clean = role_str.strip()
+    
+    # First try exact match
     for role in FunctionalRoleEnum:
-        if role.value == role_str:
+        if role.value == role_str_clean:
             return role
+    
+    # Try case-insensitive match
+    for role in FunctionalRoleEnum:
+        if role.value.lower() == role_str_clean.lower():
+            return role
+    
+    # Try partial match
+    for role in FunctionalRoleEnum:
+        if (role_str_clean.lower() in role.value.lower() or 
+            role.value.lower() in role_str_clean.lower()):
+            return role
+    
     return None
 
 
 def _find_emotional_function_enum(function_str: str) -> Optional[EmotionalFunctionEnum]:
-    """Find EmotionalFunctionEnum by string value."""
+    """Find EmotionalFunctionEnum by string value with flexible matching."""
+    function_str_clean = function_str.strip()
+    
+    # First try exact match
     for function in EmotionalFunctionEnum:
-        if function.value == function_str:
+        if function.value == function_str_clean:
             return function
+    
+    # Try case-insensitive match
+    for function in EmotionalFunctionEnum:
+        if function.value.lower() == function_str_clean.lower():
+            return function
+    
+    # Try partial match
+    for function in EmotionalFunctionEnum:
+        if (function_str_clean.lower() in function.value.lower() or 
+            function.value.lower() in function_str_clean.lower()):
+            return function
+    
     return None
