@@ -26,6 +26,7 @@ Kraitif/
 │   ├── narrative_function.py # Narrative function registry, models, and NarrativeFunctionEnum
 │   ├── character.py         # Character class combining archetype, functional role, emotional function
 │   ├── character_parser.py  # Character and expanded plot line parsing from AI responses
+│   ├── chapter.py          # Chapter class for story structure and planning
 │   ├── genre.py             # Genre/sub-genre registry and models  
 │   ├── style.py             # Writing style registry and models
 │   └── plot_line.py         # PlotLine class for AI-generated plot lines
@@ -92,6 +93,7 @@ Kraitif/
 **Key Features**:
 - Tracks all user selections (story type, genre, archetypes using ArchetypeEnum, etc.)
 - Maintains separate archetype fields (`protagonist_archetype: Optional[ArchetypeEnum]`, `secondary_archetypes: List[ArchetypeEnum]`) and Character system (`characters`)
+- Includes chapter structure functionality (`chapters: List[Chapter]`) for detailed story planning
 - Includes expanded plot line functionality (`expanded_plot_line: Optional[str]`) for AI-generated enhanced narratives
 - Validates data consistency across selections including archetype enum validation
 - Provides business logic for typical vs other archetype classification
@@ -102,7 +104,8 @@ Kraitif/
 **Key Methods**:
 - `set_*()` methods with validation and dependency management including archetype enum conversion
 - `get_available_*()` methods for filtered selection options
-- `to_prompt_text()` - Generate structured output for external use, including suggested secondary character archetypes when none are explicitly selected **and plot line details when a plot line is selected**
+- Chapter management methods (`add_chapter()`, `remove_chapter()`, `get_chapter()`, `update_chapter()`)
+- `to_prompt_text()` - Generate structured output for external use, including suggested secondary character archetypes when none are explicitly selected **and plot line details when a plot line is selected** **and chapter structure when chapters are defined**
 - `to_json()` / `from_json()` - Persistence functionality with automatic enum to string conversion and string to enum parsing
 
 #### 3. Prompt Generation (`prompt.py`)
@@ -215,6 +218,19 @@ Character:
     - emotional_function: EmotionalFunctionEnum  # Character's emotional purpose
     - backstory: str                    # Character's background
     - character_arc: str                # Character's development arc
+```
+
+#### Chapter Model
+```python
+Chapter:
+    - chapter_number: int               # Sequential chapter number
+    - title: str                        # Short chapter title
+    - overview: str                     # Brief summary of chapter events
+    - character_impact: List[Dict[str, str]]  # Character impact entries
+    - point_of_view: Optional[str]      # POV character name
+    - narrative_function: Optional[NarrativeFunctionEnum]  # Narrative function tag
+    - foreshadow_or_echo: Optional[str] # Setup or payoff description
+    - scene_highlights: Optional[str]   # Notable imagery, dialogue, emotion, tension
 ```
 
 #### Genre Hierarchy
