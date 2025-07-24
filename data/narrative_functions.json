@@ -1,0 +1,96 @@
+{
+  "narrative_functions": [
+    {
+      "name": "Setting Introduction",
+      "description": "Establishes location, mood, tone to ground the reader in the story world."
+    },
+    {
+      "name": "Character Introduction",
+      "description": "Introduces key characters with their motivations, personalities, and relationships."
+    },
+    {
+      "name": "Inciting Incident",
+      "description": "First major disruption to the status quo that sets the story in motion."
+    },
+    {
+      "name": "First Reversal",
+      "description": "Unexpected shift in direction or stakes that changes the trajectory."
+    },
+    {
+      "name": "Rising Tension",
+      "description": "Builds suspense, stakes, and pressure toward the climax."
+    },
+    {
+      "name": "Subplot Activation",
+      "description": "Launches secondary narrative threads that enrich the main plot."
+    },
+    {
+      "name": "Moral Challenge",
+      "description": "Characters face ethical or emotional conflict that tests their values."
+    },
+    {
+      "name": "Midpoint Turn",
+      "description": "Major twist or truth that changes the trajectory of the story."
+    },
+    {
+      "name": "Relationship Reversal",
+      "description": "Shift in character dynamics such as betrayal or unexpected alliance."
+    },
+    {
+      "name": "Moment of Weakness",
+      "description": "Hero falters emotionally or physically, showing vulnerability."
+    },
+    {
+      "name": "Setback",
+      "description": "External failure or complication that forces characters to adapt."
+    },
+    {
+      "name": "Truth Revelation",
+      "description": "Important secret or mystery is unveiled, changing everything."
+    },
+    {
+      "name": "Confrontation",
+      "description": "Major clash between protagonist and antagonist, often physical or verbal."
+    },
+    {
+      "name": "Climax",
+      "description": "Emotional or physical peak of tension where the central conflict reaches its height."
+    },
+    {
+      "name": "Transformation",
+      "description": "Character undergoes internal shift or rebirth, showing growth."
+    },
+    {
+      "name": "Denouement",
+      "description": "Loose ends are resolved and consequences of the climax are shown."
+    },
+    {
+      "name": "Final Image",
+      "description": "Last scene or symbolic moment that provides closure or reflection."
+    },
+    {
+      "name": "Foreshadowing",
+      "description": "Seeds planted for future tension or events to come."
+    },
+    {
+      "name": "Echo",
+      "description": "Payoff for earlier scene or dialogue, creating narrative resonance."
+    },
+    {
+      "name": "Reflection",
+      "description": "Characters contemplate past actions and their implications for change."
+    },
+    {
+      "name": "Theme Reinforcement",
+      "description": "Underscores core message or motif of the story."
+    },
+    {
+      "name": "Catalyst Event",
+      "description": "Minor event with disproportionate future impact on the story."
+    },
+    {
+      "name": "Unexpected Reunion",
+      "description": "Characters reconnect in surprising ways that affect the plot."
+    }
+  ]
+}

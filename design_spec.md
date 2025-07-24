@@ -56,6 +56,34 @@ The `Character` class represents a complete character with:
 
 Each emotional function includes a name and descriptive explanation of the emotional role the character serves. These are defined as an `EmotionalFunctionEnum`.
 
+#### Narrative Functions
+23 narrative functions that define the structural roles of scenes or chapters within a story:
+- **Setting Introduction**: Establishes location, mood, tone
+- **Character Introduction**: Introduces key characters
+- **Inciting Incident**: First major disruption to the status quo
+- **First Reversal**: Unexpected shift in direction or stakes
+- **Rising Tension**: Builds suspense, stakes, and pressure
+- **Subplot Activation**: Launches secondary threads
+- **Moral Challenge**: Characters face ethical or emotional conflict
+- **Midpoint Turn**: Major twist or truth changes the trajectory
+- **Relationship Reversal**: Shift in character dynamics (betrayal, alliance)
+- **Moment of Weakness**: Hero falters emotionally or physically
+- **Setback**: External failure or complication
+- **Truth Revelation**: Important secret or mystery unveiled
+- **Confrontation**: Major clash between protagonist and antagonist
+- **Climax**: Emotional or physical peak of tension
+- **Transformation**: Character internal shift or rebirth
+- **Denouement**: Loose ends resolved, consequences shown
+- **Final Image**: Last scene or symbolic moment
+- **Foreshadowing**: Seeds planted for future tension
+- **Echo**: Payoff for earlier scene or dialogue
+- **Reflection**: Characters contemplate past actions, change
+- **Theme Reinforcement**: Underscores core message or motif
+- **Catalyst Event**: Minor event with disproportionate future impact
+- **Unexpected Reunion**: Characters reconnect in surprising ways
+
+Each narrative function includes a name and descriptive explanation of the structural role it serves. These are defined as a `NarrativeFunctionEnum`.
+
 ### Writing Styles  
 15 fundamental writing styles (Concise, Lyrical, Analytical, Whimsical, etc.) with characteristics, examples, and application guidance.
 
@@ -102,6 +130,7 @@ All narrative elements use a registry pattern for centralized access:
 - `StyleRegistry` - Manages writing styles
 - `EmotionalFunctionRegistry` - Manages emotional functions with `EmotionalFunctionEnum` support
 - `FunctionalRoleRegistry` - Manages functional roles with `FunctionalRoleEnum` support
+- `NarrativeFunctionRegistry` - Manages narrative functions with `NarrativeFunctionEnum` support
 
 ### Data Flow Dependencies
 1. **Genre → Sub-genre**: Sub-genres belong to specific genres
