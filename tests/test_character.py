@@ -298,6 +298,38 @@ class TestCharacterRefactor(unittest.TestCase):
         self.assertIn("Emotional Function: Catalyst", prompt_text)
         self.assertIn("Backstory: Former knight", prompt_text)
         self.assertIn("Character Arc: Guides the hero to victory", prompt_text)
+    
+    def test_story_prompt_text_includes_plot_line(self):
+        """Test that story prompt text includes plot line information when available."""
+        from plot_line import PlotLine
+        
+        # Create a plot line
+        plot_line = PlotLine(
+            name="The Hero's Journey",
+            plotline="A young farmer discovers they are the chosen one and must save the world from ancient evil."
+        )
+        
+        # Set the plot line in the story
+        self.story.set_selected_plot_line(plot_line)
+        
+        prompt_text = self.story.to_prompt_text()
+        
+        # Check that plot line information is included
+        self.assertIn("SELECTED PLOT LINE:", prompt_text)
+        self.assertIn("Name: The Hero's Journey", prompt_text)
+        self.assertIn("Plot Line: A young farmer discovers they are the chosen one", prompt_text)
+    
+    def test_story_prompt_text_without_plot_line(self):
+        """Test that story prompt text works correctly when no plot line is set."""
+        # Create a basic story without a plot line
+        self.story.set_genre("Fantasy")
+        
+        prompt_text = self.story.to_prompt_text()
+        
+        # Check that plot line section is not included
+        self.assertNotIn("SELECTED PLOT LINE:", prompt_text)
+        # But the rest of the prompt should still work
+        self.assertIn("STORY CONFIGURATION:", prompt_text)
 
 
 if __name__ == '__main__':

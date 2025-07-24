@@ -70,3 +70,35 @@ class Prompt:
         
         # Join with double newlines for clear separation
         return "\n\n".join(parts)
+    
+    def generate_character_prompt(self, story: Story) -> str:
+        """
+        Generate a complete character prompt by concatenating pre-text, story configuration, and post-text.
+        
+        Args:
+            story: Story object containing the configuration to include in the prompt
+            
+        Returns:
+            Complete prompt text ready for LLM consumption
+        """
+        # Read the template files
+        pre_text = self._read_template_file("characters_pre.txt")
+        post_text = self._read_template_file("characters_post.txt")
+        
+        # Get the story configuration
+        story_config = story.to_prompt_text()
+        
+        # Combine all parts
+        parts = []
+        
+        if pre_text.strip():
+            parts.append(pre_text.strip())
+        
+        if story_config.strip():
+            parts.append(story_config.strip())
+        
+        if post_text.strip():
+            parts.append(post_text.strip())
+        
+        # Join with double newlines for clear separation
+        return "\n\n".join(parts)

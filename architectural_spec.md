@@ -17,6 +17,7 @@ Kraitif/
 ├── character.py             # Character class combining archetype, functional role, emotional function
 ├── genre.py                 # Genre/sub-genre registry and models  
 ├── style.py                 # Writing style registry and models
+├── prompt.py                  # Prompt generation functions (plot and character prompts)
 ├── prompt_types.py          # Prompt type enumeration for AI debugging
 ├── launch.py                # Simple application launcher
 ├── demo.py                  # Command-line demo script
@@ -82,16 +83,29 @@ Kraitif/
 - Maintains separate archetype fields (`protagonist_archetype: Optional[ArchetypeEnum]`, `secondary_archetypes: List[ArchetypeEnum]`) and Character system (`characters`)
 - Validates data consistency across selections including archetype enum validation
 - Provides business logic for typical vs other archetype classification
-- Generates structured prompt text for AI writing assistants
+- Generates structured prompt text for AI writing assistants **including plot line information when available**
 - JSON serialization/deserialization for persistence with automatic enum to string conversion
 
 **Key Methods**:
 - `set_*()` methods with validation and dependency management including archetype enum conversion
 - `get_available_*()` methods for filtered selection options
-- `to_prompt_text()` - Generate structured output for external use, including suggested secondary character archetypes when none are explicitly selected
+- `to_prompt_text()` - Generate structured output for external use, including suggested secondary character archetypes when none are explicitly selected **and plot line details when a plot line is selected**
 - `to_json()` / `from_json()` - Persistence functionality with automatic enum to string conversion and string to enum parsing
 
-#### 3. Registry Components
+#### 3. Prompt Generation (`prompt.py`)
+**Purpose**: Generates specialized LLM prompts by combining template files with story configuration
+**Key Features**:
+- **Plot Prompt Generation**: `generate_plot_prompt()` function for creating plot line generation prompts
+- **Character Prompt Generation**: `generate_character_prompt()` function for creating character development prompts  
+- Template file integration from `prompts/` directory
+- Consistent prompt structure combining pre-text, story configuration, and post-text
+- Whitespace handling and error resilience
+
+**Template Files**:
+- `plot_lines_pre.txt` / `plot_lines_post.txt` - For plot generation prompts
+- `characters_pre.txt` / `characters_post.txt` - For character development prompts
+
+#### 4. Registry Components
 **Purpose**: Centralized access to narrative data with consistent interfaces
 
 **StoryTypeRegistry** (`story_types.py`):

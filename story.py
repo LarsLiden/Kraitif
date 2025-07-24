@@ -357,6 +357,13 @@ class Story:
             
             lines.append("")
         
+
+        # Plot Line Information
+        if self.selected_plot_line:
+            lines.append("SELECTED PLOT LINE:")
+            lines.append(f"Name: {self.selected_plot_line.name}")
+            lines.append(f"Plot Line: {self.selected_plot_line.plotline}")
+
         # Show archetype selections from web UI (protagonist_archetype and secondary_archetypes fields)
         # These are separate from the Character objects and used by the current web UI
         elif self.protagonist_archetype or self.secondary_archetypes:
