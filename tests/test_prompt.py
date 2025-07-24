@@ -239,5 +239,84 @@ class TestCharacterPrompt(unittest.TestCase):
         self.assertIsInstance(result, str)
 
 
+class TestChapterOutlinePrompt(unittest.TestCase):
+    """Test cases for the chapter outline prompt generation functionality."""
+    
+    def setUp(self):
+        """Set up test fixtures."""
+        self.prompt_generator = Prompt()
+    
+    @patch("prompt.Prompt._read_template_file")
+    @patch("objects.story.Story.to_prompt_text_for_chapter_outline")
+    def test_generate_chapter_outline_prompt_all_parts(self, mock_story_prompt, mock_read_file):
+        """Test generating a chapter outline prompt with all parts present."""
+        # Setup mocks
+        mock_read_file.side_effect = lambda filename: {
+            "chapter_outline_pre.txt": "Chapter outline pre-prompt text",
+            "chapter_outline_post.txt": "Chapter outline post-prompt text"
+        }.get(filename, "")
+        
+        mock_story_prompt.return_value = "Story configuration text"
+        
+        # Create a story and generate prompt
+        story = Story()
+        result = self.prompt_generator.generate_chapter_outline_prompt(story)
+        
+        # Check that all parts are included and properly separated
+        expected = "Chapter outline pre-prompt text\n\nStory configuration text\n\nChapter outline post-prompt text"
+        self.assertEqual(result, expected)
+        
+        # Verify the correct files were read
+        mock_read_file.assert_any_call("chapter_outline_pre.txt")
+        mock_read_file.assert_any_call("chapter_outline_post.txt")
+        mock_story_prompt.assert_called_once()
+    
+    @patch("prompt.Prompt._read_template_file")
+    @patch("objects.story.Story.to_prompt_text_for_chapter_outline")
+    def test_generate_chapter_outline_prompt_only_story_config(self, mock_story_prompt, mock_read_file):
+        """Test generating a chapter outline prompt with only story configuration."""
+        # Setup mocks - empty template files
+        mock_read_file.return_value = ""
+        mock_story_prompt.return_value = "Story configuration text"
+        
+        # Create a story and generate prompt
+        story = Story()
+        result = self.prompt_generator.generate_chapter_outline_prompt(story)
+        
+        # Should only contain the story configuration
+        self.assertEqual(result, "Story configuration text")
+    
+    @patch("prompt.Prompt._read_template_file")
+    @patch("objects.story.Story.to_prompt_text_for_chapter_outline")
+    def test_generate_chapter_outline_prompt_whitespace_handling(self, mock_story_prompt, mock_read_file):
+        """Test that whitespace is properly handled in chapter outline prompt generation."""
+        # Setup mocks with whitespace
+        mock_read_file.side_effect = lambda filename: {
+            "chapter_outline_pre.txt": "  Chapter outline pre-prompt text  \n\n",
+            "chapter_outline_post.txt": "\n  Chapter outline post-prompt text  "
+        }.get(filename, "")
+        
+        mock_story_prompt.return_value = "  Story configuration text  \n"
+        
+        # Create a story and generate prompt
+        story = Story()
+        result = self.prompt_generator.generate_chapter_outline_prompt(story)
+        
+        # Should strip whitespace but maintain content
+        expected = "Chapter outline pre-prompt text\n\nStory configuration text\n\nChapter outline post-prompt text"
+        self.assertEqual(result, expected)
+    
+    def test_generate_chapter_outline_prompt_integration(self):
+        """Test chapter outline prompt generation with actual template files."""
+        # This test uses the actual files in the prompts directory
+        story = Story()
+        
+        # Generate prompt - this should work even if template files don't exist
+        result = self.prompt_generator.generate_chapter_outline_prompt(story)
+        
+        # Result should be a string (could be empty if no files exist)
+        self.assertIsInstance(result, str)
+
+
 if __name__ == '__main__':
     unittest.main()
