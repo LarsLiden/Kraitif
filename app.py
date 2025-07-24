@@ -144,7 +144,8 @@ def save_story_to_session(story):
         'secondary_archetypes': [archetype.value for archetype in story.secondary_archetypes],
         'selected_plot_line': story.selected_plot_line.to_dict() if story.selected_plot_line else None,
         'expanded_plot_line': story.expanded_plot_line,
-        'characters': [char.to_dict() for char in story.characters]
+        'characters': [char.to_dict() for char in story.characters],
+        'chapters': [chapter.to_dict() for chapter in story.chapters]
     }
     session.modified = True
 
@@ -1091,6 +1092,119 @@ def generate_chapters():
             'success': False,
             'error': str(e)
         })
+
+
+@app.route('/test-chapters')
+def test_chapters():
+    """Test route to manually create a story with chapters for UI testing."""
+    from objects.plot_line import PlotLine
+    from objects.character import Character
+    from objects.archetype import ArchetypeEnum
+    from objects.functional_role import FunctionalRoleEnum
+    from objects.emotional_function import EmotionalFunctionEnum
+    from objects.chapter import Chapter
+    from objects.narrative_function import NarrativeFunctionEnum
+    
+    # Create test story
+    story = Story()
+    story.story_type_name = 'The Quest'
+    story.subtype_name = 'Object Quest'
+    story.key_theme = 'Growth occurs through shared adventure and sacrifice.'
+    story.core_arc = 'Hero discovers strength through perseverance.'
+    story.set_genre('Fantasy')
+    story.set_sub_genre('High Fantasy')
+    story.set_writing_style('Lyrical')
+    story.protagonist_archetype = ArchetypeEnum.CHOSEN_ONE
+    
+    # Add plot line
+    plot_line = PlotLine(
+        name='The Ancient Relic Quest',
+        plotline='A young chosen one must retrieve an ancient magical artifact to save their realm from an encroaching darkness.'
+    )
+    story.selected_plot_line = plot_line
+    story.expanded_plot_line = "In the realm of Aethermoor, young Lyra discovers she is the prophesied Chosen One when ancient runes appear on her skin during her village's harvest festival. The mysterious sage Aldric reveals that the Shadowblight is spreading across the land, corrupting everything it touches. Only the legendary Sunstone of Vaelthara can restore the balance."
+    
+    # Add characters
+    characters = [
+        Character(
+            name="Lyra",
+            archetype=ArchetypeEnum.CHOSEN_ONE,
+            functional_role=FunctionalRoleEnum.PROTAGONIST,
+            emotional_function=EmotionalFunctionEnum.SYMPATHETIC_CHARACTER,
+            backstory="A simple village girl who discovers her destiny when ancient runes appear on her skin during the harvest festival.",
+            character_arc="Transforms from a frightened, reluctant hero into a confident leader who understands that true power comes from unity and sacrifice."
+        ),
+        Character(
+            name="Aldric",
+            archetype=ArchetypeEnum.WISE_MENTOR,
+            functional_role=FunctionalRoleEnum.MENTOR,
+            emotional_function=EmotionalFunctionEnum.CATALYST,
+            backstory="An ancient sage who has waited centuries for the prophesied Chosen One to appear.",
+            character_arc="Learns to trust in the new generation and finds peace in passing on his wisdom."
+        ),
+        Character(
+            name="Kael",
+            archetype=ArchetypeEnum.LOYAL_COMPANION,
+            functional_role=FunctionalRoleEnum.GUARDIAN_GATEKEEPER,
+            emotional_function=EmotionalFunctionEnum.VICTIM,
+            backstory="A former knight of the fallen kingdom of Drakmoor, haunted by his failure to protect his people.",
+            character_arc="Overcomes his guilt and self-doubt to become a true protector."
+        )
+    ]
+    
+    for character in characters:
+        story.add_character(character)
+    
+    # Add test chapters
+    chapters = [
+        Chapter(
+            chapter_number=1,
+            title="The Awakening",
+            overview="In the village of Thornfield, Lyra discovers her destiny when ancient runes suddenly appear on her skin during the harvest festival. The mysterious sage Aldric arrives to explain her role as the Chosen One.",
+            character_impact=[
+                {"character": "Lyra", "effect": "Discovers her identity as the Chosen One and reluctantly accepts her destiny, feeling overwhelmed but determined."},
+                {"character": "Aldric", "effect": "Reveals long-held secrets about the prophecy and begins mentoring Lyra, finding purpose in his centuries of waiting."}
+            ],
+            point_of_view="Lyra",
+            narrative_function=NarrativeFunctionEnum.INCITING_INCIDENT,
+            foreshadow_or_echo="The glowing runes foreshadow the final ritual where Lyra must sacrifice her ego to save the realm.",
+            scene_highlights="The dramatic moment when the runes first glow, the festival crowd's reaction, and Aldric's mystical entrance."
+        ),
+        Chapter(
+            chapter_number=2,
+            title="The Gathering Storm", 
+            overview="Lyra and Aldric begin their journey, seeking the first clues to the Sunstone's location. They encounter the spreading Shadowblight and witness its devastating effects on the countryside.",
+            character_impact=[
+                {"character": "Lyra", "effect": "Sees the true scope of the threat and realizes the urgency of her mission, beginning to overcome her self-doubt."},
+                {"character": "Aldric", "effect": "Shares more of his burden and knowledge while training Lyra in basic magic and survival skills."}
+            ],
+            point_of_view="Lyra",
+            narrative_function=NarrativeFunctionEnum.RISING_TENSION,
+            foreshadow_or_echo="The corruption patterns echo the ancient texts Aldric carries, hinting at the cyclical nature of this threat.",
+            scene_highlights="A haunting scene of a corrupted forest, Lyra's first attempts at magic, and refugees fleeing the blight."
+        ),
+        Chapter(
+            chapter_number=3,
+            title="Allies and Enemies",
+            overview="In the border town of Millhaven, Lyra and Aldric recruit their first companions. They meet Kael, a disgraced knight seeking redemption, and Zara, a thief with hidden magical abilities.",
+            character_impact=[
+                {"character": "Lyra", "effect": "Learns to trust others and begins developing leadership skills, though still struggling with confidence."},
+                {"character": "Kael", "effect": "Finds new purpose in the quest and begins to believe in redemption through service to others."}
+            ],
+            point_of_view="Kael",
+            narrative_function=NarrativeFunctionEnum.CHARACTER_INTRODUCTION,
+            foreshadow_or_echo="Kael's story of failure echoes themes of redemption that will be central to the climax.",
+            scene_highlights="A tavern brawl that reveals each character's skills, and the group's first bonding moment around a campfire."
+        )
+    ]
+    
+    for chapter in chapters:
+        story.add_chapter(chapter)
+    
+    # Save to session
+    save_story_to_session(story)
+    
+    return redirect(url_for('expanded_story'))
 
 
 @app.route('/complete-story-selection')
