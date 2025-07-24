@@ -1146,6 +1146,49 @@ def expanded_story():
                          style_registry=style_registry)
 
 
+@app.route('/chapter-plan')
+def chapter_plan():
+    """Show the chapter plan page with detailed chapter outlines."""
+    story = get_story_from_session()
+    
+    # Check if we have the required data
+    if not story.selected_plot_line:
+        flash('Please select a plot line first.', 'error')
+        return redirect(url_for('complete_story_selection'))
+    
+    if not story.expanded_plot_line or not story.characters:
+        flash('Please generate characters first.', 'error')
+        return redirect(url_for('expanded_story'))
+    
+    if not story.chapters:
+        flash('Please generate a chapter plan first.', 'error')
+        return redirect(url_for('expanded_story'))
+    
+    # Get additional context objects for the template
+    story_type = None
+    subtype = None
+    if story.story_type_name:
+        story_type = registry.get_story_type(story.story_type_name)
+        if story_type and story.subtype_name:
+            subtype = story_type.get_subtype(story.subtype_name)
+    
+    # Get protagonist and secondary archetype objects
+    protagonist_archetype_obj = get_protagonist_archetype_object(story)
+    secondary_archetype_objs = get_secondary_archetype_objects(story)
+    writing_style_obj = get_writing_style_object(story)
+    
+    return render_template('chapter_plan.html',
+                         story=story,
+                         story_type=story_type,
+                         subtype=subtype,
+                         protagonist_archetype_obj=protagonist_archetype_obj,
+                         secondary_archetype_objs=secondary_archetype_objs,
+                         writing_style_obj=writing_style_obj,
+                         genre_registry=genre_registry,
+                         archetype_registry=archetype_registry,
+                         style_registry=style_registry)
+
+
 @app.route('/generate-chapters', methods=['POST'])
 def generate_chapters():
     """Generate chapter plan using AI based on the current story configuration."""

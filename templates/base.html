@@ -493,6 +493,7 @@
                                             <strong>Chapter Plan:</strong> {{ story.chapters|length }} Chapters Generated
                                         </div>
                                         <div class="panel-controls">
+                                            <a href="{{ url_for('chapter_plan') }}" class="edit-button" title="View Full Chapter Plan">👁️</a>
                                             <span class="expand-arrow" id="chapter-plan-expand-arrow">▶</span>
                                         </div>
                                     </div>
@@ -1422,8 +1423,8 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        // Navigate to expanded story page to show the chapters
-                        window.location.href = '/expanded-story';
+                        // Navigate to chapter plan page to show the chapters
+                        window.location.href = '/chapter-plan';
                     } else {
                         // Restore original content and show error
                         rightPanel.innerHTML = originalContent;
