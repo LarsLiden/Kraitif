@@ -1,26 +1,22 @@
 Use the STORY CONFIGURATION as a structural framework for your plot ideas. 
 
-IMPORTANT: The functional_role, emotional_function, backstory, archetype and character_arc for each character *must* agree with the expanded_plot_line
-
 **OUTPUT FORMAT:**  
-Return your expanded_plot_line in the following structured format and include **only** this structure:
+Return the result using the following JSON structure. Do not include any commentary, formatting, or content outside this block:
 
 ```json
 <STRUCTURED_DATA>
 {
-  "expanded_plot_line": {more detailed version of plot_line that accounts for all the characters},
-  "characters":
-    [
-      {
-        'name': {string},
-        'archetype': {ArchetypeEnum},
-        'functional_role': {FunctionalRoleEnum},
-        'emotional_function': {EmotionalFunctionEnum},
-        'backstory': {string},
-        'character_arc': {string}
-      },
-    ...
-    ]
+  "expanded_plot_line": "{A more detailed version of the plot line that includes all characters and escalates narrative complexity}",
+  "characters": [
+    {
+      "name": "...",
+      "archetype": "...",                     // Must match ArchetypeEnum
+      "functional_role": "...",               // Must match FunctionalRoleEnum
+      "emotional_function": "...",            // Must match EmotionalFunctionEnum
+      "backstory": "...",
+      "character_arc": "..."
+    }
+  ]
 }
 </STRUCTURED_DATA>
 ```

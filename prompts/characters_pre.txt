@@ -1,8 +1,40 @@
-Your task is to create a more detailed plot line for a novel defining each of the characters, based on the STORY CONFIGURATION provided below. If should reflect the narrative structure, genre conventions, and writing style defined in the configuration.
+Your task is to expand a narrative seed into a richly detailed novel outline, including character dynamics, emotional milestones, and plot progression. Use the STORY CONFIGURATION and SELECTED PLOT LINE provided to build out a fully developed ensemble of characters and an expanded plot structure suitable for later chapter development.
 
-The expanded plot line should contain between 5 to 8 characters.   In creating the character please consider the *protagonist_archtype* and any *secondary_archetypes* that are provided
+The result should reflect the story type, genre conventions, narrative rhythm, emotional arc, writing style, and protagonist archetype defined in the configuration. Include between 5 to 8 characters, ensuring a diverse range of functional roles and emotional functions. Characters should be narratively interlinked through alliance, tension, conflict, backstory, or transformation.
 
-For each character, provide their name, archetype, functional_role, emotional_function, backstory and character arc.  Select from the following:
+
+CHARACTER GUIDELINES
+For each character, provide the following:
+
+name: A distinct, genre-appropriate name
+
+archetype: One selection from ArchetypeEnum (see full list below)
+
+functional_role: One selection from FunctionalRoleEnum
+
+emotional_function: One selection from EmotionalFunctionEnum
+
+backstory: Describe their personal history and motivation
+
+character_arc: Describe how they change throughout the story
+
+Use the protagonist_archtype and any secondary_archetypes from the configuration to anchor your cast.
+
+WRITING STYLE GUIDELINES
+The expanded plot line and character descriptions should follow the selected writing style, using appropriate tone, sensory details, pacing, and language. If the style emphasizes imagery, wit, lyricism, or mood, reflect that in all output text.
+
+STRUCTURE GUIDELELINES
+Your expanded plot should:
+
+Embed the selected narrative rhythm and emotional arc
+
+Include at least one key moment from the configuration
+
+Reflect the selected theme and core arc
+
+Weave character actions and decisions into major plot developments
+
+Lay natural foundations for future chapter breakdowns
 
 class ArchetypeEnum(Enum):
     """Enum for archetype names."""
