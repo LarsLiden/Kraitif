@@ -24,6 +24,7 @@ Kraitif/
 │   ├── emotional_function.py # Emotional function registry, models, and EmotionalFunctionEnum
 │   ├── functional_role.py   # Functional role registry, models, and FunctionalRoleEnum
 │   ├── character.py         # Character class combining archetype, functional role, emotional function
+│   ├── character_parser.py  # Character and expanded plot line parsing from AI responses
 │   ├── genre.py             # Genre/sub-genre registry and models  
 │   ├── style.py             # Writing style registry and models
 │   └── plot_line.py         # PlotLine class for AI-generated plot lines
@@ -47,7 +48,8 @@ Kraitif/
 │   ├── writing_style_selection.html
 │   ├── protagonist_archetype_selection.html
 │   ├── secondary_archetype_selection.html
-│   └── story_completion.html
+│   ├── story_completion.html
+│   └── expanded_story.html # Character generation results and expanded plot display
 ├── static/                  # CSS, JavaScript, images
 │   └── style.css           # Main stylesheet (black theme, UI disable states)
 └── tests/                   # Test suite
@@ -87,6 +89,7 @@ Kraitif/
 **Key Features**:
 - Tracks all user selections (story type, genre, archetypes using ArchetypeEnum, etc.)
 - Maintains separate archetype fields (`protagonist_archetype: Optional[ArchetypeEnum]`, `secondary_archetypes: List[ArchetypeEnum]`) and Character system (`characters`)
+- Includes expanded plot line functionality (`expanded_plot_line: Optional[str]`) for AI-generated enhanced narratives
 - Validates data consistency across selections including archetype enum validation
 - Provides business logic for typical vs other archetype classification
 - Generates structured prompt text for AI writing assistants **including plot line information when available**
@@ -104,7 +107,9 @@ Kraitif/
 **Key Features**:
 - **Plot Prompt Generation**: `generate_plot_prompt()` function for creating plot line generation prompts
 - **Character Prompt Generation**: `generate_character_prompt()` function for creating character development prompts  
-- Template file integration from `prompts/` directory
+- Template file integration from `prompts/` directory for character generation
+- Character generation based on selected plot line and complete story configuration
+- Structured JSON response parsing for expanded plot lines and character data
 - Consistent prompt structure combining pre-text, story configuration, and post-text
 - Whitespace handling and error resilience
 - **Imports**: Uses `from objects.story import Story` to access story models
@@ -113,7 +118,22 @@ Kraitif/
 - `plot_lines_pre.txt` / `plot_lines_post.txt` - For plot generation prompts
 - `characters_pre.txt` / `characters_post.txt` - For character development prompts
 
-#### 4. Registry Components
+#### 4. Character Parser (`objects/character_parser.py`)
+**Purpose**: Parses AI responses to extract characters and expanded plot lines
+**Key Features**:
+- **Character Data Extraction**: Parses structured JSON from AI responses
+- **Expanded Plot Line Extraction**: Extracts enhanced plot narratives 
+- **Character Object Creation**: Creates Character instances with complete archetype, role, and development data
+- **Enum Conversion**: Converts string values to appropriate enum types (ArchetypeEnum, FunctionalRoleEnum, EmotionalFunctionEnum)
+- **Error Handling**: Graceful handling of malformed AI responses
+- **Imports**: Uses relative imports to access character and enum models
+
+**Key Functions**:
+- `parse_characters_from_ai_response()` - Main parsing function returning expanded plot line and character list
+- `_create_character_from_dict()` - Character object creation with validation
+- `_find_*_enum()` - Helper functions for enum string-to-value conversion
+
+#### 5. Registry Components
 **Purpose**: Centralized access to narrative data with consistent interfaces
 
 **StoryTypeRegistry** (`story_types.py`):
@@ -215,7 +235,7 @@ Style:
 ```python
 PromptType(Enum):
     - PLOT_LINES = "plot_lines"
-    # Additional types can be added as needed
+    - CHARACTERS = "characters"
 ```
 
 #### Emotional Function Model
@@ -314,10 +334,10 @@ All step forms follow consistent pattern:
 - **UI State Management**: JavaScript-based content replacement for intermediate states during async operations
 
 ### AI Integration and Debugging
-- **Prompt Categorization**: `PromptType` enum for categorizing different AI prompts
+- **Prompt Categorization**: `PromptType` enum for categorizing different AI prompts (PLOT_LINES, CHARACTERS)
 - **Debug File Management**: Automatic saving of prompts and responses to categorized files
 - **Error Handling**: Graceful handling of AI service failures with debug logging
-- **File Organization**: Debug files named by prompt type for easy identification
+- **File Organization**: Debug files named by prompt type for easy identification (plot_lines.txt, characters.txt)
 
 ### Testing Integration
 - **Unit Tests**: Individual component validation

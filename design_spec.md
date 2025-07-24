@@ -137,6 +137,34 @@ The application includes a comprehensive prompt generation system for AI integra
 - Uses `characters_pre.txt` and `characters_post.txt` template files
 - Includes complete story configuration for character development prompts
 - Template files contain detailed instructions for AI character creation including archetype, functional role, and emotional function specifications
+- **Character Generation Flow**: Plot line selection → AI character generation → expanded plot line and character creation
+
+### Character Generation System
+The application includes a comprehensive character generation system that builds upon the selected plot line:
+
+#### AI Character Generation Process
+1. **Prerequisites**: User must have selected a plot line from AI-generated options
+2. **Character Generation Trigger**: "Generate characters" button appears in left panel when plot line is selected
+3. **AI Integration**: Uses `generate_character_prompt()` to create character-specific prompts based on story configuration and selected plot line
+4. **Structured Response**: AI returns JSON containing expanded plot line and 5-8 character profiles
+5. **Character Parsing**: `parse_characters_from_ai_response()` extracts character data and expanded plot line
+6. **Character Objects**: Creates Character instances with complete archetype, role, and development information
+7. **Story Integration**: Updates story object with expanded plot line and character data
+8. **Results Display**: Shows expanded story page with detailed plot line and character profiles
+
+#### Character Data Structure
+Each AI-generated character includes:
+- **Name**: Character's given name
+- **Archetype**: Selected from ArchetypeEnum (108 available archetypes)
+- **Functional Role**: Selected from FunctionalRoleEnum (20 narrative functions)
+- **Emotional Function**: Selected from EmotionalFunctionEnum (8 emotional purposes)
+- **Backstory**: Character's background and history
+- **Character Arc**: Character's development and transformation throughout the story
+
+#### Expanded Plot Line
+- **Enhanced Narrative**: More detailed version of the selected plot line that incorporates all generated characters
+- **Character Integration**: Plot expanded to show character roles, relationships, and interactions
+- **Story Depth**: Provides comprehensive foundation for story writing with character-driven narrative
 
 ### Story Configuration Output
 The `to_prompt_text()` method generates comprehensive story configuration that includes:
@@ -146,6 +174,8 @@ The `to_prompt_text()` method generates comprehensive story configuration that i
 - Writing style characteristics and examples
 - Character archetype details with descriptions
 - **Plot line information when available** - includes selected plot line name and description
+- **Character generation capabilities** - generates expanded plot lines and detailed character profiles
+- **Expanded plot line integration** - enhanced story details that incorporate all generated characters
 - Suggested secondary character archetypes for the genre when none are explicitly selected
 
 ## User Experience Flow
@@ -201,7 +231,8 @@ When navigating back to edit a previous step:
 - **Checkbox Groups**: Multi-selection elements (secondary characters)
 - **Expandable Panels**: Rich information display for story type and subtype details
 - **Auto-submit Forms**: Theme, arc, and genre selections automatically submit on click
-- **Intermediate Page States**: Right panel content is replaced with an intermediate "generating plot lines" page during AI processing, while preserving access to Save/Load/New buttons in the left panel
+- **Intermediate Page States**: Right panel content is replaced with intermediate "generating plot lines" or "generating characters" pages during AI processing, while preserving access to Save/Load/New buttons in the left panel
+- **Character Generation Flow**: Generate characters button appears in left panel when plot line is selected, leading to character generation and expanded story display
 
 ### Visual Design Principles
 - **Black Background Theme**: Dark theme for comfortable extended use
