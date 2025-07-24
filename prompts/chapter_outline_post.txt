@@ -1,0 +1,30 @@
+**OUTPUT FORMAT:**  
+Return your chapters in the following structured format and include **only** this structure:
+
+```json
+<STRUCTURED_DATA>
+{
+  "chapters": [
+    {
+      "chapter_number": 1,
+      "title": "Short chapter title",
+      "overview": "Brief summary of what happens in this chapter.",
+      "character_impact": [
+        {
+          "character": "Name",  // Must match on of the names in the STORY CONFIGURATION characters
+          "effect": "Description of how this chapter affects their arc, motivations, or relationships."
+        },
+        ...
+      ],
+      "point_of_view": "Name of POV character",        // Must match on of the names in the STORY CONFIGURATION characters
+      "narrative_function": "Narrative function tag",  // Must match NarrativeFunctionEnum
+      "foreshadow_or_echo": "Optional – description of setup or payoff",
+      "scene_highlights": "Optional – notable imagery, dialogue, emotion, or tension"
+    },
+    ...
+  ]
+}
+</STRUCTURED_DATA>
+```
+
+**Do not** include any commentary, explanation, or formatting outside this JSON block.

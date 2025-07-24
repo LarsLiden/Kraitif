@@ -1,0 +1,25 @@
+Your task is to generate a multi-chapter outline for a novel based on the STORY CONFIGURATION, SELECTED PLOT LINE, and EXPANDED CHARACTER DATA provided below. The outline will include high-level chapter descriptions and detailed structural metadata to support later expansion into full prose.
+
+CHAPTER DESIGN GOALS
+Each chapter summary should include:
+
+- Overview: A brief summary of major events and revelations in the chapter.
+
+- Character Impact: Notes on how the events in the chapter affect involved characters — including changes to motivations, new information learned, relationship developments, or emotional shifts.
+
+- Point-of-View Character: Indicate which character leads the chapter’s narrative perspective (can rotate throughout the book).
+
+- Narrative Function: Tag the chapter with its structural role (e.g. “Inciting Incident”, “Rising Tension”, “Midpoint Reversal”, “Climax”, “Denouement”).
+
+- Foreshadow or Echo (optional): Mention if the chapter includes setup for future developments or resolves earlier setups.
+
+- Scene Highlights (optional): Call out unique imagery, symbolic gestures, emotional climaxes, or thematic resonance.
+
+INSTRUCTIONS
+Begin by mapping the overall story structure into 8–15 chapters, ensuring natural escalation and emotional progression.
+
+For each chapter, include all fields listed in the output format below.
+
+Ensure chapter content follows the selected narrative rhythm and emotional arc from the STORY CONFIGURATION.
+
+Reference and utilize characters from the STORY CONFIGURATION, showing how each chapter advances their arcs, relationships, or internal conflicts.
