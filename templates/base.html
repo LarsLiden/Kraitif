@@ -30,16 +30,17 @@
                                 {% if story_data.get('story_type_name') %}
                                 <!-- Story Type with expandable details -->
                                 {% if story_type %}
-                                <div class="expandable-panel">
-                                    <div class="expandable-panel-header" onclick="toggleStoryTypeDetails()">
-                                        <div class="expandable-panel-label">
-                                            <strong>Story Type:</strong> {{ story_data.get('story_type_name') }}
+                                <div class="selection-wrapper">
+                                    <a href="{{ url_for('navigate_to_step', step='story_type') }}" class="edit-button-external" title="Edit Story Type">✏️</a>
+                                    <div class="expandable-panel">
+                                        <div class="expandable-panel-header" onclick="toggleStoryTypeDetails()">
+                                            <div class="expandable-panel-label">
+                                                <strong>Story Type:</strong> {{ story_data.get('story_type_name') }}
+                                            </div>
+                                            <div class="panel-controls">
+                                                <span class="expand-arrow" id="story-type-expand-arrow">▶</span>
+                                            </div>
                                         </div>
-                                        <div class="panel-controls">
-                                            <a href="{{ url_for('navigate_to_step', step='story_type') }}" class="edit-button" title="Edit Story Type">✏️</a>
-                                            <span class="expand-arrow" id="story-type-expand-arrow">▶</span>
-                                        </div>
-                                    </div>
                                     <div class="expandable-panel-content" id="story-type-details-content">
                                         <div class="section">
                                             <div class="section-title">Description</div>
@@ -88,14 +89,15 @@
                                         {% endif %}
                                     </div>
                                 </div>
+                                </div>
                                 {% else %}
                                 <!-- Fallback for when story_type is not available -->
-                                <div class="selection-item">
-                                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <div class="selection-wrapper">
+                                    <a href="{{ url_for('navigate_to_step', step='story_type') }}" class="edit-button-external" title="Edit Story Type">✏️</a>
+                                    <div class="selection-item">
                                         <div>
                                             <strong>Story Type:</strong> {{ story_data.get('story_type_name') }}
                                         </div>
-                                        <a href="{{ url_for('navigate_to_step', step='story_type') }}" class="edit-button" title="Edit Story Type">✏️</a>
                                     </div>
                                 </div>
                                 {% endif %}
@@ -103,16 +105,17 @@
                                 <!-- Story Sub-Type with expandable details (separate from story type) -->
                                 {% if story_data.get('subtype_name') %}
                                 {% if subtype %}
-                                <div class="expandable-panel">
-                                    <div class="expandable-panel-header" onclick="toggleSubtypeDetails()">
-                                        <div class="expandable-panel-label">
-                                            <strong>Story Sub-Type:</strong> {{ story_data.get('subtype_name') }}
+                                <div class="selection-wrapper">
+                                    <a href="{{ url_for('navigate_to_step', step='subtype') }}" class="edit-button-external" title="Edit Story Sub-Type">✏️</a>
+                                    <div class="expandable-panel">
+                                        <div class="expandable-panel-header" onclick="toggleSubtypeDetails()">
+                                            <div class="expandable-panel-label">
+                                                <strong>Story Sub-Type:</strong> {{ story_data.get('subtype_name') }}
+                                            </div>
+                                            <div class="panel-controls">
+                                                <span class="expand-arrow" id="subtype-expand-arrow">▶</span>
+                                            </div>
                                         </div>
-                                        <div class="panel-controls">
-                                            <a href="{{ url_for('navigate_to_step', step='subtype') }}" class="edit-button" title="Edit Story Sub-Type">✏️</a>
-                                            <span class="expand-arrow" id="subtype-expand-arrow">▶</span>
-                                        </div>
-                                    </div>
                                     <div class="expandable-panel-content" id="subtype-details-content">
                                         <div class="section">
                                             <div class="section-title">Description</div>
@@ -127,36 +130,37 @@
                                         {% endif %}
                                     </div>
                                 </div>
+                                </div>
                                 {% else %}
                                 <!-- Fallback for when subtype object is not available -->
-                                <div class="selection-item">
-                                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <div class="selection-wrapper">
+                                    <a href="{{ url_for('navigate_to_step', step='subtype') }}" class="edit-button-external" title="Edit Story Sub-Type">✏️</a>
+                                    <div class="selection-item">
                                         <div>
                                             <strong>Story Sub-Type:</strong> {{ story_data.get('subtype_name') }}
                                         </div>
-                                        <a href="{{ url_for('navigate_to_step', step='subtype') }}" class="edit-button" title="Edit Story Sub-Type">✏️</a>
                                     </div>
                                 </div>
                                 {% endif %}
                                 {% endif %}
                                 {% endif %}
                                 {% if story_data.get('key_theme') %}
-                                <div class="selection-item">
-                                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <div class="selection-wrapper">
+                                    <a href="{{ url_for('navigate_to_step', step='key_theme') }}" class="edit-button-external" title="Edit Key Theme">✏️</a>
+                                    <div class="selection-item">
                                         <div>
                                             <strong>Key Theme:</strong> {{ story_data.get('key_theme') }}
                                         </div>
-                                        <a href="{{ url_for('navigate_to_step', step='key_theme') }}" class="edit-button" title="Edit Key Theme">✏️</a>
                                     </div>
                                 </div>
                                 {% endif %}
                                 {% if story_data.get('core_arc') %}
-                                <div class="selection-item">
-                                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <div class="selection-wrapper">
+                                    <a href="{{ url_for('navigate_to_step', step='core_arc') }}" class="edit-button-external" title="Edit Core Arc">✏️</a>
+                                    <div class="selection-item">
                                         <div>
                                             <strong>Core Arc:</strong> {{ story_data.get('core_arc') }}
                                         </div>
-                                        <a href="{{ url_for('navigate_to_step', step='core_arc') }}" class="edit-button" title="Edit Core Arc">✏️</a>
                                     </div>
                                 </div>
                                 {% endif %}
@@ -164,16 +168,17 @@
                                 <!-- Genre with expandable details -->
                                 {% if story_data.get('genre_name') %}
                                 {% if story and story.genre %}
-                                <div class="expandable-panel">
-                                    <div class="expandable-panel-header" onclick="toggleGenreDetails()">
-                                        <div class="expandable-panel-label">
-                                            <strong>Genre:</strong> {{ story_data.get('genre_name') }}
+                                <div class="selection-wrapper">
+                                    <a href="{{ url_for('navigate_to_step', step='genre') }}" class="edit-button-external" title="Edit Genre">✏️</a>
+                                    <div class="expandable-panel">
+                                        <div class="expandable-panel-header" onclick="toggleGenreDetails()">
+                                            <div class="expandable-panel-label">
+                                                <strong>Genre:</strong> {{ story_data.get('genre_name') }}
+                                            </div>
+                                            <div class="panel-controls">
+                                                <span class="expand-arrow" id="genre-expand-arrow">▶</span>
+                                            </div>
                                         </div>
-                                        <div class="panel-controls">
-                                            <a href="{{ url_for('navigate_to_step', step='genre') }}" class="edit-button" title="Edit Genre">✏️</a>
-                                            <span class="expand-arrow" id="genre-expand-arrow">▶</span>
-                                        </div>
-                                    </div>
                                     <div class="expandable-panel-content" id="genre-details-content">
                                         {% if story.genre.subgenres %}
                                         <div class="section">
@@ -187,14 +192,15 @@
                                         {% endif %}
                                     </div>
                                 </div>
+                                </div>
                                 {% else %}
                                 <!-- Fallback for when genre object is not available -->
-                                <div class="selection-item">
-                                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <div class="selection-wrapper">
+                                    <a href="{{ url_for('navigate_to_step', step='genre') }}" class="edit-button-external" title="Edit Genre">✏️</a>
+                                    <div class="selection-item">
                                         <div>
                                             <strong>Genre:</strong> {{ story_data.get('genre_name') }}
                                         </div>
-                                        <a href="{{ url_for('navigate_to_step', step='genre') }}" class="edit-button" title="Edit Genre">✏️</a>
                                     </div>
                                 </div>
                                 {% endif %}
@@ -203,16 +209,17 @@
                                 <!-- Sub-Genre with expandable details -->
                                 {% if story_data.get('sub_genre_name') %}
                                 {% if story and story.sub_genre %}
-                                <div class="expandable-panel">
-                                    <div class="expandable-panel-header" onclick="toggleSubGenreDetails()">
-                                        <div class="expandable-panel-label">
-                                            <strong>Sub-Genre:</strong> {{ story_data.get('sub_genre_name') }}
+                                <div class="selection-wrapper">
+                                    <a href="{{ url_for('navigate_to_step', step='sub_genre') }}" class="edit-button-external" title="Edit Sub-Genre">✏️</a>
+                                    <div class="expandable-panel">
+                                        <div class="expandable-panel-header" onclick="toggleSubGenreDetails()">
+                                            <div class="expandable-panel-label">
+                                                <strong>Sub-Genre:</strong> {{ story_data.get('sub_genre_name') }}
+                                            </div>
+                                            <div class="panel-controls">
+                                                <span class="expand-arrow" id="subgenre-expand-arrow">▶</span>
+                                            </div>
                                         </div>
-                                        <div class="panel-controls">
-                                            <a href="{{ url_for('navigate_to_step', step='sub_genre') }}" class="edit-button" title="Edit Sub-Genre">✏️</a>
-                                            <span class="expand-arrow" id="subgenre-expand-arrow">▶</span>
-                                        </div>
-                                    </div>
                                     <div class="expandable-panel-content" id="subgenre-details-content">
                                         {% if story.sub_genre.plot %}
                                         <div class="section">
@@ -236,14 +243,15 @@
                                         {% endif %}
                                     </div>
                                 </div>
+                                </div>
                                 {% else %}
                                 <!-- Fallback for when sub-genre object is not available -->
-                                <div class="selection-item">
-                                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <div class="selection-wrapper">
+                                    <a href="{{ url_for('navigate_to_step', step='sub_genre') }}" class="edit-button-external" title="Edit Sub-Genre">✏️</a>
+                                    <div class="selection-item">
                                         <div>
                                             <strong>Sub-Genre:</strong> {{ story_data.get('sub_genre_name') }}
                                         </div>
-                                        <a href="{{ url_for('navigate_to_step', step='sub_genre') }}" class="edit-button" title="Edit Sub-Genre">✏️</a>
                                     </div>
                                 </div>
                                 {% endif %}

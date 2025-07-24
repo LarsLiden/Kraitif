@@ -50,12 +50,50 @@ body {
     padding-bottom: 8px;
 }
 
+/* Selection Wrapper - contains external edit button and panel/item */
+.selection-wrapper {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 12px;
+    gap: 8px;
+}
+
+/* External Edit Button */
+.edit-button-external {
+    background: none;
+    border: none;
+    color: #FFB74D;
+    font-size: 1.1em;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 3px;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+    margin-top: 4px; /* Align with the top of the panel */
+}
+
+.edit-button-external:hover {
+    background-color: rgba(255, 183, 77, 0.2);
+    color: #FFC947;
+    transform: scale(1.1);
+}
+
+.edit-button-external:active {
+    transform: scale(0.95);
+}
+
 /* Expandable Panel Base Styles - Consolidated to prevent redundancy */
 .expandable-panel {
-    margin-bottom: 12px;
     background-color: #2a2a2a;
     border-radius: 4px;
     border-left: 3px solid #4CAF50;
+    flex: 1; /* Take remaining space in wrapper */
 }
 
 .expandable-panel-header {
@@ -154,11 +192,11 @@ body {
 }
 
 .selection-item {
-    margin-bottom: 12px;
     padding: 8px;
     background-color: #2a2a2a;
     border-radius: 4px;
     border-left: 3px solid #4CAF50;
+    flex: 1; /* Take remaining space in wrapper */
 }
 
 .selection-item strong {
