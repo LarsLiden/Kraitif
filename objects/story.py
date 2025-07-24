@@ -231,8 +231,16 @@ class Story:
 
         return " | ".join(parts) if parts else "Story with no selections"
     
-    def to_prompt_text(self) -> str:
-        """Convert story selections to a formatted text suitable for LLM prompts."""
+    def to_prompt_text(self, exclude_selected_plot_line: bool = False, 
+                       exclude_archetype_fallbacks: bool = False, 
+                       include_expanded_plot_line: bool = False) -> str:
+        """Convert story selections to a formatted text suitable for LLM prompts.
+        
+        Args:
+            exclude_selected_plot_line: If True, excludes the selected_plot_line section
+            exclude_archetype_fallbacks: If True, excludes protagonist_archetype and secondary_archetypes fallback fields
+            include_expanded_plot_line: If True, includes the expanded_plot_line section
+        """
         lines = []
         lines.append("STORY CONFIGURATION:")
         lines.append("=" * 50)
@@ -361,15 +369,18 @@ class Story:
             lines.append("")
         
 
-        # Plot Line Information
-        if self.selected_plot_line:
+        # Plot Line Information (conditionally included)
+        if not exclude_selected_plot_line and self.selected_plot_line:
             lines.append("SELECTED PLOT LINE:")
             lines.append(f"Name: {self.selected_plot_line.name}")
             lines.append(f"Plot Line: {self.selected_plot_line.plotline}")
+            lines.append("")
 
         # Show archetype selections from web UI (protagonist_archetype and secondary_archetypes fields)
         # These are separate from the Character objects and used by the current web UI
-        elif self.protagonist_archetype or self.secondary_archetypes:
+        # Only show these if there are NO Character objects and not excluded
+        if (not exclude_archetype_fallbacks and not self.characters and 
+            (self.protagonist_archetype or self.secondary_archetypes)):
             lines.append("CHARACTER ARCHETYPES:")
             
             # Show protagonist archetype
@@ -402,11 +413,28 @@ class Story:
             
             lines.append("")
         
+        # Add expanded plot line if requested
+        if include_expanded_plot_line and self.expanded_plot_line:
+            lines.append("EXPANDED PLOT LINE:")
+            lines.append(self.expanded_plot_line)
+            lines.append("")
+        
         # Add a footer note
         lines.append("=" * 50)
         lines.append("Use this configuration to guide the story creation process.")
         
         return "\n".join(lines)
+
+    def to_prompt_text_for_chapter_outline(self) -> str:
+        """
+        Convert story selections to a formatted text suitable for chapter outline prompts.
+        This version excludes protagonist_archetype, secondary_archetypes, and selected_plot_line fields.
+        """
+        return self.to_prompt_text(
+            exclude_selected_plot_line=True,
+            exclude_archetype_fallbacks=True,
+            include_expanded_plot_line=True
+        )
     
     def set_selected_plot_line(self, plot_line: PlotLine) -> bool:
         """Set the selected plot line for the story."""
