@@ -304,6 +304,7 @@ class Story:
             lines.append("")
         
         # Character Archetypes with detailed descriptions
+        # Show full Character objects if they exist
         if self.characters:
             lines.append("CHARACTER ARCHETYPES:")
             
@@ -356,11 +357,46 @@ class Story:
             
             lines.append("")
         
+
         # Plot Line Information
         if self.selected_plot_line:
             lines.append("SELECTED PLOT LINE:")
             lines.append(f"Name: {self.selected_plot_line.name}")
             lines.append(f"Plot Line: {self.selected_plot_line.plotline}")
+
+        # Show archetype selections from web UI (protagonist_archetype and secondary_archetypes fields)
+        # These are separate from the Character objects and used by the current web UI
+        elif self.protagonist_archetype or self.secondary_archetypes:
+            lines.append("CHARACTER ARCHETYPES:")
+            
+            # Show protagonist archetype
+            if self.protagonist_archetype:
+                archetype_obj = self._archetype_registry.get_archetype(self.protagonist_archetype.value)
+                lines.append(f"Protagonist Archetype: {self.protagonist_archetype.value}")
+                if archetype_obj:
+                    lines.append(f"  Description: {archetype_obj.description}")
+            
+            # Show secondary archetypes
+            if self.secondary_archetypes:
+                lines.append("Secondary Character Archetypes:")
+                for archetype_enum in self.secondary_archetypes:
+                    archetype_obj = self._archetype_registry.get_archetype(archetype_enum.value)
+                    lines.append(f"  • {archetype_enum.value}")
+                    if archetype_obj:
+                        lines.append(f"    Description: {archetype_obj.description}")
+            
+            # If no secondary archetypes are selected, suggest typical ones for the sub-genre
+            elif not self.secondary_archetypes and self.protagonist_archetype and self.sub_genre:
+                typical_secondary = [arch for arch in self.get_typical_archetypes() 
+                                   if arch != self.protagonist_archetype.value]
+                if typical_secondary:
+                    lines.append("Suggested Secondary Character Archetypes (typical for this genre):")
+                    for archetype_name in typical_secondary:
+                        archetype = self._archetype_registry.get_archetype(archetype_name)
+                        lines.append(f"  • {archetype_name}")
+                        if archetype:
+                            lines.append(f"    Description: {archetype.description}")
+            
             lines.append("")
         
         # Add a footer note
