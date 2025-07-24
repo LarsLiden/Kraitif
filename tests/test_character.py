@@ -301,7 +301,7 @@ class TestCharacterRefactor(unittest.TestCase):
     
     def test_story_prompt_text_includes_plot_line(self):
         """Test that story prompt text includes plot line information when available."""
-        from plot_line import PlotLine
+        from objects.plot_line import PlotLine
         
         # Create a plot line
         plot_line = PlotLine(

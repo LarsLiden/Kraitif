@@ -108,7 +108,7 @@ class Story:
     
     def get_protagonist(self) -> Optional[Character]:
         """Get the protagonist character (first character with Protagonist functional role)."""
-        from functional_role import FunctionalRoleEnum
+        from .functional_role import FunctionalRoleEnum
         for character in self.characters:
             if character.functional_role == FunctionalRoleEnum.PROTAGONIST:
                 return character
@@ -116,7 +116,7 @@ class Story:
     
     def get_secondary_characters(self) -> List[Character]:
         """Get all non-protagonist characters."""
-        from functional_role import FunctionalRoleEnum
+        from .functional_role import FunctionalRoleEnum
         return [char for char in self.characters if char.functional_role != FunctionalRoleEnum.PROTAGONIST]
     
     def set_genre(self, genre_name: str) -> bool:

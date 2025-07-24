@@ -66,9 +66,9 @@ class TestArchetypePromptFix(unittest.TestCase):
     def test_character_objects_take_precedence(self):
         """Test that Character objects take precedence over archetype fields"""
         from objects.character import Character
-        from archetype import ArchetypeEnum
-        from functional_role import FunctionalRoleEnum
-        from emotional_function import EmotionalFunctionEnum
+        from objects.archetype import ArchetypeEnum
+        from objects.functional_role import FunctionalRoleEnum
+        from objects.emotional_function import EmotionalFunctionEnum
         
         # Set archetype fields
         self.story.set_protagonist_archetype('Anti-Hero')

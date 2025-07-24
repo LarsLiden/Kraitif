@@ -4,24 +4,29 @@
 
 Kraitif is built as a Flask web application using a modular, registry-based architecture. The system separates narrative data management, user interface concerns, and business logic into distinct layers for maintainability and extensibility.
 
+**Note**: As of the latest update, all story-related object models and business logic have been reorganized into the `/objects` directory to improve code organization and separation of concerns. This includes story models, character systems, archetypes, genres, styles, and related registries, while keeping UI components (Flask app), AI integration, and utility scripts in the root directory.
+
 ## File Structure and Organization
 
 ```
 Kraitif/
 ├── app.py                    # Main Flask application and routing
-├── story.py                  # Core Story model and business logic
-├── story_types.py           # Story type definitions and registry
-├── archetype.py             # Character archetype registry, models, and ArchetypeEnum
-├── emotional_function.py    # Emotional function registry, models, and EmotionalFunctionEnum
-├── functional_role.py       # Functional role registry, models, and FunctionalRoleEnum
-├── character.py             # Character class combining archetype, functional role, emotional function
-├── genre.py                 # Genre/sub-genre registry and models  
-├── style.py                 # Writing style registry and models
-├── prompt.py                  # Prompt generation functions (plot and character prompts)
-├── prompt_types.py          # Prompt type enumeration for AI debugging
-├── launch.py                # Simple application launcher
-├── demo.py                  # Command-line demo script
-├── requirements.txt         # Python dependencies
+├── prompt.py                 # Prompt generation functions (plot and character prompts)
+├── prompt_types.py           # Prompt type enumeration for AI debugging
+├── launch.py                 # Simple application launcher
+├── demo.py                   # Command-line demo script
+├── requirements.txt          # Python dependencies
+├── objects/                  # Core story object models and business logic
+│   ├── __init__.py          # Objects package initialization
+│   ├── story.py             # Core Story model and business logic
+│   ├── story_types.py       # Story type definitions and registry
+│   ├── archetype.py         # Character archetype registry, models, and ArchetypeEnum
+│   ├── emotional_function.py # Emotional function registry, models, and EmotionalFunctionEnum
+│   ├── functional_role.py   # Functional role registry, models, and FunctionalRoleEnum
+│   ├── character.py         # Character class combining archetype, functional role, emotional function
+│   ├── genre.py             # Genre/sub-genre registry and models  
+│   ├── style.py             # Writing style registry and models
+│   └── plot_line.py         # PlotLine class for AI-generated plot lines
 ├── ai/                      # AI integration module
 │   └── ai_client.py         # Azure OpenAI client with debugging support
 ├── data/                    # Narrative data files
@@ -69,6 +74,7 @@ Kraitif/
 - File upload/download for save/load functionality
 - Asynchronous plot line generation with UI state management
 - AI integration with prompt type categorization for debugging
+- **Imports**: Uses `from objects.*` imports to access story models and registries
 
 **Key Functions**:
 - `get_story_from_session()` - Reconstruct Story object from session data
@@ -76,7 +82,7 @@ Kraitif/
 - Route handlers for each step in the user flow
 - Navigation handler for edit button functionality
 
-#### 2. Story Model (`story.py`)
+#### 2. Story Model (`objects/story.py`)
 **Purpose**: Central business object managing user selections and data validation
 **Key Features**:
 - Tracks all user selections (story type, genre, archetypes using ArchetypeEnum, etc.)
@@ -85,6 +91,7 @@ Kraitif/
 - Provides business logic for typical vs other archetype classification
 - Generates structured prompt text for AI writing assistants **including plot line information when available**
 - JSON serialization/deserialization for persistence with automatic enum to string conversion
+- **Imports**: Uses relative imports (`.`) to access other objects within the package
 
 **Key Methods**:
 - `set_*()` methods with validation and dependency management including archetype enum conversion
@@ -100,6 +107,7 @@ Kraitif/
 - Template file integration from `prompts/` directory
 - Consistent prompt structure combining pre-text, story configuration, and post-text
 - Whitespace handling and error resilience
+- **Imports**: Uses `from objects.story import Story` to access story models
 
 **Template Files**:
 - `plot_lines_pre.txt` / `plot_lines_post.txt` - For plot generation prompts
