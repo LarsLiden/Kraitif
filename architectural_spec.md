@@ -98,6 +98,7 @@ Kraitif/
 - Validates data consistency across selections including archetype enum validation
 - Provides business logic for typical vs other archetype classification
 - Generates structured prompt text for AI writing assistants **including plot line information when available**
+- Provides specialized prompt text generation for chapter outlines that excludes specific fields (protagonist_archetype, secondary_archetypes, selected_plot_line)
 - JSON serialization/deserialization for persistence with automatic enum to string conversion
 - **Imports**: Uses relative imports (`.`) to access other objects within the package
 
@@ -106,15 +107,18 @@ Kraitif/
 - `get_available_*()` methods for filtered selection options
 - Chapter management methods (`add_chapter()`, `remove_chapter()`, `get_chapter()`, `update_chapter()`)
 - `to_prompt_text()` - Generate structured output for external use, including suggested secondary character archetypes when none are explicitly selected **and plot line details when a plot line is selected** **and chapter structure when chapters are defined**
+
 - `to_json()` / `from_json()` - Persistence functionality with automatic enum to string conversion and string to enum parsing
 
 #### 3. Prompt Generation (`prompt.py`)
 **Purpose**: Generates specialized LLM prompts by combining template files with story configuration
 **Key Features**:
 - **Plot Prompt Generation**: `generate_plot_prompt()` function for creating plot line generation prompts
-- **Character Prompt Generation**: `generate_character_prompt()` function for creating character development prompts  
-- Template file integration from `prompts/` directory for character generation
+- **Character Prompt Generation**: `generate_character_prompt()` function for creating character development prompts
+- **Chapter Outline Prompt Generation**: `generate_chapter_outline_prompt()` function for creating chapter outline prompts with modified story configuration
+- Template file integration from `prompts/` directory for all prompt types
 - Character generation based on selected plot line and complete story configuration
+- Chapter outline generation with excluded fields (protagonist_archetype, secondary_archetypes, selected_plot_line)
 - Structured JSON response parsing for expanded plot lines and character data
 - Consistent prompt structure combining pre-text, story configuration, and post-text
 - Whitespace handling and error resilience
@@ -123,6 +127,7 @@ Kraitif/
 **Template Files**:
 - `plot_lines_pre.txt` / `plot_lines_post.txt` - For plot generation prompts
 - `characters_pre.txt` / `characters_post.txt` - For character development prompts
+- `chapter_outline_pre.txt` / `chapter_outline_post.txt` - For chapter outline generation prompts
 
 #### 4. Character Parser (`objects/character_parser.py`)
 **Purpose**: Parses AI responses to extract characters and expanded plot lines
@@ -260,6 +265,7 @@ Style:
 PromptType(Enum):
     - PLOT_LINES = "plot_lines"
     - CHARACTERS = "characters"
+    - CHAPTER_OUTLINE = "chapter_outline"
 ```
 
 #### Emotional Function Model

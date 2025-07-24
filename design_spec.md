@@ -188,6 +188,17 @@ The application includes a comprehensive prompt generation system for AI integra
 - Template files contain detailed instructions for AI character creation including archetype, functional role, and emotional function specifications
 - **Character Generation Flow**: Plot line selection → AI character generation → expanded plot line and character creation
 
+### Chapter Outline Prompt Generation
+- `generate_chapter_outline_prompt()` function combines chapter outline templates with modified story configuration
+- Uses `chapter_outline_pre.txt` and `chapter_outline_post.txt` template files
+- Uses `to_prompt_text_for_chapter_outline()` method which excludes specific fields from the story configuration:
+  - Excludes `protagonist_archetype` field
+  - Excludes `secondary_archetypes` field  
+  - Excludes `selected_plot_line` field
+- Includes `expanded_plot_line` when available
+- Includes full Character objects when they exist
+- Template files contain detailed instructions for AI chapter outline creation with structured metadata
+
 ### Character Generation System
 The application includes a comprehensive character generation system that builds upon the selected plot line:
 
@@ -323,9 +334,10 @@ Generate structured prompt text containing:
 - Formatted for use with AI writing assistants
 
 ### Prompt Generation Functions
-The application provides two specialized prompt generation functions:
+The application provides three specialized prompt generation functions:
 - **`generate_plot_prompt()`** - For plot line generation using plot-specific templates
 - **`generate_character_prompt()`** - For character development using character-specific templates
+- **`generate_chapter_outline_prompt()`** - For chapter outline generation using chapter outline templates and a modified story configuration that excludes protagonist_archetype, secondary_archetypes, and selected_plot_line fields
 - Both functions combine pre/post template files with complete story configuration via `to_prompt_text()`
 
 ## Technical Integration Points
@@ -345,7 +357,7 @@ The application provides two specialized prompt generation functions:
 ### AI Integration and Debugging
 - AI prompts are categorized using `PromptType` enum for debugging purposes
 - All AI interactions are logged to debug files in `/debug` folder
-- Debug files are named using the prompt type (e.g., `plot_lines.txt`)
+- Debug files are named using the prompt type (e.g., `plot_lines.txt`, `characters.txt`, `chapter_outline.txt`)
 - Each debug file contains timestamp, prompt type, original prompt, and AI response
 - Debug files are overwritten on each request to maintain only the latest interaction
 - The `/debug` folder is excluded from version control
