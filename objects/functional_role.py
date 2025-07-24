@@ -51,7 +51,7 @@ class FunctionalRoleRegistry:
     def __init__(self):
         """Initialize registry with functional roles from JSON data."""
         # Use default data file in the data directory
-        data_file = os.path.join(os.path.dirname(__file__), "data", "functional_roles.json")
+        data_file = os.path.join(os.path.dirname(__file__), "..", "data", "functional_roles.json")
         
         self._functional_roles = {}
         self._load_from_json(data_file)

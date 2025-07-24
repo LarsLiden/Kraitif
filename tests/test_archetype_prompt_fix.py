@@ -4,7 +4,7 @@ Test that the archetype prompt fix works correctly
 """
 
 import unittest
-from story import Story
+from objects.story import Story
 
 
 class TestArchetypePromptFix(unittest.TestCase):
@@ -65,7 +65,7 @@ class TestArchetypePromptFix(unittest.TestCase):
 
     def test_character_objects_take_precedence(self):
         """Test that Character objects take precedence over archetype fields"""
-        from character import Character
+        from objects.character import Character
         from archetype import ArchetypeEnum
         from functional_role import FunctionalRoleEnum
         from emotional_function import EmotionalFunctionEnum

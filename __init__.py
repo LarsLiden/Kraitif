@@ -4,7 +4,7 @@ Kraitif - Story Types and SubTypes Library
 A Python implementation of the seven classical story types and their subtypes.
 """
 
-from .story_types import (
+from .objects.story_types import (
     StoryType,
     StorySubType,
     StoryTypeRegistry,

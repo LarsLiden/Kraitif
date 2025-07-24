@@ -14,7 +14,7 @@ import unittest
 from unittest.mock import patch
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from story import Story
+from objects.story import Story
 
 
 class TestStorySaveLoad(unittest.TestCase):
@@ -61,10 +61,10 @@ class TestStorySaveLoad(unittest.TestCase):
     def test_complete_story_serialization(self):
         """Test serialization of a complete story with all fields."""
         # Import here to avoid circular import
-        from character import Character
-        from archetype import ArchetypeEnum
-        from functional_role import FunctionalRoleEnum
-        from emotional_function import EmotionalFunctionEnum
+        from objects.character import Character
+        from objects.archetype import ArchetypeEnum
+        from objects.functional_role import FunctionalRoleEnum
+        from objects.emotional_function import EmotionalFunctionEnum
         
         # Set up a complete story
         self.story.set_story_type_selection("Comedy", "Romantic Comedy", 
@@ -110,10 +110,10 @@ class TestStorySaveLoad(unittest.TestCase):
     def test_complete_story_deserialization(self):
         """Test deserialization of a complete story."""
         # Import here to avoid circular import
-        from character import Character
-        from archetype import ArchetypeEnum
-        from functional_role import FunctionalRoleEnum
-        from emotional_function import EmotionalFunctionEnum
+        from objects.character import Character
+        from objects.archetype import ArchetypeEnum
+        from objects.functional_role import FunctionalRoleEnum
+        from objects.emotional_function import EmotionalFunctionEnum
         
         # Set up and serialize a complete story
         self.story.set_story_type_selection("The Quest", "Object Quest", 
@@ -167,10 +167,10 @@ class TestStorySaveLoad(unittest.TestCase):
     def test_roundtrip_serialization(self):
         """Test that serialize->deserialize->serialize produces identical results."""
         # Import here to avoid circular import
-        from character import Character
-        from archetype import ArchetypeEnum
-        from functional_role import FunctionalRoleEnum
-        from emotional_function import EmotionalFunctionEnum
+        from objects.character import Character
+        from objects.archetype import ArchetypeEnum
+        from objects.functional_role import FunctionalRoleEnum
+        from objects.emotional_function import EmotionalFunctionEnum
         
         # Set up a story with various fields
         self.story.set_story_type_selection("Tragedy", "Personal Tragedy", 
@@ -312,10 +312,10 @@ class TestStorySaveLoad(unittest.TestCase):
     def test_string_representation_with_loaded_data(self):
         """Test string representation after loading from JSON."""
         # Import here to avoid circular import
-        from character import Character
-        from archetype import ArchetypeEnum
-        from functional_role import FunctionalRoleEnum
-        from emotional_function import EmotionalFunctionEnum
+        from objects.character import Character
+        from objects.archetype import ArchetypeEnum
+        from objects.functional_role import FunctionalRoleEnum
+        from objects.emotional_function import EmotionalFunctionEnum
         
         # Create and serialize a story
         original_story = Story()

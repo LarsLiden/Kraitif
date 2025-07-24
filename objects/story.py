@@ -6,14 +6,14 @@ This module implements a Story object that backs user choices like genre and sub
 
 import json
 from typing import Optional, Dict, Any, List, Union
-from genre import Genre, SubGenre, GenreRegistry
-from archetype import ArchetypeRegistry, ArchetypeEnum
-from style import Style, StyleRegistry
-from story_types import StoryTypeRegistry
-from emotional_function import EmotionalFunction, EmotionalFunctionRegistry
-from plot_line import PlotLine
-from functional_role import FunctionalRole, FunctionalRoleRegistry
-from character import Character
+from .genre import Genre, SubGenre, GenreRegistry
+from .archetype import ArchetypeRegistry, ArchetypeEnum
+from .style import Style, StyleRegistry
+from .story_types import StoryTypeRegistry
+from .emotional_function import EmotionalFunction, EmotionalFunctionRegistry
+from .plot_line import PlotLine
+from .functional_role import FunctionalRole, FunctionalRoleRegistry
+from .character import Character
 
 class Story:
     """Represents a story with user-selected genre and sub-genre."""

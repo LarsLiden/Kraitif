@@ -7,7 +7,7 @@ by combining template files with story configuration data.
 
 import os
 from typing import Optional
-from story import Story
+from objects.story import Story
 
 
 class Prompt:

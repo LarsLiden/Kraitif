@@ -10,7 +10,7 @@ import tempfile
 import os
 from unittest.mock import patch, mock_open
 from prompt import Prompt
-from story import Story
+from objects.story import Story
 
 
 class TestPrompt(unittest.TestCase):

@@ -16,7 +16,7 @@ from unittest.mock import patch
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from app import app
-from story import Story
+from objects.story import Story
 
 
 class TestFlaskSaveLoad(unittest.TestCase):

@@ -139,7 +139,7 @@ class ArchetypeRegistry:
     def __init__(self):
         """Initialize registry with archetypes from JSONL data."""
         # Use default data file in the data directory
-        data_file = os.path.join(os.path.dirname(__file__), "data", "archetypes.jsonl")
+        data_file = os.path.join(os.path.dirname(__file__), "..", "data", "archetypes.jsonl")
         
         self._archetypes = {}
         self._load_from_jsonl(data_file)
