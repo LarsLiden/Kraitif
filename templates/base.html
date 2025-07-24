@@ -410,6 +410,53 @@
                                 </div>
                                 {% endif %}
                                 
+                                <!-- Generate Characters button - appears only when plot line is selected and no characters generated yet -->
+                                {% if story and story.selected_plot_line and not story.expanded_plot_line %}
+                                <div class="generate-characters-section" id="generate-characters-section">
+                                    <button class="generate-characters-button" id="generate-characters-button" onclick="handleGenerateCharacters(event)">
+                                        👥 Generate characters
+                                    </button>
+                                </div>
+                                {% endif %}
+                                
+                                <!-- Expanded Plot Line and Characters - appears when characters are generated -->
+                                {% if story and story.expanded_plot_line %}
+                                <div class="expandable-panel">
+                                    <div class="expandable-panel-header" onclick="toggleExpandedStoryDetails()">
+                                        <div class="expandable-panel-label">
+                                            <strong>Expanded Story:</strong> Plot & Characters Generated
+                                        </div>
+                                        <div class="panel-controls">
+                                            <a href="{{ url_for('expanded_story') }}" class="edit-button" title="View Full Expanded Story">👁️</a>
+                                            <span class="expand-arrow" id="expanded-story-expand-arrow">▶</span>
+                                        </div>
+                                    </div>
+                                    <div class="expandable-panel-content" id="expanded-story-details-content">
+                                        <div class="section">
+                                            <div class="section-title">Characters ({{ story.characters|length }})</div>
+                                            <div class="section-content">
+                                                {% for character in story.characters %}
+                                                <div class="character-summary">
+                                                    <strong>{{ character.name }}</strong> - {{ character.archetype.value }}
+                                                    <div class="character-roles-summary">
+                                                        {{ character.functional_role.value }} | {{ character.emotional_function.value }}
+                                                    </div>
+                                                </div>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                        <div class="section">
+                                            <div class="section-title">Expanded Plot</div>
+                                            <div class="section-content">
+                                                <div class="expanded-plot-summary">
+                                                    {{ story.expanded_plot_line[:200] }}{% if story.expanded_plot_line|length > 200 %}...{% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endif %}
+                                
                                 <!-- Note and Generate plot lines button - appears only on secondary character selection page -->
                                 {% if is_secondary_selection_page and story_data and story_data.get('protagonist_archetype') %}
                                 <div class="secondary-notes-section" id="secondary-notes-section">
@@ -928,6 +975,116 @@
         function togglePlotLineDetails() {
             const content = document.getElementById('plotline-details-content');
             const arrow = document.getElementById('plotline-expand-arrow');
+            
+            if (content && arrow) {
+                if (content.style.display === 'none' || content.style.display === '') {
+                    content.style.display = 'block';
+                    arrow.textContent = '▼';
+                } else {
+                    content.style.display = 'none';
+                    arrow.textContent = '▶';
+                }
+            }
+        }
+        
+        function handleGenerateCharacters(event) {
+            // Prevent default action since this is a button
+            event.preventDefault();
+            
+            // Hide the generate characters button
+            const generateCharactersButton = document.getElementById('generate-characters-button');
+            const generateCharactersSection = document.getElementById('generate-characters-section');
+            if (generateCharactersSection) {
+                generateCharactersSection.style.display = 'none';
+            }
+            
+            // Replace right panel content with generating characters page
+            const rightPanel = document.querySelector('.right-panel');
+            if (rightPanel) {
+                // Store original content
+                const originalContent = rightPanel.innerHTML;
+                
+                // Replace with generating characters page
+                rightPanel.innerHTML = \`
+                <div class="generating-characters-page">
+                    <div class="page-header">
+                        <h1>Generating Characters</h1>
+                        <p class="page-subtitle">Creating detailed characters and expanding your plot line...</p>
+                    </div>
+                    
+                    <div class="generating-content">
+                        <div class="loading-indicator">
+                            <div class="loading-spinner"></div>
+                            <h2>Developing your characters</h2>
+                            <p>This could take a few moments while we create detailed character profiles and expand your plot line to incorporate them.</p>
+                            
+                            <div class="progress-steps">
+                                <div class="step active">
+                                    <span class="step-number">1</span>
+                                    <span class="step-text">Analyzing plot line and story</span>
+                                </div>
+                                <div class="step active">
+                                    <span class="step-number">2</span>
+                                    <span class="step-text">Creating character profiles</span>
+                                </div>
+                                <div class="step">
+                                    <span class="step-number">3</span>
+                                    <span class="step-text">Expanding plot line</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                \`;
+                
+                // Make API call to generate characters
+                fetch('/generate-characters', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Store the expanded plot line and characters data
+                        sessionStorage.setItem('characters_generated', 'true');
+                        sessionStorage.setItem('expanded_plot_line', data.expanded_plot_line || '');
+                        sessionStorage.setItem('generated_characters', JSON.stringify(data.characters || []));
+                        
+                        // Redirect to the expanded story page
+                        window.location.href = '/expanded-story';
+                    } else {
+                        // Restore original content and show error
+                        rightPanel.innerHTML = originalContent;
+                        
+                        // Restore the generate characters button
+                        if (generateCharactersSection) {
+                            generateCharactersSection.style.display = 'block';
+                        }
+                        
+                        alert('Error generating characters: ' + (data.error || 'Unknown error'));
+                    }
+                })
+                .catch(error => {
+                    // Restore original content and show error
+                    rightPanel.innerHTML = originalContent;
+                    
+                    // Restore the generate characters button
+                    if (generateCharactersSection) {
+                        generateCharactersSection.style.display = 'block';
+                    }
+                    
+                    alert('Error generating characters: ' + error.message);
+                });
+            }
+            
+            return false;
+        }
+        
+        function toggleExpandedStoryDetails() {
+            const content = document.getElementById('expanded-story-details-content');
+            const arrow = document.getElementById('expanded-story-expand-arrow');
             
             if (content && arrow) {
                 if (content.style.display === 'none' || content.style.display === '') {

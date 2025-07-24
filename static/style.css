@@ -520,6 +520,59 @@ h3 {
     background-color: #357abd;
 }
 
+/* Generate Characters Button Styles */
+.generate-characters-section {
+    margin-top: 1rem;
+}
+
+.generate-characters-button {
+    display: block;
+    width: 100%;
+    background-color: #9c27b0;
+    color: white;
+    border: none;
+    text-align: center;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    margin: 0;
+}
+
+.generate-characters-button:hover {
+    background-color: #7b1fa2;
+}
+
+/* Character Summary Styles */
+.character-summary {
+    padding: 0.75rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.character-summary:last-child {
+    border-bottom: none;
+}
+
+.character-summary strong {
+    color: #4CAF50;
+    font-size: 1rem;
+}
+
+.character-roles-summary {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.7);
+    margin-top: 0.25rem;
+}
+
+.expanded-plot-summary {
+    color: rgba(255, 255, 255, 0.8);
+    line-height: 1.5;
+    font-size: 0.95rem;
+}
+
 /* Flash messages */
 .flash-messages {
     margin-bottom: 20px;
