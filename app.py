@@ -24,9 +24,28 @@ from objects.character_parser import parse_characters_from_ai_response
 from objects.chapter_parser import parse_chapters_from_ai_response, validate_chapter_character_names
 from ai.ai_client import get_ai_response
 from prompt_types import PromptType
+import os
+import uuid
+import json
+import tempfile
+import atexit
+import glob
+import time
 
 app = Flask(__name__)
 app.secret_key = 'kraitif_story_selection_key'  # For session management
+
+# Create a temporary directory for storing story data
+STORY_DATA_DIR = tempfile.mkdtemp(prefix='kraitif_stories_')
+
+# Clean up temporary files on exit
+def cleanup_temp_files():
+    """Clean up temporary story files on application exit."""
+    import shutil
+    if os.path.exists(STORY_DATA_DIR):
+        shutil.rmtree(STORY_DATA_DIR, ignore_errors=True)
+
+atexit.register(cleanup_temp_files)
 
 # Initialize the story types registry
 registry = StoryTypeRegistry()
@@ -52,11 +71,62 @@ def arrow_format(arc_list):
     return " → ".join(arc_list)
 
 
+def get_story_id():
+    """Get or create a story ID for the current session."""
+    if 'story_id' not in session:
+        session['story_id'] = str(uuid.uuid4())
+        session.modified = True
+    return session['story_id']
+
+
+def get_story_file_path(story_id):
+    """Get the file path for a story ID."""
+    return os.path.join(STORY_DATA_DIR, f"story_{story_id}.json")
+
+
+def load_story_from_file(story_id):
+    """Load story data from file."""
+    file_path = get_story_file_path(story_id)
+    if os.path.exists(file_path):
+        try:
+            with open(file_path, 'r', encoding='utf-8') as f:
+                return json.load(f)
+        except (json.JSONDecodeError, IOError):
+            pass
+    return {}
+
+
+def save_story_to_file(story_id, story_data):
+    """Save story data to file."""
+    file_path = get_story_file_path(story_id)
+    try:
+        with open(file_path, 'w', encoding='utf-8') as f:
+            json.dump(story_data, f, ensure_ascii=False, indent=2)
+        return True
+    except IOError:
+        return False
+
+
+def cleanup_old_story_files():
+    """Clean up story files older than 24 hours."""
+    try:
+        cutoff_time = time.time() - (24 * 60 * 60)  # 24 hours ago
+        for file_path in glob.glob(os.path.join(STORY_DATA_DIR, "story_*.json")):
+            if os.path.getctime(file_path) < cutoff_time:
+                os.remove(file_path)
+    except Exception:
+        pass  # Ignore cleanup errors
+
+
 def get_story_from_session():
     """Get or create a Story object from session data."""
     story = Story()
-    if 'story_data' in session:
-        story_data = session['story_data']
+    
+    # Get story ID and load data from file
+    story_id = get_story_id()
+    story_data = load_story_from_file(story_id)
+    
+    if story_data:
         story.story_type_name = story_data.get('story_type_name')
         story.subtype_name = story_data.get('subtype_name')
         story.key_theme = story_data.get('key_theme')
@@ -102,6 +172,14 @@ def get_story_from_session():
             character = Character.from_dict(char_data)
             if character:
                 story.add_character(character)
+        
+        # Load chapters
+        chapters_data = story_data.get('chapters', [])
+        from objects.chapter import Chapter
+        for chapter_data in chapters_data:
+            chapter = Chapter.from_dict(chapter_data)
+            if chapter:
+                story.add_chapter(chapter)
     
     return story
 
@@ -131,8 +209,9 @@ def get_secondary_archetype_objects(story):
 
 
 def save_story_to_session(story):
-    """Save Story object to session."""
-    session['story_data'] = {
+    """Save Story object to file-based storage."""
+    story_id = get_story_id()
+    story_data = {
         'story_type_name': story.story_type_name,
         'subtype_name': story.subtype_name,
         'key_theme': story.key_theme,
@@ -147,7 +226,12 @@ def save_story_to_session(story):
         'characters': [char.to_dict() for char in story.characters],
         'chapters': [chapter.to_dict() for chapter in story.chapters]
     }
-    session.modified = True
+    
+    # Save to file instead of session
+    save_story_to_file(story_id, story_data)
+    
+    # Clean up old files periodically
+    cleanup_old_story_files()
 
 
 def get_next_incomplete_step(story):
@@ -211,6 +295,15 @@ def index():
     
     # If no referrer or referrer is from outside our app, clear session
     if not referrer or not referrer.startswith(app_domain):
+        # Clear the story file if it exists
+        if 'story_id' in session:
+            story_id = session['story_id']
+            file_path = get_story_file_path(story_id)
+            if os.path.exists(file_path):
+                try:
+                    os.remove(file_path)
+                except OSError:
+                    pass
         session.clear()
     
     story_types = registry.get_all_story_types()
@@ -285,7 +378,8 @@ def subtype_detail(story_type_name, subtype_name):
         return redirect(url_for('key_theme_selection'))
     
     # Get session data for the template
-    saved_selections = session.get('story_data', {})
+    story_id = get_story_id()
+    saved_selections = load_story_from_file(story_id)
     
     # Get objects for left panel
     protagonist_archetype_obj = get_protagonist_archetype_object(story)
@@ -836,6 +930,16 @@ def load_story():
 @app.route('/new')
 def new_story():
     """Clear all story selections and start a new story."""
+    # Clear the story file if it exists
+    if 'story_id' in session:
+        story_id = session['story_id']
+        file_path = get_story_file_path(story_id)
+        if os.path.exists(file_path):
+            try:
+                os.remove(file_path)
+            except OSError:
+                pass
+    
     session.clear()
     flash('New story started. All previous selections have been cleared.', 'success')
     return redirect(url_for('index'))
