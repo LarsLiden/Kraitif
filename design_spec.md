@@ -280,7 +280,7 @@ When navigating back to edit a previous step:
 - Card-based selection UI with hover effects and visual feedback
 
 ### Navigation System Principles
-- **No Breadcrumb Navigation**: Eliminated in favor of left panel edit buttons
+- **No Breadcrumb Navigation**: Breadcrumbs are completely eliminated from all pages in favor of left panel edit buttons. **Do not add breadcrumb navigation to any page in the application.**
 - **Icon-Based Edit Controls**: Clean ✏️ pencil icons rather than text buttons
 - **Smart State Management**: Edit buttons clear dependent selections automatically
 - **Progressive Disclosure**: Show only current step content in right panel
@@ -379,7 +379,7 @@ The application provides three specialized prompt generation functions:
 
 The application uses a **left panel navigation system** with edit buttons instead of traditional breadcrumb navigation:
 
-- **No Breadcrumb Navigation**: All breadcrumb trails (e.g., "Story Types > Rags to Riches > Pure Ascent > Key Theme Selection") have been removed from all pages
+- **No Breadcrumb Navigation**: All breadcrumb trails (e.g., "Story Types > Rags to Riches > Pure Ascent > Key Theme Selection") have been completely removed from all pages. **Breadcrumb navigation must never be added to any page in this application.**
 - **Left Panel Edit Buttons**: Each completed selection in the "Your Story Selections" panel includes an edit button (✏️ icon) that allows users to return to that selection step
 - **Smart Clearing Logic**: When a user clicks an edit button to return to a previous step:
   - That selection and all subsequent selections are cleared from the story object
