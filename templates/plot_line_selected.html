@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% block title %}Plot Line Selected{% endblock %}
+
+{% block content %}
+<div class="breadcrumb">
+    <a href="{{ url_for('index') }}">Story Types</a> > 
+    {% if story_type %}
+    <a href="{{ url_for('story_type_detail', story_type_name=story_type.name) }}">{{ story_type.name }}</a> > 
+    {% endif %}
+    {% if subtype %}
+    <a href="{{ url_for('subtype_detail', story_type_name=story.story_type_name, subtype_name=story.subtype_name) }}">{{ subtype.name }}</a> > 
+    {% endif %}
+    Plot Line Selected
+</div>
+
+<div class="page-header">
+    <h1>Selected Plot Line</h1>
+    <p class="page-subtitle">Your chosen plot line for the story</p>
+</div>
+
+{% if story.selected_plot_line %}
+<div class="section">
+    <div class="section-title">{{ story.selected_plot_line.name }}</div>
+    <div class="section-content">
+        <div class="plot-line-content">
+            {{ story.selected_plot_line.plotline }}
+        </div>
+    </div>
+</div>
+
+<div class="section">
+    <div class="section-title">What's Next?</div>
+    <div class="section-content">
+        <p>Now that you've selected your plot line, you can:</p>
+        <ul>
+            <li><strong>Generate Characters:</strong> Click the "👥 Generate characters" button in the left panel to create detailed character profiles and expand this plot line</li>
+            <li><strong>Modify Selection:</strong> Use the edit button (✏️) in the left panel to change your plot line selection</li>
+            <li><strong>Save Your Work:</strong> Use the save button to preserve your story configuration</li>
+        </ul>
+        
+        <div class="next-steps-note">
+            <p><strong>Note:</strong> The "Generate characters" button will appear in the left panel. This will create detailed character profiles and expand your plot line with more specific details.</p>
+        </div>
+    </div>
+</div>
+{% else %}
+<div class="section">
+    <div class="section-title">No Plot Line Selected</div>
+    <div class="section-content">
+        <p>Please <a href="{{ url_for('complete_story_selection') }}">select a plot line</a> first.</p>
+    </div>
+</div>
+{% endif %}
+
+<style>
+.plot-line-content {
+    background-color: #2a2a2a;
+    border: 1px solid #333333;
+    border-radius: 8px;
+    padding: 20px;
+    line-height: 1.6;
+    color: #ffffff;
+    margin: 10px 0;
+}
+
+.next-steps-note {
+    background-color: #1a3a1a;
+    border-left: 4px solid #4CAF50;
+    padding: 15px;
+    margin-top: 20px;
+    border-radius: 4px;
+}
+
+.next-steps-note p {
+    margin: 0;
+    color: #90EE90;
+    font-style: italic;
+}
+</style>
+{% endblock %}

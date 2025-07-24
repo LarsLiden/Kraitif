@@ -63,20 +63,6 @@
 {% endif %}
 
 <div class="section">
-    <div class="section-title">Original Plot Line</div>
-    <div class="section-content">
-        {% if story.selected_plot_line %}
-        <div class="original-plot-content">
-            <h4>{{ story.selected_plot_line.name }}</h4>
-            <p>{{ story.selected_plot_line.plotline }}</p>
-        </div>
-        {% else %}
-        <p>No plot line selected.</p>
-        {% endif %}
-    </div>
-</div>
-
-<div class="section">
     <div class="section-title">What's Next?</div>
     <div class="section-content">
         <p>You can now:</p>
@@ -201,25 +187,6 @@
     margin: 0;
     line-height: 1.5;
     font-size: 0.95rem;
-}
-
-.original-plot-content {
-    background-color: rgba(0, 0, 0, 0.2);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 8px;
-    padding: 1.5rem;
-    color: rgba(255, 255, 255, 0.8);
-}
-
-.original-plot-content h4 {
-    color: #4CAF50;
-    margin: 0 0 1rem 0;
-    font-size: 1.2rem;
-}
-
-.original-plot-content p {
-    margin: 0;
-    line-height: 1.6;
 }
 
 .navigation-actions {

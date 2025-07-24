@@ -816,7 +816,8 @@ def select_plot_line():
             save_story_to_session(story)
             return jsonify({
                 'success': True,
-                'message': 'Plot line selected successfully'
+                'message': 'Plot line selected successfully',
+                'redirect_url': url_for('plot_line_selected')
             })
         else:
             return jsonify({
@@ -829,6 +830,41 @@ def select_plot_line():
             'success': False,
             'error': str(e)
         }), 500
+
+
+@app.route('/plot-line-selected')
+def plot_line_selected():
+    """Show the selected plot line details page."""
+    story = get_story_from_session()
+    
+    # Check if we have a selected plot line
+    if not story.selected_plot_line:
+        flash('Please select a plot line first.', 'error')
+        return redirect(url_for('complete_story_selection'))
+    
+    # Get additional context objects for the template
+    story_type = None
+    subtype = None
+    if story.story_type_name:
+        story_type = registry.get_story_type(story.story_type_name)
+        if story_type and story.subtype_name:
+            subtype = story_type.get_subtype(story.subtype_name)
+    
+    # Get protagonist and secondary archetype objects
+    protagonist_archetype_obj = get_protagonist_archetype_object(story)
+    secondary_archetype_objs = get_secondary_archetype_objects(story)
+    writing_style_obj = get_writing_style_object(story)
+    
+    return render_template('plot_line_selected.html',
+                         story=story,
+                         story_type=story_type,
+                         subtype=subtype,
+                         protagonist_archetype_obj=protagonist_archetype_obj,
+                         secondary_archetype_objs=secondary_archetype_objs,
+                         writing_style_obj=writing_style_obj,
+                         genre_registry=genre_registry,
+                         archetype_registry=archetype_registry,
+                         style_registry=style_registry)
 
 
 @app.route('/generate-characters', methods=['POST'])

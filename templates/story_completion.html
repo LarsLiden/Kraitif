@@ -366,8 +366,13 @@ function selectPlotLine(plotLine, plotLineElement) {
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            // Reload the page to update the left panel
-            window.location.reload();
+            // Redirect to the plot line selected page if URL provided
+            if (data.redirect_url) {
+                window.location.href = data.redirect_url;
+            } else {
+                // Fallback: reload the page to update the left panel
+                window.location.reload();
+            }
         } else {
             console.error('Error selecting plot line:', data.error);
             alert('Error selecting plot line: ' + data.error);

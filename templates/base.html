@@ -696,7 +696,7 @@
                 
                 // Replace with generating plot lines page
                 rightPanel.innerHTML = `
-                <div class="generating-plot-lines-page">
+                <div class="generating-page">
                     <div class="page-header">
                         <h1>Generating Plot Lines</h1>
                         <p class="page-subtitle">Creating potential plot lines based on your story configuration...</p>
@@ -727,7 +727,7 @@
                 </div>
                 
                 <style>
-                .generating-plot-lines-page {
+                .generating-page {
                     display: flex;
                     flex-direction: column;
                     align-items: center;
@@ -754,19 +754,24 @@
                     width: 100%;
                 }
 
-                .loading-indicator {
-                    background-color: rgba(33, 150, 243, 0.1);
-                    border: 2px solid #2196F3;
-                    border-radius: 12px;
-                    padding: 3rem 2rem;
+                .loading-indicator h2 {
+                    color: #ffffff;
+                    font-size: 1.8rem;
+                    margin-bottom: 1rem;
+                }
+
+                .loading-indicator p {
+                    color: #cccccc;
+                    font-size: 1.1rem;
                     margin-bottom: 2rem;
+                    line-height: 1.6;
                 }
 
                 .loading-spinner {
                     width: 60px;
                     height: 60px;
-                    border: 4px solid rgba(33, 150, 243, 0.3);
-                    border-left: 4px solid #2196F3;
+                    border: 4px solid #333333;
+                    border-top: 4px solid #4CAF50;
                     border-radius: 50%;
                     animation: spin 1s linear infinite;
                     margin: 0 auto 2rem;
@@ -777,90 +782,67 @@
                     100% { transform: rotate(360deg); }
                 }
 
-                .loading-indicator h2 {
-                    color: #2196F3;
-                    font-size: 1.8rem;
-                    margin-bottom: 1rem;
-                }
-
-                .loading-indicator p {
-                    color: rgba(255, 255, 255, 0.9);
-                    font-size: 1.1rem;
-                    line-height: 1.6;
-                    margin-bottom: 2rem;
-                }
-
                 .progress-steps {
                     display: flex;
-                    justify-content: center;
-                    gap: 2rem;
-                    flex-wrap: wrap;
+                    justify-content: space-between;
+                    align-items: center;
+                    max-width: 500px;
+                    margin: 0 auto;
+                    padding: 0 1rem;
                 }
 
                 .step {
                     display: flex;
                     flex-direction: column;
                     align-items: center;
-                    gap: 0.5rem;
-                    opacity: 0.4;
-                    transition: opacity 0.3s ease;
+                    flex: 1;
+                    position: relative;
+                    color: #666666;
                 }
 
                 .step.active {
-                    opacity: 1;
+                    color: #4CAF50;
                 }
 
                 .step-number {
+                    width: 40px;
+                    height: 40px;
+                    border-radius: 50%;
+                    background-color: #333333;
+                    color: #ffffff;
                     display: flex;
                     align-items: center;
                     justify-content: center;
-                    width: 40px;
-                    height: 40px;
-                    background-color: rgba(33, 150, 243, 0.2);
-                    border: 2px solid #2196F3;
-                    border-radius: 50%;
-                    color: #2196F3;
                     font-weight: bold;
+                    margin-bottom: 0.5rem;
                     font-size: 1.1rem;
                 }
 
                 .step.active .step-number {
-                    background-color: #2196F3;
-                    color: white;
+                    background-color: #4CAF50;
+                    color: #ffffff;
                 }
 
                 .step-text {
-                    color: rgba(255, 255, 255, 0.8);
                     font-size: 0.9rem;
                     text-align: center;
                     max-width: 120px;
+                    line-height: 1.3;
                 }
 
-                .step.active .step-text {
-                    color: rgba(255, 255, 255, 1);
+                .step:not(:last-child)::after {
+                    content: '';
+                    position: absolute;
+                    top: 20px;
+                    left: 60%;
+                    right: -40%;
+                    height: 2px;
+                    background-color: #333333;
+                    z-index: -1;
                 }
 
-                @media (max-width: 768px) {
-                    .page-header h1 {
-                        font-size: 2rem;
-                    }
-                    
-                    .page-subtitle {
-                        font-size: 1rem;
-                    }
-                    
-                    .loading-indicator {
-                        padding: 2rem 1rem;
-                    }
-                    
-                    .progress-steps {
-                        gap: 1rem;
-                    }
-                    
-                    .step-text {
-                        font-size: 0.8rem;
-                        max-width: 100px;
-                    }
+                .step.active:not(:last-child)::after {
+                    background-color: #4CAF50;
                 }
                 </style>
                 `;
@@ -1006,7 +988,7 @@
                 
                 // Replace with generating characters page
                 rightPanel.innerHTML = `
-                <div class="generating-characters-page">
+                <div class="generating-page">
                     <div class="page-header">
                         <h1>Generating Characters</h1>
                         <p class="page-subtitle">Creating detailed characters and expanding your plot line...</p>
@@ -1035,6 +1017,126 @@
                         </div>
                     </div>
                 </div>
+                
+                <style>
+                .generating-page {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    justify-content: center;
+                    min-height: 60vh;
+                    text-align: center;
+                    padding: 2rem;
+                }
+
+                .page-header h1 {
+                    color: #4CAF50;
+                    font-size: 2.5rem;
+                    margin-bottom: 1rem;
+                }
+
+                .page-subtitle {
+                    color: #64B5F6;
+                    font-size: 1.2rem;
+                    margin-bottom: 3rem;
+                }
+
+                .generating-content {
+                    max-width: 600px;
+                    width: 100%;
+                }
+
+                .loading-indicator h2 {
+                    color: #ffffff;
+                    font-size: 1.8rem;
+                    margin-bottom: 1rem;
+                }
+
+                .loading-indicator p {
+                    color: #cccccc;
+                    font-size: 1.1rem;
+                    margin-bottom: 2rem;
+                    line-height: 1.6;
+                }
+
+                .loading-spinner {
+                    width: 60px;
+                    height: 60px;
+                    border: 4px solid #333333;
+                    border-top: 4px solid #4CAF50;
+                    border-radius: 50%;
+                    animation: spin 1s linear infinite;
+                    margin: 0 auto 2rem;
+                }
+
+                @keyframes spin {
+                    0% { transform: rotate(0deg); }
+                    100% { transform: rotate(360deg); }
+                }
+
+                .progress-steps {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    max-width: 500px;
+                    margin: 0 auto;
+                    padding: 0 1rem;
+                }
+
+                .step {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    flex: 1;
+                    position: relative;
+                    color: #666666;
+                }
+
+                .step.active {
+                    color: #4CAF50;
+                }
+
+                .step-number {
+                    width: 40px;
+                    height: 40px;
+                    border-radius: 50%;
+                    background-color: #333333;
+                    color: #ffffff;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-weight: bold;
+                    margin-bottom: 0.5rem;
+                    font-size: 1.1rem;
+                }
+
+                .step.active .step-number {
+                    background-color: #4CAF50;
+                    color: #ffffff;
+                }
+
+                .step-text {
+                    font-size: 0.9rem;
+                    text-align: center;
+                    max-width: 120px;
+                    line-height: 1.3;
+                }
+
+                .step:not(:last-child)::after {
+                    content: '';
+                    position: absolute;
+                    top: 20px;
+                    left: 60%;
+                    right: -40%;
+                    height: 2px;
+                    background-color: #333333;
+                    z-index: -1;
+                }
+
+                .step.active:not(:last-child)::after {
+                    background-color: #4CAF50;
+                }
+                </style>
                 `;
                 
                 // Make API call to generate characters
