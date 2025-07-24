@@ -1355,7 +1355,7 @@ def test_chapters():
     # Save to session
     save_story_to_session(story)
     
-    return redirect(url_for('expanded_story'))
+    return redirect(url_for('chapter_plan'))
 
 
 @app.route('/complete-story-selection')
