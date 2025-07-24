@@ -1422,8 +1422,8 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        // Reload the page to show the updated chapters
-                        window.location.reload();
+                        // Navigate to expanded story page to show the chapters
+                        window.location.href = '/expanded-story';
                     } else {
                         // Restore original content and show error
                         rightPanel.innerHTML = originalContent;

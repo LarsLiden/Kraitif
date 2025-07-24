@@ -610,7 +610,7 @@ h3 {
 .generate-chapters-button {
     display: block;
     width: 100%;
-    background-color: #9c27b0;
+    background-color: #4a90e2;
     color: white;
     border: none;
     text-align: center;
@@ -624,7 +624,7 @@ h3 {
 }
 
 .generate-chapters-button:hover {
-    background-color: #7b1fa2;
+    background-color: #357abd;
 }
 
 /* Chapter Summary Styles */
