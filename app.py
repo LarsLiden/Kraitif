@@ -230,6 +230,10 @@ def save_story_to_session(story):
     # Save to file instead of session
     save_story_to_file(story_id, story_data)
     
+    # Also save basic story data to session for template access (left panel)
+    session['story_data'] = story_data
+    session.modified = True
+    
     # Clean up old files periodically
     cleanup_old_story_files()
 
