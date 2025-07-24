@@ -98,7 +98,44 @@ The `Chapter` class represents a complete chapter with:
 - **foreshadow_or_echo** (str, optional): Description of setup or payoff elements
 - **scene_highlights** (str, optional): Notable imagery, dialogue, emotion, or tension
 
-Each chapter provides methods for managing character impact entries, setting narrative functions, and serialization support.  
+Each chapter provides methods for managing character impact entries, setting narrative functions, and serialization support.
+
+### Chapter Summary System
+The application includes a comprehensive chapter summary system that tracks story continuity and state:
+
+#### Chapter Summary Objects
+The `ChapterSummary` class represents a complete chapter summary with:
+- **summary** (str): Recap of what happened in the chapter
+- **continuity_state** (ContinuityState): Detailed state tracking for story elements
+
+#### Continuity State Components
+The `ContinuityState` class tracks the ongoing state of story elements:
+- **characters** (List[ContinuityCharacter]): Character states and positions
+- **objects** (List[ContinuityObject]): Object locations and ownership
+- **locations_visited** (List[str]): Places that have been visited
+- **open_plot_threads** (List[PlotThread]): Active story threads
+
+#### Continuity Character Tracking
+The `ContinuityCharacter` class tracks character state:
+- **name** (str): Character's name
+- **current_location** (str): Where the character currently is
+- **status** (str): Character's current emotional/physical state
+- **inventory** (List[str]): Items the character possesses
+
+#### Continuity Object Tracking
+The `ContinuityObject` class tracks important story objects:
+- **name** (str): Object's name
+- **holder** (Optional[str]): Who currently possesses the object
+- **location** (str): Where the object is located
+
+#### Plot Thread Tracking
+The `PlotThread` class tracks ongoing story elements:
+- **id** (str): Unique identifier for the plot thread
+- **description** (str): Description of the ongoing plot element
+- **status** (str): Current status (e.g., "pending", "in progress", "resolved")
+
+The chapter summary system provides comprehensive JSON serialization/deserialization, validation, and management methods for maintaining story continuity across chapters.
+
 ### Writing Styles
 
 15 fundamental writing styles (Concise, Lyrical, Analytical, Whimsical, etc.) with characteristics, examples, and application guidance.
