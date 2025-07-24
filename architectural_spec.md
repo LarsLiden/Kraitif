@@ -23,6 +23,7 @@ Kraitif/
 │   ├── archetype.py         # Character archetype registry, models, and ArchetypeEnum
 │   ├── emotional_function.py # Emotional function registry, models, and EmotionalFunctionEnum
 │   ├── functional_role.py   # Functional role registry, models, and FunctionalRoleEnum
+│   ├── narrative_function.py # Narrative function registry, models, and NarrativeFunctionEnum
 │   ├── character.py         # Character class combining archetype, functional role, emotional function
 │   ├── character_parser.py  # Character and expanded plot line parsing from AI responses
 │   ├── genre.py             # Genre/sub-genre registry and models  
@@ -34,6 +35,7 @@ Kraitif/
 │   ├── archetypes.jsonl     # Character archetype definitions
 │   ├── emotional_functions.json # Emotional function definitions
 │   ├── functional_roles.json # Functional role definitions
+│   ├── narrative_functions.json # Narrative function definitions
 │   └── [other data files]  # Genre, style data (JSON format)
 ├── debug/                   # AI prompt debugging files (excluded from git)
 │   └── plot_lines.txt       # Latest plot generation prompt and response
@@ -58,6 +60,7 @@ Kraitif/
     ├── test_comprehensive.py
     ├── test_flask_save_load.py
     ├── test_functional_role.py
+    ├── test_narrative_function.py  # Narrative function tests
     ├── test_prompt_debugging.py  # AI debugging functionality tests
     └── [other test files]
 ```
@@ -166,6 +169,11 @@ Kraitif/
 - Provides case-insensitive lookup with name normalization
 - Supports search across role names and descriptions
 
+**NarrativeFunctionRegistry** (`narrative_function.py`):
+- Manages 23 narrative functions defining structural roles of scenes or chapters
+- Provides case-insensitive lookup with name normalization
+- Supports search across function names and descriptions
+
 ### Data Models
 
 #### Story Type Hierarchy
@@ -266,6 +274,21 @@ FunctionalRoleEnum:
 FunctionalRole:
     - name: str          # e.g., "Protagonist"
     - description: str   # Detailed role description
+```
+
+#### Narrative Function Model
+```python
+NarrativeFunctionEnum:
+    - SETTING_INTRODUCTION = "Setting Introduction"
+    - CHARACTER_INTRODUCTION = "Character Introduction"
+    - INCITING_INCIDENT = "Inciting Incident"
+    - CLIMAX = "Climax"
+    - DENOUEMENT = "Denouement"
+    - ... (23 total narrative functions)
+
+NarrativeFunction:
+    - name: str          # e.g., "Setting Introduction"
+    - description: str   # Detailed function description
 ```
 
 ## Data Flow Architecture
