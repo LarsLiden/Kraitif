@@ -1,0 +1,195 @@
+{% extends "base.html" %}
+
+{% block title %}Expanded Story{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>Your Expanded Story</h1>
+    <p class="page-subtitle">Detailed plot line and character profiles based on your selected plot</p>
+</div>
+
+{% if story.expanded_plot_line %}
+<div class="section">
+    <div class="section-title">Expanded Plot Line</div>
+    <div class="section-content">
+        <div class="expanded-plot-content">
+            {{ story.expanded_plot_line }}
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% if story.characters %}
+<div class="section">
+    <div class="section-title">Characters ({{ story.characters|length }})</div>
+    <div class="section-content">
+        <div class="characters-grid">
+            {% for character in story.characters %}
+            <div class="character-card">
+                <div class="character-header">
+                    <h3 class="character-name">{{ character.name }}</h3>
+                    <div class="character-archetype">{{ character.archetype.value }}</div>
+                </div>
+                
+                <div class="character-details">
+                    <div class="character-roles">
+                        <div class="role-item">
+                            <strong>Functional Role:</strong> {{ character.functional_role.value }}
+                        </div>
+                        <div class="role-item">
+                            <strong>Emotional Function:</strong> {{ character.emotional_function.value }}
+                        </div>
+                    </div>
+                    
+                    {% if character.backstory %}
+                    <div class="character-backstory">
+                        <strong>Backstory:</strong>
+                        <p>{{ character.backstory }}</p>
+                    </div>
+                    {% endif %}
+                    
+                    {% if character.character_arc %}
+                    <div class="character-arc">
+                        <strong>Character Arc:</strong>
+                        <p>{{ character.character_arc }}</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endif %}
+
+
+
+<style>
+.page-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.page-header h1 {
+    color: #4CAF50;
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+}
+
+.page-subtitle {
+    color: #64B5F6;
+    font-size: 1.2rem;
+    margin-bottom: 0;
+}
+
+.expanded-plot-content {
+    background-color: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    padding: 1.5rem;
+    color: #E0E0E0;
+    font-size: 1.1rem;
+    line-height: 1.6;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+.characters-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1rem;
+}
+
+.character-card {
+    background-color: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    padding: 1.5rem;
+    transition: border-color 0.2s ease;
+}
+
+.character-card:hover {
+    border-color: rgba(76, 175, 80, 0.5);
+}
+
+.character-header {
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.character-name {
+    color: #4CAF50;
+    font-size: 1.4rem;
+    font-weight: bold;
+    margin: 0 0 0.5rem 0;
+}
+
+.character-archetype {
+    color: #64B5F6;
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+.character-details {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.character-roles {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.role-item {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 0.95rem;
+}
+
+.role-item strong {
+    color: #fff;
+}
+
+.character-backstory,
+.character-arc {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.character-backstory strong,
+.character-arc strong {
+    color: #fff;
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+.character-backstory p,
+.character-arc p {
+    margin: 0;
+    line-height: 1.5;
+    font-size: 0.95rem;
+}
+
+@media (max-width: 768px) {
+    .characters-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+
+
+</style>
+
+<script>
+// Check if characters were generated and stored
+document.addEventListener('DOMContentLoaded', function() {
+    // Clear sessionStorage data if it exists
+    sessionStorage.removeItem('characters_generated');
+    sessionStorage.removeItem('expanded_plot_line');
+    sessionStorage.removeItem('generated_characters');
+});
+</script>
+{% endblock %}

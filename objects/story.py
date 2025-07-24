@@ -46,6 +46,9 @@ class Story:
 
         # Plot line selection
         self.selected_plot_line: Optional[PlotLine] = None
+        
+        # Expanded plot line from character generation
+        self.expanded_plot_line: Optional[str] = None
     
     def set_story_type_selection(self, story_type_name: str, subtype_name: str, 
                                 key_theme: Optional[str] = None, core_arc: Optional[str] = None) -> None:
@@ -420,6 +423,17 @@ class Story:
         """Clear the selected plot line."""
         self.selected_plot_line = None
     
+    def set_expanded_plot_line(self, expanded_plot_line: str) -> bool:
+        """Set the expanded plot line. Returns True if successful."""
+        if expanded_plot_line and isinstance(expanded_plot_line, str):
+            self.expanded_plot_line = expanded_plot_line.strip()
+            return True
+        return False
+    
+    def clear_expanded_plot_line(self) -> None:
+        """Clear the expanded plot line."""
+        self.expanded_plot_line = None
+    
     def to_json(self) -> str:
         """Serialize story to JSON string."""
         data = {
@@ -433,7 +447,8 @@ class Story:
             'protagonist_archetype': self.protagonist_archetype.value if self.protagonist_archetype else None,
             'secondary_archetypes': [archetype.value for archetype in self.secondary_archetypes],
             'characters': [char.to_dict() for char in self.characters],
-            'selected_plot_line': self.selected_plot_line.to_dict() if self.selected_plot_line else None
+            'selected_plot_line': self.selected_plot_line.to_dict() if self.selected_plot_line else None,
+            'expanded_plot_line': self.expanded_plot_line
         }
         return json.dumps(data, indent=2)
     
@@ -483,6 +498,9 @@ class Story:
                         plotline=selected_plot_line_data['plotline']
                     )
                     self.set_selected_plot_line(plot_line)
+            
+            # Load expanded plot line
+            self.expanded_plot_line = data.get('expanded_plot_line')
             
             # Load archetype fields - convert strings to enums
             protagonist_archetype_str = data.get('protagonist_archetype')

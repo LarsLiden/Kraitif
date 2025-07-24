@@ -20,6 +20,7 @@ from objects.archetype import ArchetypeRegistry
 from objects.style import StyleRegistry
 from prompt import Prompt
 from objects.plot_line import PlotLine, parse_plot_lines_from_ai_response
+from objects.character_parser import parse_characters_from_ai_response
 from ai.ai_client import get_ai_response
 from prompt_types import PromptType
 
@@ -82,12 +83,24 @@ def get_story_from_session():
         selected_plot_line_data = story_data.get('selected_plot_line')
         if selected_plot_line_data and isinstance(selected_plot_line_data, dict):
             if 'name' in selected_plot_line_data and 'plotline' in selected_plot_line_data:
-                from plot_line import PlotLine
                 plot_line = PlotLine(
                     name=selected_plot_line_data['name'],
                     plotline=selected_plot_line_data['plotline']
                 )
                 story.set_selected_plot_line(plot_line)
+        
+        # Load expanded plot line
+        expanded_plot_line = story_data.get('expanded_plot_line')
+        if expanded_plot_line:
+            story.set_expanded_plot_line(expanded_plot_line)
+        
+        # Load characters
+        characters_data = story_data.get('characters', [])
+        from objects.character import Character
+        for char_data in characters_data:
+            character = Character.from_dict(char_data)
+            if character:
+                story.add_character(character)
     
     return story
 
@@ -128,7 +141,9 @@ def save_story_to_session(story):
         'writing_style_name': story.writing_style.name if story.writing_style else None,
         'protagonist_archetype': story.protagonist_archetype.value if story.protagonist_archetype else None,
         'secondary_archetypes': [archetype.value for archetype in story.secondary_archetypes],
-        'selected_plot_line': story.selected_plot_line.to_dict() if story.selected_plot_line else None
+        'selected_plot_line': story.selected_plot_line.to_dict() if story.selected_plot_line else None,
+        'expanded_plot_line': story.expanded_plot_line,
+        'characters': [char.to_dict() for char in story.characters]
     }
     session.modified = True
 
@@ -801,7 +816,8 @@ def select_plot_line():
             save_story_to_session(story)
             return jsonify({
                 'success': True,
-                'message': 'Plot line selected successfully'
+                'message': 'Plot line selected successfully',
+                'redirect_url': url_for('plot_line_selected')
             })
         else:
             return jsonify({
@@ -814,6 +830,129 @@ def select_plot_line():
             'success': False,
             'error': str(e)
         }), 500
+
+
+@app.route('/plot-line-selected')
+def plot_line_selected():
+    """Show the selected plot line details page."""
+    story = get_story_from_session()
+    
+    # Check if we have a selected plot line
+    if not story.selected_plot_line:
+        flash('Please select a plot line first.', 'error')
+        return redirect(url_for('complete_story_selection'))
+    
+    # Get additional context objects for the template
+    story_type = None
+    subtype = None
+    if story.story_type_name:
+        story_type = registry.get_story_type(story.story_type_name)
+        if story_type and story.subtype_name:
+            subtype = story_type.get_subtype(story.subtype_name)
+    
+    # Get protagonist and secondary archetype objects
+    protagonist_archetype_obj = get_protagonist_archetype_object(story)
+    secondary_archetype_objs = get_secondary_archetype_objects(story)
+    writing_style_obj = get_writing_style_object(story)
+    
+    return render_template('plot_line_selected.html',
+                         story=story,
+                         story_type=story_type,
+                         subtype=subtype,
+                         protagonist_archetype_obj=protagonist_archetype_obj,
+                         secondary_archetype_objs=secondary_archetype_objs,
+                         writing_style_obj=writing_style_obj,
+                         genre_registry=genre_registry,
+                         archetype_registry=archetype_registry,
+                         style_registry=style_registry)
+
+
+@app.route('/generate-characters', methods=['POST'])
+def generate_characters():
+    """Generate characters and expanded plot line using AI based on the current story configuration."""
+    story = get_story_from_session()
+    
+    # Check if we have a selected plot line
+    if not story.selected_plot_line:
+        return jsonify({'error': 'Please select a plot line first.'}), 400
+    
+    # Check if we have a reasonably complete story
+    if not story.story_type_name or not story.subtype_name:
+        return jsonify({'error': 'Please complete at least the story type and subtype selection first.'}), 400
+    
+    try:
+        # Generate the prompt text
+        prompt_text = prompt_generator.generate_character_prompt(story)
+        
+        # Get AI response
+        ai_response = get_ai_response(prompt_text, PromptType.CHARACTERS)
+        
+        # Parse characters and expanded plot line from the response
+        expanded_plot_line, characters = parse_characters_from_ai_response(ai_response)
+        
+        # Update the story with the results
+        if expanded_plot_line:
+            story.set_expanded_plot_line(expanded_plot_line)
+        
+        # Clear existing characters and add new ones
+        story.characters.clear()
+        for character in characters:
+            story.add_character(character)
+        
+        # Save to session
+        save_story_to_session(story)
+        
+        return jsonify({
+            'success': True,
+            'expanded_plot_line': expanded_plot_line,
+            'characters': [char.to_dict() for char in characters],
+            'ai_response': ai_response  # Include for debugging if needed
+        })
+    
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        })
+
+
+@app.route('/expanded-story')
+def expanded_story():
+    """Show the expanded story with characters and expanded plot line."""
+    story = get_story_from_session()
+    
+    # Check if we have the required data
+    if not story.selected_plot_line:
+        flash('Please select a plot line first.', 'error')
+        return redirect(url_for('complete_story_selection'))
+    
+    if not story.expanded_plot_line and not story.characters:
+        flash('Please generate characters first.', 'error')
+        return redirect(url_for('complete_story_selection'))
+    
+    # Get additional context objects for the template
+    story_type = None
+    subtype = None
+    if story.story_type_name:
+        story_type = registry.get_story_type(story.story_type_name)
+        if story_type and story.subtype_name:
+            subtype = story_type.get_subtype(story.subtype_name)
+    
+    # Get protagonist and secondary archetype objects
+    protagonist_archetype_obj = get_protagonist_archetype_object(story)
+    secondary_archetype_objs = get_secondary_archetype_objects(story)
+    writing_style_obj = get_writing_style_object(story)
+    
+    return render_template('expanded_story.html',
+                         story=story,
+                         story_type=story_type,
+                         subtype=subtype,
+                         protagonist_archetype_obj=protagonist_archetype_obj,
+                         secondary_archetype_objs=secondary_archetype_objs,
+                         writing_style_obj=writing_style_obj,
+                         genre_registry=genre_registry,
+                         archetype_registry=archetype_registry,
+                         style_registry=style_registry)
 
 
 @app.route('/complete-story-selection')

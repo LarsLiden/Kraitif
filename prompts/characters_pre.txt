@@ -2,6 +2,7 @@ Your task is to expand a narrative seed into a richly detailed novel outline, in
 
 The result should reflect the story type, genre conventions, narrative rhythm, emotional arc, writing style, and protagonist archetype defined in the configuration. Include between 5 to 8 characters, ensuring a diverse range of functional roles and emotional functions. Characters should be narratively interlinked through alliance, tension, conflict, backstory, or transformation.
 
+
 CHARACTER GUIDELINES
 For each character, provide the following:
 
