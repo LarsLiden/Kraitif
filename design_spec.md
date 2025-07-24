@@ -238,10 +238,6 @@ The `to_prompt_text()` method generates comprehensive story configuration that i
 - **Expanded plot line integration** - enhanced story details that incorporate all generated characters
 - Suggested secondary character archetypes for the genre when none are explicitly selected
 
-## User Experience Flow
-
-The UI provides a streamlined selection experience where users automatically proceed to the next step upon making their selection, eliminating the need for manual "continue" buttons.
-
 ## Business Rules and Logic
 
 ### Auto-progression Rules
@@ -279,12 +275,6 @@ When navigating back to edit a previous step:
 - Progress flows from top to bottom through the selection process
 - Card-based selection UI with hover effects and visual feedback
 
-### Navigation System Principles
-- **No Breadcrumb Navigation**: Breadcrumbs are completely eliminated from all pages in favor of left panel edit buttons. **Do not add breadcrumb navigation to any page in the application.**
-- **Icon-Based Edit Controls**: Clean ✏️ pencil icons rather than text buttons
-- **Smart State Management**: Edit buttons clear dependent selections automatically
-- **Progressive Disclosure**: Show only current step content in right panel
-
 ### UI Component Patterns
 - **Selection Cards**: Consistent card-based interface for themes, arcs, genres, sub-genres
 - **Radio Button Groups**: Single-selection elements (genre, sub-genre, protagonist)
@@ -314,12 +304,6 @@ Flask sessions maintain story state during user interaction:
 - All selections stored in `session['story_data']` dictionary with archetype fields as enum values converted to strings for session storage
 - Session persists across page navigation and refreshes
 - Session cleared on fresh visits from external sources
-
-### Save/Load Functionality
-- **Save**: Exports complete story configuration as JSON file download with archetype enums converted to strings
-- **Load**: Imports JSON file, validates data, converts archetype strings to enums, updates session, **redirects to appropriate next step based on story completion state**
-- **Validation**: Ensures all loaded data references exist in current registries and archetype strings are valid enum values
-- **Smart Landing**: Post-load navigation automatically determines the next incomplete step in the story creation process and redirects the user to the appropriate selection page
 
 ### Story Completion Output
 Generate structured prompt text containing:
