@@ -21,11 +21,31 @@ from objects.style import StyleRegistry
 from prompt import Prompt
 from objects.plot_line import PlotLine, parse_plot_lines_from_ai_response
 from objects.character_parser import parse_characters_from_ai_response
+from objects.chapter_parser import parse_chapters_from_ai_response, validate_chapter_character_names
 from ai.ai_client import get_ai_response
 from prompt_types import PromptType
+import os
+import uuid
+import json
+import tempfile
+import atexit
+import glob
+import time
 
 app = Flask(__name__)
 app.secret_key = 'kraitif_story_selection_key'  # For session management
+
+# Create a temporary directory for storing story data
+STORY_DATA_DIR = tempfile.mkdtemp(prefix='kraitif_stories_')
+
+# Clean up temporary files on exit
+def cleanup_temp_files():
+    """Clean up temporary story files on application exit."""
+    import shutil
+    if os.path.exists(STORY_DATA_DIR):
+        shutil.rmtree(STORY_DATA_DIR, ignore_errors=True)
+
+atexit.register(cleanup_temp_files)
 
 # Initialize the story types registry
 registry = StoryTypeRegistry()
@@ -51,11 +71,62 @@ def arrow_format(arc_list):
     return " → ".join(arc_list)
 
 
+def get_story_id():
+    """Get or create a story ID for the current session."""
+    if 'story_id' not in session:
+        session['story_id'] = str(uuid.uuid4())
+        session.modified = True
+    return session['story_id']
+
+
+def get_story_file_path(story_id):
+    """Get the file path for a story ID."""
+    return os.path.join(STORY_DATA_DIR, f"story_{story_id}.json")
+
+
+def load_story_from_file(story_id):
+    """Load story data from file."""
+    file_path = get_story_file_path(story_id)
+    if os.path.exists(file_path):
+        try:
+            with open(file_path, 'r', encoding='utf-8') as f:
+                return json.load(f)
+        except (json.JSONDecodeError, IOError):
+            pass
+    return {}
+
+
+def save_story_to_file(story_id, story_data):
+    """Save story data to file."""
+    file_path = get_story_file_path(story_id)
+    try:
+        with open(file_path, 'w', encoding='utf-8') as f:
+            json.dump(story_data, f, ensure_ascii=False, indent=2)
+        return True
+    except IOError:
+        return False
+
+
+def cleanup_old_story_files():
+    """Clean up story files older than 24 hours."""
+    try:
+        cutoff_time = time.time() - (24 * 60 * 60)  # 24 hours ago
+        for file_path in glob.glob(os.path.join(STORY_DATA_DIR, "story_*.json")):
+            if os.path.getctime(file_path) < cutoff_time:
+                os.remove(file_path)
+    except Exception:
+        pass  # Ignore cleanup errors
+
+
 def get_story_from_session():
     """Get or create a Story object from session data."""
     story = Story()
-    if 'story_data' in session:
-        story_data = session['story_data']
+    
+    # Get story ID and load data from file
+    story_id = get_story_id()
+    story_data = load_story_from_file(story_id)
+    
+    if story_data:
         story.story_type_name = story_data.get('story_type_name')
         story.subtype_name = story_data.get('subtype_name')
         story.key_theme = story_data.get('key_theme')
@@ -101,6 +172,14 @@ def get_story_from_session():
             character = Character.from_dict(char_data)
             if character:
                 story.add_character(character)
+        
+        # Load chapters
+        chapters_data = story_data.get('chapters', [])
+        from objects.chapter import Chapter
+        for chapter_data in chapters_data:
+            chapter = Chapter.from_dict(chapter_data)
+            if chapter:
+                story.add_chapter(chapter)
     
     return story
 
@@ -130,8 +209,9 @@ def get_secondary_archetype_objects(story):
 
 
 def save_story_to_session(story):
-    """Save Story object to session."""
-    session['story_data'] = {
+    """Save Story object to file-based storage."""
+    story_id = get_story_id()
+    story_data = {
         'story_type_name': story.story_type_name,
         'subtype_name': story.subtype_name,
         'key_theme': story.key_theme,
@@ -143,9 +223,19 @@ def save_story_to_session(story):
         'secondary_archetypes': [archetype.value for archetype in story.secondary_archetypes],
         'selected_plot_line': story.selected_plot_line.to_dict() if story.selected_plot_line else None,
         'expanded_plot_line': story.expanded_plot_line,
-        'characters': [char.to_dict() for char in story.characters]
+        'characters': [char.to_dict() for char in story.characters],
+        'chapters': [chapter.to_dict() for chapter in story.chapters]
     }
+    
+    # Save to file instead of session
+    save_story_to_file(story_id, story_data)
+    
+    # Also save basic story data to session for template access (left panel)
+    session['story_data'] = story_data
     session.modified = True
+    
+    # Clean up old files periodically
+    cleanup_old_story_files()
 
 
 def get_next_incomplete_step(story):
@@ -209,6 +299,15 @@ def index():
     
     # If no referrer or referrer is from outside our app, clear session
     if not referrer or not referrer.startswith(app_domain):
+        # Clear the story file if it exists
+        if 'story_id' in session:
+            story_id = session['story_id']
+            file_path = get_story_file_path(story_id)
+            if os.path.exists(file_path):
+                try:
+                    os.remove(file_path)
+                except OSError:
+                    pass
         session.clear()
     
     story_types = registry.get_all_story_types()
@@ -283,7 +382,8 @@ def subtype_detail(story_type_name, subtype_name):
         return redirect(url_for('key_theme_selection'))
     
     # Get session data for the template
-    saved_selections = session.get('story_data', {})
+    story_id = get_story_id()
+    saved_selections = load_story_from_file(story_id)
     
     # Get objects for left panel
     protagonist_archetype_obj = get_protagonist_archetype_object(story)
@@ -834,6 +934,16 @@ def load_story():
 @app.route('/new')
 def new_story():
     """Clear all story selections and start a new story."""
+    # Clear the story file if it exists
+    if 'story_id' in session:
+        story_id = session['story_id']
+        file_path = get_story_file_path(story_id)
+        if os.path.exists(file_path):
+            try:
+                os.remove(file_path)
+            except OSError:
+                pass
+    
     session.clear()
     flash('New story started. All previous selections have been cleared.', 'success')
     return redirect(url_for('index'))
@@ -1034,6 +1144,218 @@ def expanded_story():
                          genre_registry=genre_registry,
                          archetype_registry=archetype_registry,
                          style_registry=style_registry)
+
+
+@app.route('/chapter-plan')
+def chapter_plan():
+    """Show the chapter plan page with detailed chapter outlines."""
+    story = get_story_from_session()
+    
+    # Check if we have the required data
+    if not story.selected_plot_line:
+        flash('Please select a plot line first.', 'error')
+        return redirect(url_for('complete_story_selection'))
+    
+    if not story.expanded_plot_line or not story.characters:
+        flash('Please generate characters first.', 'error')
+        return redirect(url_for('expanded_story'))
+    
+    if not story.chapters:
+        flash('Please generate a chapter plan first.', 'error')
+        return redirect(url_for('expanded_story'))
+    
+    # Get additional context objects for the template
+    story_type = None
+    subtype = None
+    if story.story_type_name:
+        story_type = registry.get_story_type(story.story_type_name)
+        if story_type and story.subtype_name:
+            subtype = story_type.get_subtype(story.subtype_name)
+    
+    # Get protagonist and secondary archetype objects
+    protagonist_archetype_obj = get_protagonist_archetype_object(story)
+    secondary_archetype_objs = get_secondary_archetype_objects(story)
+    writing_style_obj = get_writing_style_object(story)
+    
+    return render_template('chapter_plan.html',
+                         story=story,
+                         story_type=story_type,
+                         subtype=subtype,
+                         protagonist_archetype_obj=protagonist_archetype_obj,
+                         secondary_archetype_objs=secondary_archetype_objs,
+                         writing_style_obj=writing_style_obj,
+                         genre_registry=genre_registry,
+                         archetype_registry=archetype_registry,
+                         style_registry=style_registry)
+
+
+@app.route('/generate-chapters', methods=['POST'])
+def generate_chapters():
+    """Generate chapter plan using AI based on the current story configuration."""
+    story = get_story_from_session()
+    
+    # Check if we have the required data
+    if not story.expanded_plot_line or not story.characters:
+        return jsonify({'error': 'Please generate characters first.'}), 400
+    
+    # Check if we have a reasonably complete story
+    if not story.story_type_name or not story.subtype_name:
+        return jsonify({'error': 'Please complete at least the story type and subtype selection first.'}), 400
+    
+    try:
+        # Generate the prompt text using chapter outline prompt
+        prompt_text = prompt_generator.generate_chapter_outline_prompt(story)
+        
+        # Get AI response
+        ai_response = get_ai_response(prompt_text, PromptType.CHAPTER_OUTLINE)
+        
+        # Parse chapters from the response
+        chapters = parse_chapters_from_ai_response(ai_response)
+        
+        # Validate that all character names in chapters exist in story
+        story_character_names = [char.name for char in story.characters]
+        missing_characters = validate_chapter_character_names(chapters, story_character_names)
+        
+        if missing_characters:
+            return jsonify({
+                'success': False,
+                'error': 'character_validation',
+                'missing_characters': missing_characters,
+                'message': f'Some characters referenced in chapters do not exist in the story: {", ".join(missing_characters)}'
+            })
+        
+        # Clear existing chapters and add new ones
+        story.chapters.clear()
+        for chapter in chapters:
+            story.add_chapter(chapter)
+        
+        # Save to session
+        save_story_to_session(story)
+        
+        return jsonify({
+            'success': True,
+            'chapters': [chapter.to_dict() for chapter in chapters],
+            'ai_response': ai_response  # Include for debugging if needed
+        })
+    
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        })
+
+
+@app.route('/test-chapters')
+def test_chapters():
+    """Test route to manually create a story with chapters for UI testing."""
+    from objects.plot_line import PlotLine
+    from objects.character import Character
+    from objects.archetype import ArchetypeEnum
+    from objects.functional_role import FunctionalRoleEnum
+    from objects.emotional_function import EmotionalFunctionEnum
+    from objects.chapter import Chapter
+    from objects.narrative_function import NarrativeFunctionEnum
+    
+    # Create test story
+    story = Story()
+    story.story_type_name = 'The Quest'
+    story.subtype_name = 'Object Quest'
+    story.key_theme = 'Growth occurs through shared adventure and sacrifice.'
+    story.core_arc = 'Hero discovers strength through perseverance.'
+    story.set_genre('Fantasy')
+    story.set_sub_genre('High Fantasy')
+    story.set_writing_style('Lyrical')
+    story.protagonist_archetype = ArchetypeEnum.CHOSEN_ONE
+    
+    # Add plot line
+    plot_line = PlotLine(
+        name='The Ancient Relic Quest',
+        plotline='A young chosen one must retrieve an ancient magical artifact to save their realm from an encroaching darkness.'
+    )
+    story.selected_plot_line = plot_line
+    story.expanded_plot_line = "In the realm of Aethermoor, young Lyra discovers she is the prophesied Chosen One when ancient runes appear on her skin during her village's harvest festival. The mysterious sage Aldric reveals that the Shadowblight is spreading across the land, corrupting everything it touches. Only the legendary Sunstone of Vaelthara can restore the balance."
+    
+    # Add characters
+    characters = [
+        Character(
+            name="Lyra",
+            archetype=ArchetypeEnum.CHOSEN_ONE,
+            functional_role=FunctionalRoleEnum.PROTAGONIST,
+            emotional_function=EmotionalFunctionEnum.SYMPATHETIC_CHARACTER,
+            backstory="A simple village girl who discovers her destiny when ancient runes appear on her skin during the harvest festival.",
+            character_arc="Transforms from a frightened, reluctant hero into a confident leader who understands that true power comes from unity and sacrifice."
+        ),
+        Character(
+            name="Aldric",
+            archetype=ArchetypeEnum.WISE_MENTOR,
+            functional_role=FunctionalRoleEnum.MENTOR,
+            emotional_function=EmotionalFunctionEnum.CATALYST,
+            backstory="An ancient sage who has waited centuries for the prophesied Chosen One to appear.",
+            character_arc="Learns to trust in the new generation and finds peace in passing on his wisdom."
+        ),
+        Character(
+            name="Kael",
+            archetype=ArchetypeEnum.LOYAL_COMPANION,
+            functional_role=FunctionalRoleEnum.GUARDIAN_GATEKEEPER,
+            emotional_function=EmotionalFunctionEnum.VICTIM,
+            backstory="A former knight of the fallen kingdom of Drakmoor, haunted by his failure to protect his people.",
+            character_arc="Overcomes his guilt and self-doubt to become a true protector."
+        )
+    ]
+    
+    for character in characters:
+        story.add_character(character)
+    
+    # Add test chapters
+    chapters = [
+        Chapter(
+            chapter_number=1,
+            title="The Awakening",
+            overview="In the village of Thornfield, Lyra discovers her destiny when ancient runes suddenly appear on her skin during the harvest festival. The mysterious sage Aldric arrives to explain her role as the Chosen One.",
+            character_impact=[
+                {"character": "Lyra", "effect": "Discovers her identity as the Chosen One and reluctantly accepts her destiny, feeling overwhelmed but determined."},
+                {"character": "Aldric", "effect": "Reveals long-held secrets about the prophecy and begins mentoring Lyra, finding purpose in his centuries of waiting."}
+            ],
+            point_of_view="Lyra",
+            narrative_function=NarrativeFunctionEnum.INCITING_INCIDENT,
+            foreshadow_or_echo="The glowing runes foreshadow the final ritual where Lyra must sacrifice her ego to save the realm.",
+            scene_highlights="The dramatic moment when the runes first glow, the festival crowd's reaction, and Aldric's mystical entrance."
+        ),
+        Chapter(
+            chapter_number=2,
+            title="The Gathering Storm", 
+            overview="Lyra and Aldric begin their journey, seeking the first clues to the Sunstone's location. They encounter the spreading Shadowblight and witness its devastating effects on the countryside.",
+            character_impact=[
+                {"character": "Lyra", "effect": "Sees the true scope of the threat and realizes the urgency of her mission, beginning to overcome her self-doubt."},
+                {"character": "Aldric", "effect": "Shares more of his burden and knowledge while training Lyra in basic magic and survival skills."}
+            ],
+            point_of_view="Lyra",
+            narrative_function=NarrativeFunctionEnum.RISING_TENSION,
+            foreshadow_or_echo="The corruption patterns echo the ancient texts Aldric carries, hinting at the cyclical nature of this threat.",
+            scene_highlights="A haunting scene of a corrupted forest, Lyra's first attempts at magic, and refugees fleeing the blight."
+        ),
+        Chapter(
+            chapter_number=3,
+            title="Allies and Enemies",
+            overview="In the border town of Millhaven, Lyra and Aldric recruit their first companions. They meet Kael, a disgraced knight seeking redemption, and Zara, a thief with hidden magical abilities.",
+            character_impact=[
+                {"character": "Lyra", "effect": "Learns to trust others and begins developing leadership skills, though still struggling with confidence."},
+                {"character": "Kael", "effect": "Finds new purpose in the quest and begins to believe in redemption through service to others."}
+            ],
+            point_of_view="Kael",
+            narrative_function=NarrativeFunctionEnum.CHARACTER_INTRODUCTION,
+            foreshadow_or_echo="Kael's story of failure echoes themes of redemption that will be central to the climax.",
+            scene_highlights="A tavern brawl that reveals each character's skills, and the group's first bonding moment around a campfire."
+        )
+    ]
+    
+    for chapter in chapters:
+        story.add_chapter(chapter)
+    
+    # Save to session
+    save_story_to_session(story)
+    
+    return redirect(url_for('chapter_plan'))
 
 
 @app.route('/complete-story-selection')

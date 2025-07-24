@@ -13,6 +13,7 @@ class PromptType(Enum):
     
     PLOT_LINES = "plot_lines"
     CHARACTERS = "characters"
+    CHAPTER_OUTLINE = "chapter_outline"
     # Additional prompt types can be added here as the application evolves
     # STORY_GENERATION = "story_generation"
     # CHARACTER_DEVELOPMENT = "character_development"
