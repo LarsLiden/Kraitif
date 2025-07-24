@@ -5,6 +5,8 @@ IMPORTANT: When making changes to the project please makes sure to consults the 
 
 Please also update the design_spec and architecture_spec documents to reflext any changes that would help an AI coding agent
 
+IMPORTANT: Do not add any additional buttons or navigation element unless specifically requested
+
 If new functionality is added create unit tests as deemed necessary.  
 
 IMPORTANT: As this project is still in development you do not have to worry about backward compatibility or legacy formats. If tests do not pass because of the changes update the tests to reflect the new data format
