@@ -317,8 +317,9 @@ Flask sessions maintain story state during user interaction:
 
 ### Save/Load Functionality
 - **Save**: Exports complete story configuration as JSON file download with archetype enums converted to strings
-- **Load**: Imports JSON file, validates data, converts archetype strings to enums, updates session, redirects to appropriate step
+- **Load**: Imports JSON file, validates data, converts archetype strings to enums, updates session, **redirects to appropriate next step based on story completion state**
 - **Validation**: Ensures all loaded data references exist in current registries and archetype strings are valid enum values
+- **Smart Landing**: Post-load navigation automatically determines the next incomplete step in the story creation process and redirects the user to the appropriate selection page
 
 ### Story Completion Output
 Generate structured prompt text containing:
@@ -423,7 +424,13 @@ At the top of the left panel is a load and save button:
 - **Load button**: 
     - Loads the JSON and converts it to the story object
     - Updates the UI to show the current state of the story  
-    - If the story is incomplete, user is taken to selection page for step with next missing information
+    - **Smart Landing**: Automatically determines the next incomplete step and redirects user to the appropriate selection page for continuing story development
+    - Examples:
+      - If genre is set but sub-genre isn't: redirects to sub-genre selection
+      - If sub-genre is set but writing style isn't: redirects to writing style selection
+      - If protagonist archetype is set but no plot line selected: redirects to secondary archetype selection (where plot lines can be generated)
+      - If plot line is selected but no characters generated: redirects to plot line selected page (where characters can be generated)
+      - If story is complete: redirects to story completion page
 
 ## Archetype Selection
 
