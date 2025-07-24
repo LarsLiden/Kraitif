@@ -14,6 +14,7 @@ from .emotional_function import EmotionalFunction, EmotionalFunctionRegistry
 from .plot_line import PlotLine
 from .functional_role import FunctionalRole, FunctionalRoleRegistry
 from .character import Character
+from .chapter import Chapter
 
 class Story:
     """Represents a story with user-selected genre and sub-genre."""
@@ -43,6 +44,9 @@ class Story:
 
         # Character selections
         self.characters: List[Character] = []
+
+        # Chapter selections
+        self.chapters: List[Chapter] = []
 
         # Plot line selection
         self.selected_plot_line: Optional[PlotLine] = None
@@ -121,6 +125,50 @@ class Story:
         """Get all non-protagonist characters."""
         from .functional_role import FunctionalRoleEnum
         return [char for char in self.characters if char.functional_role != FunctionalRoleEnum.PROTAGONIST]
+    
+    def add_chapter(self, chapter: Chapter) -> bool:
+        """Add a chapter to the story. Returns True if successful."""
+        if chapter and isinstance(chapter, Chapter):
+            # Check if chapter number already exists
+            for existing_chapter in self.chapters:
+                if existing_chapter.chapter_number == chapter.chapter_number:
+                    return False  # Chapter number already exists
+            
+            self.chapters.append(chapter)
+            # Sort chapters by chapter number to maintain order
+            self.chapters.sort(key=lambda c: c.chapter_number)
+            return True
+        return False
+    
+    def remove_chapter(self, chapter_number: int) -> bool:
+        """Remove a chapter from the story by chapter number. Returns True if successful."""
+        for i, chapter in enumerate(self.chapters):
+            if chapter.chapter_number == chapter_number:
+                self.chapters.pop(i)
+                return True
+        return False
+    
+    def get_chapter(self, chapter_number: int) -> Optional[Chapter]:
+        """Get a chapter by chapter number."""
+        for chapter in self.chapters:
+            if chapter.chapter_number == chapter_number:
+                return chapter
+        return None
+    
+    def get_chapters_ordered(self) -> List[Chapter]:
+        """Get all chapters ordered by chapter number."""
+        return sorted(self.chapters, key=lambda c: c.chapter_number)
+    
+    def update_chapter(self, chapter_number: int, updated_chapter: Chapter) -> bool:
+        """Update an existing chapter. Returns True if successful."""
+        for i, chapter in enumerate(self.chapters):
+            if chapter.chapter_number == chapter_number:
+                # Ensure the updated chapter has the same chapter number
+                if updated_chapter.chapter_number != chapter_number:
+                    return False
+                self.chapters[i] = updated_chapter
+                return True
+        return False
     
     def set_genre(self, genre_name: str) -> bool:
         """Set the story genre by name. Returns True if successful."""
@@ -228,6 +276,11 @@ class Story:
         if self.secondary_archetypes:
             archetype_names = [archetype.value for archetype in self.secondary_archetypes]
             parts.append(f"Secondary Archetypes: {', '.join(archetype_names)}")
+
+        # Add chapter information
+        if self.chapters:
+            chapter_count = len(self.chapters)
+            parts.append(f"Chapters: {chapter_count}")
 
         return " | ".join(parts) if parts else "Story with no selections"
     
@@ -413,6 +466,34 @@ class Story:
             
             lines.append("")
         
+        # Chapter Information
+        if self.chapters:
+            lines.append("CHAPTER STRUCTURE:")
+            ordered_chapters = self.get_chapters_ordered()
+            for chapter in ordered_chapters:
+                lines.append(f"Chapter {chapter.chapter_number}: {chapter.title}")
+                lines.append(f"  Overview: {chapter.overview}")
+                
+                if chapter.narrative_function:
+                    lines.append(f"  Narrative Function: {chapter.narrative_function.value}")
+                
+                if chapter.point_of_view:
+                    lines.append(f"  Point of View: {chapter.point_of_view}")
+                
+                if chapter.character_impact:
+                    lines.append("  Character Impact:")
+                    for impact in chapter.character_impact:
+                        character = impact.get('character', 'Unknown')
+                        effect = impact.get('effect', 'No effect described')
+                        lines.append(f"    • {character}: {effect}")
+                
+                if chapter.foreshadow_or_echo:
+                    lines.append(f"  Foreshadow/Echo: {chapter.foreshadow_or_echo}")
+                
+                if chapter.scene_highlights:
+                    lines.append(f"  Scene Highlights: {chapter.scene_highlights}")
+                
+                lines.append("")  # Empty line between chapters
         # Add expanded plot line if requested
         if include_expanded_plot_line and self.expanded_plot_line:
             lines.append("EXPANDED PLOT LINE:")
@@ -475,6 +556,7 @@ class Story:
             'protagonist_archetype': self.protagonist_archetype.value if self.protagonist_archetype else None,
             'secondary_archetypes': [archetype.value for archetype in self.secondary_archetypes],
             'characters': [char.to_dict() for char in self.characters],
+            'chapters': [chapter.to_dict() for chapter in self.chapters],
             'selected_plot_line': self.selected_plot_line.to_dict() if self.selected_plot_line else None,
             'expanded_plot_line': self.expanded_plot_line
         }
@@ -516,6 +598,14 @@ class Story:
                 character = Character.from_dict(char_data)
                 if character:
                     self.characters.append(character)
+            
+            # Load chapters
+            chapters_data = data.get('chapters', [])
+            self.chapters = []
+            for chapter_data in chapters_data:
+                chapter = Chapter.from_dict(chapter_data)
+                if chapter:
+                    self.chapters.append(chapter)
             
             # Load selected plot line
             selected_plot_line_data = data.get('selected_plot_line')

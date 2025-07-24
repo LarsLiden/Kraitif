@@ -84,13 +84,27 @@ Each emotional function includes a name and descriptive explanation of the emoti
 
 Each narrative function includes a name and descriptive explanation of the structural role it serves. These are defined as a `NarrativeFunctionEnum`.
 
-### Writing Styles  
+### Chapter System
+The application includes a comprehensive chapter structure system that allows writers to plan and organize their stories at the chapter level:
+
+#### Chapter Objects
+The `Chapter` class represents a complete chapter with:
+- **chapter_number** (int): The sequential number of the chapter
+- **title** (str): Short chapter title
+- **overview** (str): Brief summary of what happens in this chapter
+- **character_impact** (List[Dict[str, str]]): Array of character impact entries with character names and effect descriptions
+- **point_of_view** (str, optional): Name of POV character for the chapter
+- **narrative_function** (NarrativeFunctionEnum, optional): Narrative function tag that must match NarrativeFunctionEnum
+- **foreshadow_or_echo** (str, optional): Description of setup or payoff elements
+- **scene_highlights** (str, optional): Notable imagery, dialogue, emotion, or tension
+
+Each chapter provides methods for managing character impact entries, setting narrative functions, and serialization support.  
+### Writing Styles
+
 15 fundamental writing styles (Concise, Lyrical, Analytical, Whimsical, etc.) with characteristics, examples, and application guidance.
-
 ### Genres and Sub-genres
-Comprehensive genre system covering Fantasy, Science Fiction, Mystery, Horror, Romance, and others, each with multiple sub-genres that contain typical archetype associations.
 
-## Data Model Relationships
+Comprehensive genre system covering Fantasy, Science Fiction, Mystery, Horror, Romance, and others, each with multiple sub-genres that contain typical archetype associations.
 
 ### Core Entity: Story Object
 The `Story` class serves as the central data container tracking user selections:
@@ -118,9 +132,15 @@ class Story:
     characters: List[Character]         # List of Character objects containing
                                        # archetype, functional_role, emotional_function,
                                        # backstory, and character_arc
+    
+    # Chapter structure
+    chapters: List[Chapter]             # List of Chapter objects containing
+                                       # chapter_number, title, overview, character_impact,
+                                       # point_of_view, narrative_function, foreshadow_or_echo,
+                                       # and scene_highlights
 ```
 
-**Note**: The `protagonist_archetype` and `secondary_archetypes` fields are separate from and unrelated to the `characters` list. The archetype fields are used by the current web UI, while the `characters` list is for future UI implementation.
+**Note**: The `protagonist_archetype` and `secondary_archetypes` fields are separate from and unrelated to the `characters` list. The archetype fields are used by the current web UI, while the `characters` list is for future UI implementation. The `chapters` list provides detailed chapter-level story structure planning.
 
 ### Registry Pattern
 All narrative elements use a registry pattern for centralized access:
