@@ -100,7 +100,11 @@ def _create_character_from_dict(data: Dict[str, Any]) -> Optional[Character]:
         name = data.get('name', '').strip()
         archetype_str = data.get('archetype', '').strip()
         functional_role_str = data.get('functional_role', '').strip()
+        
+        # Handle common typo: emotional_role vs emotional_function
         emotional_function_str = data.get('emotional_function', '').strip()
+        if not emotional_function_str:
+            emotional_function_str = data.get('emotional_role', '').strip()
         
         # Optional fields
         backstory = data.get('backstory', '').strip()
@@ -174,6 +178,24 @@ def _find_functional_role_enum(role_str: str) -> Optional[FunctionalRoleEnum]:
         if (role_str_clean.lower() in role.value.lower() or 
             role.value.lower() in role_str_clean.lower()):
             return role
+    
+    # Try word-based matching for common variations
+    role_words = set(role_str_clean.lower().split())
+    for role in FunctionalRoleEnum:
+        enum_words = set(role.value.lower().split())
+        # Check if all input words match enum words (allowing for partial word matches)
+        if role_words <= enum_words:  # All input words are in enum words
+            return role
+        # Check for specific common cases like "Support" vs "Supporting"
+        if len(role_words) == len(enum_words):
+            matches = 0
+            for input_word in role_words:
+                for enum_word in enum_words:
+                    if input_word in enum_word or enum_word in input_word:
+                        matches += 1
+                        break
+            if matches == len(role_words):
+                return role
     
     return None
 
