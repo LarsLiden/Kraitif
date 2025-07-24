@@ -23,3 +23,28 @@ For each chapter, include all fields listed in the output format below.
 Ensure chapter content follows the selected narrative rhythm and emotional arc from the STORY CONFIGURATION.
 
 Reference and utilize characters from the STORY CONFIGURATION, showing how each chapter advances their arcs, relationships, or internal conflicts.
+
+class NarrativeFunctionEnum(Enum):
+    SETTING_INTRODUCTION = "Setting Introduction"
+    CHARACTER_INTRODUCTION = "Character Introduction"
+    INCITING_INCIDENT = "Inciting Incident"
+    FIRST_REVERSAL = "First Reversal"
+    RISING_TENSION = "Rising Tension"
+    SUBPLOT_ACTIVATION = "Subplot Activation"
+    MORAL_CHALLENGE = "Moral Challenge"
+    MIDPOINT_TURN = "Midpoint Turn"
+    RELATIONSHIP_REVERSAL = "Relationship Reversal"
+    MOMENT_OF_WEAKNESS = "Moment of Weakness"
+    SETBACK = "Setback"
+    TRUTH_REVELATION = "Truth Revelation"
+    CONFRONTATION = "Confrontation"
+    CLIMAX = "Climax"
+    TRANSFORMATION = "Transformation"
+    DENOUEMENT = "Denouement"
+    FINAL_IMAGE = "Final Image"
+    FORESHADOWING = "Foreshadowing"
+    ECHO = "Echo"
+    REFLECTION = "Reflection"
+    THEME_REINFORCEMENT = "Theme Reinforcement"
+    CATALYST_EVENT = "Catalyst Event"
+    UNEXPECTED_REUNION = "Unexpected Reunion"
