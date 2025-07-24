@@ -1005,7 +1005,7 @@
                 const originalContent = rightPanel.innerHTML;
                 
                 // Replace with generating characters page
-                rightPanel.innerHTML = \`
+                rightPanel.innerHTML = `
                 <div class="generating-characters-page">
                     <div class="page-header">
                         <h1>Generating Characters</h1>
@@ -1035,7 +1035,7 @@
                         </div>
                     </div>
                 </div>
-                \`;
+                `;
                 
                 // Make API call to generate characters
                 fetch('/generate-characters', {
