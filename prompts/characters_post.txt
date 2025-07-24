@@ -8,15 +8,15 @@ Return your expanded_plot_line in the following structured format and include **
 ```json
 <STRUCTURED_DATA>
 {
-  "expanded_plot_line": {more detailed verion of plot_line that account for all the characters},
+  "expanded_plot_line": {more detailed version of plot_line that accounts for all the characters},
   "characters":
     [
       {
         'name': {string},
-        'archetype': {FunctionalRoleEnum},
+        'archetype': {ArchetypeEnum},
         'functional_role': {FunctionalRoleEnum},
         'emotional_function': {EmotionalFunctionEnum},
-        'backstory': self.backstory,
+        'backstory': {string},
         'character_arc': {string}
       },
     ...

@@ -2,7 +2,7 @@ Your task is to create a more detailed plot line for a novel defining each of th
 
 The expanded plot line should contain between 5 to 8 characters.   In creating the character please consider the *protagonist_archtype* and any *secondary_archetypes* that are provided
 
-For each character, provide thier name, archetype, funtional_role, emotional_function, backstory and character arc.  Select from the following:
+For each character, provide their name, archetype, functional_role, emotional_function, backstory and character arc.  Select from the following:
 
 class ArchetypeEnum(Enum):
     """Enum for archetype names."""
