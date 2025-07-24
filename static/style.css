@@ -55,13 +55,7 @@ body {
     display: flex;
     align-items: flex-start;
     margin-bottom: 12px;
-    gap: 2px;
-}
-
-/* Panel without edit button - needs left spacing to align with panels that have edit buttons */
-.panel-no-edit {
-    margin-left: 26px; /* Width (24px) + gap (2px) to match selection-wrapper spacing */
-    margin-bottom: 12px;
+    gap: 1px;
 }
 
 /* External Edit Button */
@@ -92,6 +86,25 @@ body {
 
 .edit-button-external:active {
     transform: scale(0.95);
+}
+
+/* Invisible Edit Button Placeholder for alignment */
+.edit-button-invisible {
+    background: none;
+    border: none;
+    color: transparent;
+    font-size: 0.55em;
+    padding: 4px;
+    border-radius: 3px;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+    margin-top: 0;
+    pointer-events: none; /* Make it non-interactive */
 }
 
 /* Expandable Panel Base Styles - Consolidated to prevent redundancy */
