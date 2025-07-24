@@ -27,6 +27,7 @@ Kraitif/
 │   ├── character.py         # Character class combining archetype, functional role, emotional function
 │   ├── character_parser.py  # Character and expanded plot line parsing from AI responses
 │   ├── chapter.py          # Chapter class for story structure and planning
+│   ├── chapter_summary.py   # Chapter summary with continuity state tracking
 │   ├── genre.py             # Genre/sub-genre registry and models  
 │   ├── style.py             # Writing style registry and models
 │   └── plot_line.py         # PlotLine class for AI-generated plot lines
@@ -62,6 +63,7 @@ Kraitif/
     ├── test_flask_save_load.py
     ├── test_functional_role.py
     ├── test_narrative_function.py  # Narrative function tests
+    ├── test_chapter_summary.py     # Chapter summary system tests
     ├── test_prompt_debugging.py  # AI debugging functionality tests
     └── [other test files]
 ```
@@ -237,6 +239,35 @@ Chapter:
     - narrative_function: Optional[NarrativeFunctionEnum]  # Narrative function tag
     - foreshadow_or_echo: Optional[str] # Setup or payoff description
     - scene_highlights: Optional[str]   # Notable imagery, dialogue, emotion, tension
+```
+
+#### Chapter Summary Model
+```python
+ChapterSummary:
+    - summary: str                      # Recap of what happened in the chapter
+    - continuity_state: ContinuityState # Detailed state tracking
+
+ContinuityState:
+    - characters: List[ContinuityCharacter]  # Character states and positions
+    - objects: List[ContinuityObject]        # Object locations and ownership
+    - locations_visited: List[str]           # Places that have been visited
+    - open_plot_threads: List[PlotThread]    # Active story threads
+
+ContinuityCharacter:
+    - name: str                         # Character's name
+    - current_location: str             # Where the character currently is
+    - status: str                       # Character's current emotional/physical state
+    - inventory: List[str]              # Items the character possesses
+
+ContinuityObject:
+    - name: str                         # Object's name
+    - holder: Optional[str]             # Who currently possesses the object
+    - location: str                     # Where the object is located
+
+PlotThread:
+    - id: str                           # Unique identifier for the plot thread
+    - description: str                  # Description of the ongoing plot element
+    - status: str                       # Current status (e.g., "pending", "in progress")
 ```
 
 #### Genre Hierarchy
