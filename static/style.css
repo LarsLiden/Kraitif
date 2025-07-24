@@ -438,20 +438,6 @@ h3 {
     background-color: #555555;
 }
 
-.breadcrumb {
-    margin-bottom: 20px;
-    color: #888888;
-}
-
-.breadcrumb a {
-    color: #cccccc;
-    text-decoration: none;
-}
-
-.breadcrumb a:hover {
-    color: #ffffff;
-    text-decoration: underline;
-}
 
 .section {
     margin-bottom: 25px;
