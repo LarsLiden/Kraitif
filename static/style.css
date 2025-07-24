@@ -58,12 +58,18 @@ body {
     gap: 8px;
 }
 
+/* Panel without edit button - needs left spacing to align with panels that have edit buttons */
+.panel-no-edit {
+    margin-left: 32px; /* Width (24px) + gap (8px) to match selection-wrapper spacing */
+    margin-bottom: 12px;
+}
+
 /* External Edit Button */
 .edit-button-external {
     background: none;
     border: none;
     color: #FFB74D;
-    font-size: 1.1em;
+    font-size: 0.55em;
     cursor: pointer;
     padding: 4px;
     border-radius: 3px;
