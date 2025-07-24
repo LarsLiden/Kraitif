@@ -602,6 +602,61 @@ h3 {
     background-color: #357abd;
 }
 
+/* Generate Chapters Button Styles */
+.generate-chapters-section {
+    margin-top: 1rem;
+}
+
+.generate-chapters-button {
+    display: block;
+    width: 100%;
+    background-color: #9c27b0;
+    color: white;
+    border: none;
+    text-align: center;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    margin: 0;
+}
+
+.generate-chapters-button:hover {
+    background-color: #7b1fa2;
+}
+
+/* Chapter Summary Styles */
+.chapter-summary {
+    padding: 0.75rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.chapter-summary:last-child {
+    border-bottom: none;
+}
+
+.chapter-summary strong {
+    color: #4CAF50;
+    font-size: 1rem;
+}
+
+.chapter-function {
+    color: #64B5F6;
+    font-size: 0.85rem;
+    font-style: italic;
+    margin-top: 0.25rem;
+}
+
+.chapter-overview-text {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.9rem;
+    margin-top: 0.5rem;
+    line-height: 1.4;
+}
+
 /* Character Summary Styles */
 .character-summary {
     padding: 0.75rem 0;

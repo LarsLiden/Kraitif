@@ -21,6 +21,7 @@ from objects.style import StyleRegistry
 from prompt import Prompt
 from objects.plot_line import PlotLine, parse_plot_lines_from_ai_response
 from objects.character_parser import parse_characters_from_ai_response
+from objects.chapter_parser import parse_chapters_from_ai_response, validate_chapter_character_names
 from ai.ai_client import get_ai_response
 from prompt_types import PromptType
 
@@ -1034,6 +1035,62 @@ def expanded_story():
                          genre_registry=genre_registry,
                          archetype_registry=archetype_registry,
                          style_registry=style_registry)
+
+
+@app.route('/generate-chapters', methods=['POST'])
+def generate_chapters():
+    """Generate chapter plan using AI based on the current story configuration."""
+    story = get_story_from_session()
+    
+    # Check if we have the required data
+    if not story.expanded_plot_line or not story.characters:
+        return jsonify({'error': 'Please generate characters first.'}), 400
+    
+    # Check if we have a reasonably complete story
+    if not story.story_type_name or not story.subtype_name:
+        return jsonify({'error': 'Please complete at least the story type and subtype selection first.'}), 400
+    
+    try:
+        # Generate the prompt text using chapter outline prompt
+        prompt_text = prompt_generator.generate_chapter_outline_prompt(story)
+        
+        # Get AI response
+        ai_response = get_ai_response(prompt_text, PromptType.CHAPTER_OUTLINE)
+        
+        # Parse chapters from the response
+        chapters = parse_chapters_from_ai_response(ai_response)
+        
+        # Validate that all character names in chapters exist in story
+        story_character_names = [char.name for char in story.characters]
+        missing_characters = validate_chapter_character_names(chapters, story_character_names)
+        
+        if missing_characters:
+            return jsonify({
+                'success': False,
+                'error': 'character_validation',
+                'missing_characters': missing_characters,
+                'message': f'Some characters referenced in chapters do not exist in the story: {", ".join(missing_characters)}'
+            })
+        
+        # Clear existing chapters and add new ones
+        story.chapters.clear()
+        for chapter in chapters:
+            story.add_chapter(chapter)
+        
+        # Save to session
+        save_story_to_session(story)
+        
+        return jsonify({
+            'success': True,
+            'chapters': [chapter.to_dict() for chapter in chapters],
+            'ai_response': ai_response  # Include for debugging if needed
+        })
+    
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        })
 
 
 @app.route('/complete-story-selection')
