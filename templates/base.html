@@ -349,7 +349,7 @@
                                 {% endif %}
                                 
                                 <!-- Live Secondary Characters selection (on secondary selection page) -->
-                                {% if is_secondary_selection_page and story_data and story_data.get('protagonist_archetype') %}
+                                {% if is_secondary_selection_page and story_data and story_data.get('protagonist_archetype') and not story_data.get('secondary_archetypes') %}
                                 <div class="selection-wrapper">
                                     <span class="edit-button-invisible">✏️</span>
                                     <div class="expandable-panel">
