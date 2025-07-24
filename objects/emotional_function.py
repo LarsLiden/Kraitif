@@ -38,8 +38,8 @@ class EmotionalFunctionRegistry:
     
     def __init__(self):
         """Initialize registry with emotional functions from JSON data."""
-        # Use default data file in the data directory
-        data_file = os.path.join(os.path.dirname(__file__), "data", "emotional_functions.json")
+        # Use default data file in the data directory (up one level from objects/)
+        data_file = os.path.join(os.path.dirname(os.path.dirname(__file__)), "data", "emotional_functions.json")
         
         self._emotional_functions = {}
         self._load_from_json(data_file)

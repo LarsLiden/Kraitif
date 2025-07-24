@@ -6,14 +6,14 @@ This module implements a Story object that backs user choices like genre and sub
 
 import json
 from typing import Optional, Dict, Any, List, Union
-from genre import Genre, SubGenre, GenreRegistry
-from archetype import ArchetypeRegistry, ArchetypeEnum
-from style import Style, StyleRegistry
-from story_types import StoryTypeRegistry
-from emotional_function import EmotionalFunction, EmotionalFunctionRegistry
-from plot_line import PlotLine
-from functional_role import FunctionalRole, FunctionalRoleRegistry
-from character import Character
+from .genre import Genre, SubGenre, GenreRegistry
+from .archetype import ArchetypeRegistry, ArchetypeEnum
+from .style import Style, StyleRegistry
+from .story_types import StoryTypeRegistry
+from .emotional_function import EmotionalFunction, EmotionalFunctionRegistry
+from .plot_line import PlotLine
+from .functional_role import FunctionalRole, FunctionalRoleRegistry
+from .character import Character
 
 class Story:
     """Represents a story with user-selected genre and sub-genre."""
@@ -108,7 +108,7 @@ class Story:
     
     def get_protagonist(self) -> Optional[Character]:
         """Get the protagonist character (first character with Protagonist functional role)."""
-        from functional_role import FunctionalRoleEnum
+        from .functional_role import FunctionalRoleEnum
         for character in self.characters:
             if character.functional_role == FunctionalRoleEnum.PROTAGONIST:
                 return character
@@ -116,7 +116,7 @@ class Story:
     
     def get_secondary_characters(self) -> List[Character]:
         """Get all non-protagonist characters."""
-        from functional_role import FunctionalRoleEnum
+        from .functional_role import FunctionalRoleEnum
         return [char for char in self.characters if char.functional_role != FunctionalRoleEnum.PROTAGONIST]
     
     def set_genre(self, genre_name: str) -> bool:

@@ -169,8 +169,8 @@ class GenreRegistry:
     
     def __init__(self):
         """Initialize registry with genres from JSON data."""
-        # Use default data file in the data directory
-        data_file = os.path.join(os.path.dirname(__file__), "data", "genres.json")
+        # Use default data file in the data directory (up one level from objects/)
+        data_file = os.path.join(os.path.dirname(os.path.dirname(__file__)), "data", "genres.json")
         
         self._genres = {}
         self._load_from_json(data_file)

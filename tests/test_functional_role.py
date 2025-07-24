@@ -4,8 +4,8 @@ Unit tests for functional role functionality.
 
 import pytest
 import json
-from functional_role import FunctionalRole, FunctionalRoleRegistry, FunctionalRoleEnum
-from story import Story
+from objects.functional_role import FunctionalRole, FunctionalRoleRegistry, FunctionalRoleEnum
+from objects.story import Story
 
 
 def test_functional_role_class():

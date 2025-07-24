@@ -8,7 +8,7 @@ This test validates that the new genre and sub-genre selection flow works correc
 import sys
 import os
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from story import Story
+from objects.story import Story
 
 
 def test_genre_subgenre_flow():

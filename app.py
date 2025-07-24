@@ -13,13 +13,13 @@ Please also update the design_spec and architecture_spec documents to reflext an
 """
 
 from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify, make_response
-from story_types import StoryTypeRegistry
-from story import Story
-from genre import GenreRegistry
-from archetype import ArchetypeRegistry
-from style import StyleRegistry
-from prompt import Prompt
-from plot_line import PlotLine, parse_plot_lines_from_ai_response
+from objects.story_types import StoryTypeRegistry
+from objects.story import Story
+from objects.genre import GenreRegistry
+from objects.archetype import ArchetypeRegistry
+from objects.style import StyleRegistry
+from objects.prompt import Prompt
+from objects.plot_line import PlotLine, parse_plot_lines_from_ai_response
 from ai.ai_client import get_ai_response
 from prompt_types import PromptType
 
@@ -82,7 +82,7 @@ def get_story_from_session():
         selected_plot_line_data = story_data.get('selected_plot_line')
         if selected_plot_line_data and isinstance(selected_plot_line_data, dict):
             if 'name' in selected_plot_line_data and 'plotline' in selected_plot_line_data:
-                from plot_line import PlotLine
+                from objects.plot_line import PlotLine
                 plot_line = PlotLine(
                     name=selected_plot_line_data['name'],
                     plotline=selected_plot_line_data['plotline']

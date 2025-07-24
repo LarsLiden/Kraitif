@@ -9,14 +9,18 @@ Kraitif is built as a Flask web application using a modular, registry-based arch
 ```
 Kraitif/
 ├── app.py                    # Main Flask application and routing
-├── story.py                  # Core Story model and business logic
-├── story_types.py           # Story type definitions and registry
-├── archetype.py             # Character archetype registry, models, and ArchetypeEnum
-├── emotional_function.py    # Emotional function registry, models, and EmotionalFunctionEnum
-├── functional_role.py       # Functional role registry, models, and FunctionalRoleEnum
-├── character.py             # Character class combining archetype, functional role, emotional function
-├── genre.py                 # Genre/sub-genre registry and models  
-├── style.py                 # Writing style registry and models
+├── objects/                  # Story-related object classes and registries
+│   ├── __init__.py          # Objects module initialization
+│   ├── story.py             # Core Story model and business logic
+│   ├── story_types.py       # Story type definitions and registry
+│   ├── archetype.py         # Character archetype registry, models, and ArchetypeEnum
+│   ├── emotional_function.py # Emotional function registry, models, and EmotionalFunctionEnum
+│   ├── functional_role.py   # Functional role registry, models, and FunctionalRoleEnum
+│   ├── character.py         # Character class combining archetype, functional role, emotional function
+│   ├── genre.py             # Genre/sub-genre registry and models  
+│   ├── style.py             # Writing style registry and models
+│   ├── plot_line.py         # PlotLine class for AI-generated plot lines
+│   └── prompt.py            # Prompt generation class for AI integration
 ├── prompt_types.py          # Prompt type enumeration for AI debugging
 ├── launch.py                # Simple application launcher
 ├── demo.py                  # Command-line demo script
@@ -75,7 +79,7 @@ Kraitif/
 - Route handlers for each step in the user flow
 - Navigation handler for edit button functionality
 
-#### 2. Story Model (`story.py`)
+#### 2. Story Model (`objects/story.py`)
 **Purpose**: Central business object managing user selections and data validation
 **Key Features**:
 - Tracks all user selections (story type, genre, archetypes using ArchetypeEnum, etc.)
@@ -94,32 +98,32 @@ Kraitif/
 #### 3. Registry Components
 **Purpose**: Centralized access to narrative data with consistent interfaces
 
-**StoryTypeRegistry** (`story_types.py`):
+**StoryTypeRegistry** (`objects/story_types.py`):
 - Manages 7 story types with 3 subtypes each
 - Provides lookup by name with case-insensitive matching
 - Includes rich metadata (descriptions, examples, emotional arcs, themes)
 
-**ArchetypeRegistry** (`archetype.py`):
+**ArchetypeRegistry** (`objects/archetype.py`):
 - Manages 108 character archetypes loaded from JSONL
 - Provides search functionality across archetype names
 - Supports both exact lookup and partial text search
 
-**GenreRegistry** (`genre.py`):
+**GenreRegistry** (`objects/genre.py`):
 - Manages hierarchical genre/sub-genre relationships
 - Links sub-genres to typical character archetypes
 - Supports genre-based filtering of story options
 
-**StyleRegistry** (`style.py`):
+**StyleRegistry** (`objects/style.py`):
 - Manages 15 writing styles with characteristics and examples
 - Provides search across style descriptions and characteristics
 - Supports style-based guidance for writing approach
 
-**EmotionalFunctionRegistry** (`emotional_function.py`):
+**EmotionalFunctionRegistry** (`objects/emotional_function.py`):
 - Manages 8 emotional functions that define character emotional roles
 - Provides lookup and search functionality for emotional functions
 - Supports emotional characterization in story development
 
-**FunctionalRoleRegistry** (`functional_role.py`):
+**FunctionalRoleRegistry** (`objects/functional_role.py`):
 - Manages 20 functional roles defining narrative character functions
 - Provides case-insensitive lookup with name normalization
 - Supports search across role names and descriptions

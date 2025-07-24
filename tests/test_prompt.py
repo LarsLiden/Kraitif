@@ -9,8 +9,8 @@ import unittest
 import tempfile
 import os
 from unittest.mock import patch, mock_open
-from prompt import Prompt
-from story import Story
+from objects.prompt import Prompt
+from objects.story import Story
 
 
 class TestPrompt(unittest.TestCase):
@@ -49,8 +49,8 @@ class TestPrompt(unittest.TestCase):
             content = self.prompt_generator._read_template_file("error.txt")
             self.assertEqual(content, "")
     
-    @patch("prompt.Prompt._read_template_file")
-    @patch("story.Story.to_prompt_text")
+    @patch("objects.prompt.Prompt._read_template_file")
+    @patch("objects.story.Story.to_prompt_text")
     def test_generate_plot_prompt_all_parts(self, mock_story_prompt, mock_read_file):
         """Test generating a plot prompt with all parts present."""
         # Setup mocks
@@ -74,8 +74,8 @@ class TestPrompt(unittest.TestCase):
         mock_read_file.assert_any_call("plot_lines_post.txt")
         mock_story_prompt.assert_called_once()
     
-    @patch("prompt.Prompt._read_template_file")
-    @patch("story.Story.to_prompt_text")
+    @patch("objects.prompt.Prompt._read_template_file")
+    @patch("objects.story.Story.to_prompt_text")
     def test_generate_plot_prompt_only_story_config(self, mock_story_prompt, mock_read_file):
         """Test generating a plot prompt with only story configuration."""
         # Setup mocks - empty template files
@@ -89,8 +89,8 @@ class TestPrompt(unittest.TestCase):
         # Should only contain the story configuration
         self.assertEqual(result, "Story configuration text")
     
-    @patch("prompt.Prompt._read_template_file")
-    @patch("story.Story.to_prompt_text")
+    @patch("objects.prompt.Prompt._read_template_file")
+    @patch("objects.story.Story.to_prompt_text")
     def test_generate_plot_prompt_empty_story_config(self, mock_story_prompt, mock_read_file):
         """Test generating a plot prompt with empty story configuration."""
         # Setup mocks
@@ -109,8 +109,8 @@ class TestPrompt(unittest.TestCase):
         expected = "Pre-prompt text\n\nPost-prompt text"
         self.assertEqual(result, expected)
     
-    @patch("prompt.Prompt._read_template_file")
-    @patch("story.Story.to_prompt_text")
+    @patch("objects.prompt.Prompt._read_template_file")
+    @patch("objects.story.Story.to_prompt_text")
     def test_generate_plot_prompt_whitespace_handling(self, mock_story_prompt, mock_read_file):
         """Test that whitespace is properly handled in prompt generation."""
         # Setup mocks with whitespace
@@ -129,8 +129,8 @@ class TestPrompt(unittest.TestCase):
         expected = "Pre-prompt text\n\nStory configuration text\n\nPost-prompt text"
         self.assertEqual(result, expected)
     
-    @patch("prompt.Prompt._read_template_file")
-    @patch("story.Story.to_prompt_text")
+    @patch("objects.prompt.Prompt._read_template_file")
+    @patch("objects.story.Story.to_prompt_text")
     def test_generate_plot_prompt_all_empty(self, mock_story_prompt, mock_read_file):
         """Test generating a plot prompt when all parts are empty."""
         # Setup mocks - all empty

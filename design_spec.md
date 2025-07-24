@@ -8,6 +8,13 @@ Kraitif is a narrative theory application that helps writers systematically crea
 **Target Users**: Writers, storytellers, content creators, and narrative designers  
 **Primary Goal**: Generate detailed story configurations that can guide creative writing processes
 
+## Code Organization
+
+The application follows a modular architecture with story-related objects organized in the `/objects` directory:
+- All core story domain models (Story, Character, Archetype, etc.) are contained in `/objects/`
+- UI code (Flask app, templates, static files) remains at the root level
+- This separation makes the codebase easier to navigate and maintain
+
 ## Narrative Theory Foundation
 
 The application is built on these literary concepts:

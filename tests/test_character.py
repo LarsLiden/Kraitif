@@ -4,11 +4,11 @@ Test the Character class functionality
 
 import unittest
 import json
-from story import Story
-from character import Character
-from archetype import ArchetypeEnum
-from functional_role import FunctionalRoleEnum
-from emotional_function import EmotionalFunctionEnum
+from objects.story import Story
+from objects.character import Character
+from objects.archetype import ArchetypeEnum
+from objects.functional_role import FunctionalRoleEnum
+from objects.emotional_function import EmotionalFunctionEnum
 
 
 class TestCharacterRefactor(unittest.TestCase):

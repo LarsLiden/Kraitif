@@ -7,9 +7,9 @@ emotional function, and other character attributes.
 
 from typing import Optional
 from dataclasses import dataclass
-from archetype import ArchetypeEnum
-from functional_role import FunctionalRoleEnum
-from emotional_function import EmotionalFunctionEnum
+from .archetype import ArchetypeEnum
+from .functional_role import FunctionalRoleEnum
+from .emotional_function import EmotionalFunctionEnum
 
 
 @dataclass
