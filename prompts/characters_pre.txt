@@ -4,7 +4,7 @@ The result should reflect the story type, genre conventions, narrative rhythm, e
 
 
 CHARACTER GUIDELINES
-For each character, provide the following:
+Include between 8-10 characters. For each character, provide the following:
 
 name: A distinct, genre-appropriate name
 
