@@ -856,6 +856,23 @@ def navigate_to_step(step):
         return redirect(url_for('index'))
 
 
+@app.route('/edit-plot-line')
+def edit_plot_line():
+    """Edit the selected plot line by clearing it and returning to secondary character selection."""
+    story = get_story_from_session()
+    
+    # Clear plot line related data
+    story.clear_selected_plot_line()
+    story.clear_expanded_plot_line()
+    # Clear all characters since they were generated based on the plot line
+    story.characters = []
+    
+    save_story_to_session(story)
+    
+    # Redirect to secondary archetype selection where plot lines can be generated
+    return redirect(url_for('secondary_archetype_selection'))
+
+
 @app.route('/save')
 def save_story():
     """Save current story to JSON file."""
