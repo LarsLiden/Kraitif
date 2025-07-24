@@ -14,7 +14,11 @@ from .narrative_function import NarrativeFunctionRegistry, NarrativeFunctionEnum
 from .character import Character
 from .character_parser import parse_characters_from_ai_response
 from .chapter import Chapter
-from .chapter_summary import ChapterSummary, ContinuityState, ContinuityCharacter, ContinuityObject, PlotThread
+from .chapter_summary import ChapterSummary
+from .continuity_state import ContinuityState
+from .continuity_character import ContinuityCharacter
+from .continuity_object import ContinuityObject
+from .plot_thread import PlotThread
 from .plot_line import PlotLine, parse_plot_lines_from_ai_response
 
 __all__ = [

@@ -4,13 +4,11 @@ Unit tests for ChapterSummary object and related classes.
 
 import unittest
 import json
-from objects.chapter_summary import (
-    ChapterSummary,
-    ContinuityState,
-    ContinuityCharacter,
-    ContinuityObject,
-    PlotThread
-)
+from objects.chapter_summary import ChapterSummary
+from objects.continuity_state import ContinuityState
+from objects.continuity_character import ContinuityCharacter
+from objects.continuity_object import ContinuityObject
+from objects.plot_thread import PlotThread
 
 
 class TestContinuityCharacter(unittest.TestCase):
