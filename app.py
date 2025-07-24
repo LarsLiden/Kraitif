@@ -83,7 +83,6 @@ def get_story_from_session():
         selected_plot_line_data = story_data.get('selected_plot_line')
         if selected_plot_line_data and isinstance(selected_plot_line_data, dict):
             if 'name' in selected_plot_line_data and 'plotline' in selected_plot_line_data:
-                from plot_line import PlotLine
                 plot_line = PlotLine(
                     name=selected_plot_line_data['name'],
                     plotline=selected_plot_line_data['plotline']
