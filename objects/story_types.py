@@ -73,7 +73,7 @@ class StoryTypeRegistry:
     def __init__(self):
         """Initialize registry with story types from JSON data."""
         # Use default data file in the data directory
-        data_file = os.path.join(os.path.dirname(__file__), "data", "story_types.json")
+        data_file = os.path.join(os.path.dirname(__file__), "..", "data", "story_types.json")
         
         self._story_types = {}
         self._load_from_json(data_file)

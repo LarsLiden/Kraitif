@@ -7,8 +7,8 @@ import sys
 import os
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 
-from story import Story
-from style import StyleRegistry
+from objects.story import Story
+from objects.style import StyleRegistry
 
 
 def test_writing_style_functionality():

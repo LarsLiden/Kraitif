@@ -8,8 +8,8 @@ This script provides basic validation tests for the emotional function implement
 import sys
 import os
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from emotional_function import EmotionalFunctionRegistry, EmotionalFunction
-from story import Story
+from objects.emotional_function import EmotionalFunctionRegistry, EmotionalFunction
+from objects.story import Story
 import unittest
 
 

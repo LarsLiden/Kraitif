@@ -5,9 +5,9 @@ Demonstration of Story Types and SubTypes, plus Archetypes and Writing Styles
 This script demonstrates how to use the story types, subtypes, archetypes, and writing styles classes.
 """
 
-from story_types import StoryTypeRegistry
-from archetype import ArchetypeRegistry
-from style import StyleRegistry
+from objects.story_types import StoryTypeRegistry
+from objects.archetype import ArchetypeRegistry
+from objects.style import StyleRegistry
 
 
 def main():

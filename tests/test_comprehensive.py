@@ -21,11 +21,11 @@ from tests.test_story_save_load import run_story_save_load_tests
 from tests.test_flask_save_load import run_flask_save_load_tests
 
 # Import the main modules for additional edge case testing
-from story import Story
-from story_types import StoryTypeRegistry
-from genre import GenreRegistry
-from archetype import ArchetypeRegistry
-from style import StyleRegistry
+from objects.story import Story
+from objects.story_types import StoryTypeRegistry
+from objects.genre import GenreRegistry
+from objects.archetype import ArchetypeRegistry
+from objects.style import StyleRegistry
 
 
 class TestEdgeCases(unittest.TestCase):

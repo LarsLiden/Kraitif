@@ -8,10 +8,10 @@ This script provides basic validation tests for the story types implementation.
 import sys
 import os
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from story_types import StoryTypeRegistry, StoryType, StorySubType
-from archetype import ArchetypeRegistry, Archetype
-from genre import GenreRegistry, Genre, SubGenre, GenreEnum, SubGenreEnum
-from style import StyleRegistry, Style, StyleEnum
+from objects.story_types import StoryTypeRegistry, StoryType, StorySubType
+from objects.archetype import ArchetypeRegistry, Archetype
+from objects.genre import GenreRegistry, Genre, SubGenre, GenreEnum, SubGenreEnum
+from objects.style import StyleRegistry, Style, StyleEnum
 
 
 def test_story_type_registry():

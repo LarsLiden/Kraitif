@@ -4,11 +4,11 @@ Test the Character class functionality
 
 import unittest
 import json
-from story import Story
-from character import Character
-from archetype import ArchetypeEnum
-from functional_role import FunctionalRoleEnum
-from emotional_function import EmotionalFunctionEnum
+from objects.story import Story
+from objects.character import Character
+from objects.archetype import ArchetypeEnum
+from objects.functional_role import FunctionalRoleEnum
+from objects.emotional_function import EmotionalFunctionEnum
 
 
 class TestCharacterRefactor(unittest.TestCase):
@@ -301,7 +301,7 @@ class TestCharacterRefactor(unittest.TestCase):
     
     def test_story_prompt_text_includes_plot_line(self):
         """Test that story prompt text includes plot line information when available."""
-        from plot_line import PlotLine
+        from objects.plot_line import PlotLine
         
         # Create a plot line
         plot_line = PlotLine(
