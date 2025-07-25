@@ -303,7 +303,7 @@ When navigating back to edit a previous step:
 **Left Panel**: 
 - Save and load controls at top
 - "Your Story Selections" section showing completed choices
-- Each selection includes edit button (✏️) for navigation back to that step
+- Each selection includes edit button (🗑️) for navigation back to that step
 - Expandable details panels for story type and subtype with rich information
 - All edit buttons implement smart clearing logic
 
@@ -401,12 +401,12 @@ The application provides three specialized prompt generation functions:
 The application uses a **left panel navigation system** with edit buttons instead of traditional breadcrumb navigation:
 
 - **No Breadcrumb Navigation**: All breadcrumb trails (e.g., "Story Types > Rags to Riches > Pure Ascent > Key Theme Selection") have been completely removed from all pages. **Breadcrumb navigation must never be added to any page in this application.**
-- **Left Panel Edit Buttons**: Each completed selection in the "Your Story Selections" panel includes an edit button (✏️ icon) that allows users to return to that selection step
+- **Left Panel Edit Buttons**: Each completed selection in the "Your Story Selections" panel includes an edit button (🗑️ icon) that allows users to return to that selection step
 - **Smart Clearing Logic**: When a user clicks an edit button to return to a previous step:
   - That selection and all subsequent selections are cleared from the story object
   - The user is redirected to the appropriate selection page for that step
   - All selections made before that step are preserved
-- **Icon-Based Design**: Edit buttons use a clean pencil emoji (✏️) for an aesthetic, icon-based approach rather than text buttons
+- **Icon-Based Design**: Edit buttons use a clean trash emoji (🗑️) for an aesthetic, icon-based approach rather than text buttons
 - **Hover Effects**: Edit buttons include hover effects and tooltips for better user experience
 
 This navigation system provides a more intuitive way for users to modify their story selections without losing progress on earlier decisions, while maintaining a clean interface without cluttered breadcrumb navigation.
@@ -432,7 +432,7 @@ The UI has a left and right panel
   - **Story Sub-Type Panel**: Shows story sub-type name with expandable details specific to the sub-type including description and examples. Includes edit button to return to subtype selection.
   - **Selection Items**: Key Theme, Core Arc, Genre, Sub-Genre, Writing Style, Protagonist, and Secondary Characters all display with edit buttons that allow navigation back to their respective selection pages.
   - Both expandable panels persist across all pages once selections are made and can be expanded/collapsed independently
-- All edit buttons use icon-based design (✏️) and implement smart clearing logic when clicked
+- All edit buttons use icon-based design (🗑️) and implement smart clearing logic when clicked
 
 **Right Panel**: 
 - Shows the options that the user can choose from
