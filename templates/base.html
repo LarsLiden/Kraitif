@@ -527,17 +527,23 @@
                                 <!-- DEBUG: is_chapter_plan_page={{ is_chapter_plan_page|default('UNDEFINED') }}, story={{ 'exists' if story else 'MISSING' }}, story.chapters={{ story.chapters|length if story and story.chapters else 'MISSING' }} -->
                                 {% if is_chapter_plan_page and story and story.chapters %}
                                     <!-- DEBUG: Inside chapter generation logic -->
-                                    {% set first_chapter_without_text = none %}
-                                    {% for chapter in story.get_chapters_ordered() %}
-                                        {% if not chapter.chapter_text and first_chapter_without_text is none %}
-                                            {% set first_chapter_without_text = chapter %}
+                                    <!-- Find first chapter without text using a different approach -->
+                                    {% set chapters_ordered = story.get_chapters_ordered() %}
+                                    {% set first_chapter_without_text = namespace(value=none) %}
+                                    <!-- DEBUG: Starting search for first chapter without text -->
+                                    {% for chapter in chapters_ordered %}
+                                        <!-- DEBUG: Checking chapter {{ chapter.chapter_number }}: chapter_text={{ chapter.chapter_text|string }}, type={{ chapter.chapter_text.__class__.__name__ if chapter.chapter_text else 'NoneType' }}, len={{ chapter.chapter_text|length if chapter.chapter_text else 'N/A' }} -->
+                                        <!-- DEBUG: Condition check: not chapter.chapter_text={{ not chapter.chapter_text }}, first_chapter_without_text is none={{ first_chapter_without_text.value is none }} -->
+                                        {% if not chapter.chapter_text and first_chapter_without_text.value is none %}
+                                            <!-- DEBUG: SETTING first_chapter_without_text to Chapter {{ chapter.chapter_number }} -->
+                                            {% set first_chapter_without_text.value = chapter %}
                                         {% endif %}
                                     {% endfor %}
                                     
-                                    <!-- DEBUG: first_chapter_without_text={{ 'Chapter ' + first_chapter_without_text.chapter_number|string if first_chapter_without_text else 'NONE' }} -->
+                                    <!-- DEBUG: first_chapter_without_text={{ 'Chapter ' + first_chapter_without_text.value.chapter_number|string if first_chapter_without_text.value else 'NONE' }} -->
                                     {% for chapter in story.get_chapters_ordered() %}
-                                        <!-- DEBUG: Chapter {{ chapter.chapter_number }}: has_text={{ 'YES' if chapter.chapter_text else 'NO' }}, is_first={{ 'YES' if (not chapter.chapter_text and first_chapter_without_text and chapter.chapter_number == first_chapter_without_text.chapter_number) else 'NO' }} -->
-                                        {% if not chapter.chapter_text and first_chapter_without_text and chapter.chapter_number == first_chapter_without_text.chapter_number %}
+                                        <!-- DEBUG: Chapter {{ chapter.chapter_number }}: has_text={{ 'YES' if chapter.chapter_text else 'NO' }}, is_first={{ 'YES' if (not chapter.chapter_text and first_chapter_without_text.value and chapter.chapter_number == first_chapter_without_text.value.chapter_number) else 'NO' }} -->
+                                        {% if not chapter.chapter_text and first_chapter_without_text.value and chapter.chapter_number == first_chapter_without_text.value.chapter_number %}
                                         <!-- Generate Chapter button for the first chapter without text -->
                                         <!-- DEBUG: SHOWING GENERATE BUTTON for Chapter {{ chapter.chapter_number }} -->
                                         <div class="generate-chapter-section" id="generate-chapter-{{ chapter.chapter_number }}-section">
