@@ -65,14 +65,14 @@ class TestChapter(unittest.TestCase):
         
         # Update existing character impact
         success = chapter.add_character_impact("Alice", "Embraces her destiny")
-        self.assertsuccess
-        self.assertlen(chapter.character_impact) == 2  # Should not add duplicate
-        self.assertchapter.get_character_impact("Alice") == "Embraces her destiny"
+        self.assertTrue(success)
+        self.assertEqual(len(chapter.character_impact), 2)  # Should not add duplicate
+        self.assertEqual(chapter.get_character_impact("Alice"), "Embraces her destiny")
         
         # Test invalid inputs
-        self.assertnot chapter.add_character_impact("", "Effect")
-        self.assertnot chapter.add_character_impact("Character", "")
-        self.assertnot chapter.add_character_impact(None, "Effect")
+        self.assertFalse(chapter.add_character_impact("", "Effect"))
+        self.assertFalse(chapter.add_character_impact("Character", ""))
+        self.assertFalse(chapter.add_character_impact(None, "Effect"))
     
     def test_chapter_get_character_impact(self):
         """Test getting character impact."""
