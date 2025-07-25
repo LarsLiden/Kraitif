@@ -27,7 +27,11 @@ Kraitif/
 │   ├── character.py         # Character class combining archetype, functional role, emotional function
 │   ├── character_parser.py  # Character and expanded plot line parsing from AI responses
 │   ├── chapter.py          # Chapter class for story structure and planning
-│   ├── chapter_summary.py   # Chapter summary with continuity state tracking
+│   ├── chapter_summary.py   # Chapter summary object for recap and continuity tracking
+│   ├── continuity_character.py # ContinuityCharacter class for tracking character state
+│   ├── continuity_object.py # ContinuityObject class for tracking object state
+│   ├── continuity_state.py  # ContinuityState class for overall story state tracking
+│   ├── plot_thread.py       # PlotThread class for tracking ongoing story threads
 │   ├── genre.py             # Genre/sub-genre registry and models  
 │   ├── style.py             # Writing style registry and models
 │   └── plot_line.py         # PlotLine class for AI-generated plot lines
@@ -243,6 +247,7 @@ Chapter:
 
 #### Chapter Summary Model
 ```python
+# Note: Each class below is implemented in its own file within the objects/ directory
 ChapterSummary:
     - summary: str                      # Recap of what happened in the chapter
     - continuity_state: ContinuityState # Detailed state tracking
