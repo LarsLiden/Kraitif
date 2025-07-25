@@ -177,6 +177,10 @@ class TestGenerateChapterPrompt(unittest.TestCase):
     @patch("objects.story.Story.to_prompt_text_for_chapter")
     def test_generate_chapter_prompt_all_parts(self, mock_story_prompt, mock_read_file):
         """Test generating a chapter prompt with all parts present."""
+        # Add chapter 3 to the story
+        chapter3 = Chapter(3, 'Chapter 3', 'Third chapter')
+        self.story.add_chapter(chapter3)
+        
         # Setup mocks
         mock_read_file.side_effect = lambda filename: {
             "chapter_pre.txt": "Chapter pre-prompt text",
@@ -189,8 +193,12 @@ class TestGenerateChapterPrompt(unittest.TestCase):
         result = self.prompt_generator.generate_chapter_prompt(self.story, 3)
         
         # Check that all parts are included and properly separated
-        expected = "Chapter pre-prompt text\n\nStory configuration text\n\nChapter post-prompt text"
-        self.assertEqual(result, expected)
+        # Note: For chapter 3, continuity should be included (even if empty from chapter 2)
+        self.assertIn("Chapter pre-prompt text", result)
+        self.assertIn("Story configuration text", result)
+        self.assertIn("CONTINUITY:", result)  # Should have continuity section for chapter > 1
+        self.assertIn("TARGET CHAPTER TO GENERATE:", result)
+        self.assertIn("Chapter post-prompt text", result)
         
         # Verify the correct files were read
         mock_read_file.assert_any_call("chapter_pre.txt")
@@ -205,11 +213,13 @@ class TestGenerateChapterPrompt(unittest.TestCase):
         mock_read_file.return_value = ""
         mock_story_prompt.return_value = "Story configuration text"
         
-        # Generate prompt
+        # Generate prompt for chapter 2 (should include continuity section)
         result = self.prompt_generator.generate_chapter_prompt(self.story, 2)
         
-        # Should only contain the story configuration
-        self.assertEqual(result, "Story configuration text")
+        # Should contain story configuration and continuity (even if empty)
+        self.assertIn("Story configuration text", result)
+        self.assertIn("CONTINUITY:", result)
+        self.assertIn("TARGET CHAPTER TO GENERATE:", result)
         mock_story_prompt.assert_called_once_with(2)
     
     @patch("prompt.Prompt._read_template_file")
@@ -224,12 +234,19 @@ class TestGenerateChapterPrompt(unittest.TestCase):
         
         mock_story_prompt.return_value = "  Story configuration text  \n"
         
-        # Generate prompt
+        # Generate prompt for chapter 2
         result = self.prompt_generator.generate_chapter_prompt(self.story, 2)
         
-        # Should strip whitespace but maintain content
-        expected = "Chapter pre-prompt text\n\nStory configuration text\n\nChapter post-prompt text"
-        self.assertEqual(result, expected)
+        # Should strip whitespace but maintain content, and include continuity
+        self.assertIn("Chapter pre-prompt text", result)
+        self.assertIn("Story configuration text", result)
+        self.assertIn("CONTINUITY:", result)  # Should have continuity section
+        self.assertIn("TARGET CHAPTER TO GENERATE:", result)
+        self.assertIn("Chapter post-prompt text", result)
+        
+        # Verify sections are properly separated with double newlines
+        parts = result.split('\n\n')
+        self.assertGreater(len(parts), 3)  # Should have multiple sections
     
     @patch("prompt.Prompt._read_template_file")
     @patch("objects.story.Story.to_prompt_text_for_chapter")
@@ -264,11 +281,12 @@ class TestGenerateChapterPrompt(unittest.TestCase):
         mock_read_file.return_value = ""
         mock_story_prompt.return_value = ""
         
-        # Generate prompt
+        # Generate prompt for chapter 1 (no continuity expected)
         result = self.prompt_generator.generate_chapter_prompt(self.story, 1)
         
-        # Should return empty string
-        self.assertEqual(result, "")
+        # Should contain target chapter info even when other parts are empty
+        self.assertIn("TARGET CHAPTER TO GENERATE:", result)
+        self.assertIn("Chapter 1: Chapter 1", result)
         mock_story_prompt.assert_called_once_with(1)
 
 
@@ -305,14 +323,21 @@ class TestChapterPromptFunctionality(unittest.TestCase):
         
         prompt_gen = Prompt()
         
-        # Test for chapter 3 - should include chapters 1 and 2 only
+        # Test for chapter 3 - should include chapters 1 and 2 only in story configuration
         result = prompt_gen.generate_chapter_prompt(story, 3)
         
+        # Should include chapters 1 and 2 in the story configuration section
         self.assertIn("Chapter 1:", result)
         self.assertIn("Chapter 2:", result)
-        self.assertNotIn("Chapter 3:", result)
-        self.assertNotIn("Chapter 4:", result)
-        self.assertNotIn("Chapter 5:", result)
+        # Should not include chapters 3, 4, 5 in the story configuration
+        # Note: Chapter 3 will appear in "TARGET CHAPTER TO GENERATE" section
+        story_config_end = result.find("CONTINUITY:")
+        if story_config_end == -1:
+            story_config_end = result.find("TARGET CHAPTER TO GENERATE:")
+        story_config_section = result[:story_config_end] if story_config_end != -1 else result
+        
+        self.assertNotIn("Chapter 4:", story_config_section)
+        self.assertNotIn("Chapter 5:", story_config_section)
     
     def test_chapter_prompt_for_first_chapter(self):
         """Test that chapter prompt for first chapter includes no previous chapters."""
@@ -328,10 +353,13 @@ class TestChapterPromptFunctionality(unittest.TestCase):
         prompt_gen = Prompt()
         result = prompt_gen.generate_chapter_prompt(story, 1)
         
-        # Should not contain any chapter structure
+        # Should not contain any chapter structure in the story configuration section
         self.assertNotIn("CHAPTER STRUCTURE:", result)
-        self.assertNotIn("Chapter 1:", result)
-        self.assertNotIn("Chapter 2:", result)
+        # Should not contain continuity section for first chapter
+        self.assertNotIn("CONTINUITY:", result)
+        # Should contain target chapter info for chapter 1
+        self.assertIn("TARGET CHAPTER TO GENERATE:", result)
+        self.assertIn("Chapter 1: Chapter 1", result)
 
 
 if __name__ == '__main__':

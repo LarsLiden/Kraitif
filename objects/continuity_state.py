@@ -181,3 +181,40 @@ class ContinuityState:
             return continuity_state
         except (ValueError, TypeError):
             return None
+    
+    def to_prompt_text(self) -> str:
+        """Convert continuity state to formatted text for use in prompts."""
+        if not any([self.characters, self.objects, self.locations_visited, self.open_plot_threads]):
+            return "No specific continuity state to maintain."
+        
+        parts = []
+        
+        # Characters section
+        if self.characters:
+            parts.append("Characters:")
+            for char in self.characters:
+                char_info = f"- {char.name}: Currently at {char.current_location}, {char.status}"
+                if char.inventory:
+                    char_info += f", carrying: {', '.join(char.inventory)}"
+                parts.append(char_info)
+        
+        # Objects section
+        if self.objects:
+            parts.append("\nObjects:")
+            for obj in self.objects:
+                if obj.holder:
+                    parts.append(f"- {obj.name}: Held by {obj.holder}")
+                else:
+                    parts.append(f"- {obj.name}: Located at {obj.location}")
+        
+        # Locations section
+        if self.locations_visited:
+            parts.append(f"\nLocations Visited: {', '.join(self.locations_visited)}")
+        
+        # Plot threads section
+        if self.open_plot_threads:
+            parts.append("\nOpen Plot Threads:")
+            for thread in self.open_plot_threads:
+                parts.append(f"- {thread.description} (Status: {thread.status})")
+        
+        return "\n".join(parts)

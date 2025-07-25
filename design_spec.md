@@ -132,7 +132,7 @@ The `PlotThread` class tracks ongoing story elements:
 - **description** (str): Description of the ongoing plot element
 - **status** (str): Current status (e.g., "pending", "in progress", "resolved")
 
-The continuity tracking system provides comprehensive JSON serialization/deserialization, validation, and management methods for maintaining story continuity across chapters through the integrated Chapter objects.
+The continuity tracking system provides comprehensive JSON serialization/deserialization, validation, and management methods for maintaining story continuity across chapters through the integrated Chapter objects. Additionally, the `ContinuityState` class includes a `to_prompt_text()` method that formats continuity information into human-readable text for inclusion in chapter generation prompts.
 
 ### Writing Styles
 
@@ -269,11 +269,12 @@ The application includes a comprehensive chapter generation system that enables 
 2. **Individual Chapter Generation**: `generate_chapter_prompt(story: Story, n: int)` creates chapter-specific prompts for individual chapters
 3. **Data Filtering**: Uses filtered story configuration that excludes protagonist_archetype, secondary_archetypes, and selected_plot_line
 4. **Previous Chapter Context**: Includes only chapters 1 to n-1 to provide context for the new chapter
-5. **Template Integration**: Combines "chapter_pre.txt" and "chapter_post.txt" templates with filtered story data
-6. **AI Integration**: Generates complete chapter text (~1000 words) with continuity tracking
-7. **Chapter Text Parsing**: `parse_single_chapter_from_ai_response()` extracts chapter_text, chapter_summary, and continuity_state
-8. **Character Validation**: Validates that all character names in continuity state exist in the story's character list
-9. **UI Integration**: Shows "Generate chapter {n}" buttons in left panel, wait page during generation, and expandable chapter panels after completion
+5. **Continuity Integration**: For chapters beyond the first, includes continuity information from the previous chapter to maintain story consistency
+6. **Template Integration**: Combines "chapter_pre.txt" and "chapter_post.txt" templates with filtered story data
+7. **AI Integration**: Generates complete chapter text (~1000 words) with continuity tracking
+8. **Chapter Text Parsing**: `parse_single_chapter_from_ai_response()` extracts chapter_text, chapter_summary, and continuity_state
+9. **Character Validation**: Validates that all character names in continuity state exist in the story's character list
+10. **UI Integration**: Shows "Generate chapter {n}" buttons in left panel, wait page during generation, and expandable chapter panels after completion
 
 #### Chapter Generation Data Filtering
 The chapter generation system uses specialized data filtering:
@@ -282,10 +283,19 @@ The chapter generation system uses specialized data filtering:
 - **Preserved Data**: All other story configuration including genre, writing style, characters, and expanded plot line
 - **First Chapter Handling**: When generating chapter 1, no previous chapters are included
 
+#### Chapter Generation Continuity System
+The chapter generation includes automatic continuity tracking:
+- **Continuity Section**: For chapters after the first, a "CONTINUITY:" section is automatically added to the prompt
+- **Previous Chapter State**: Includes the continuity_state from the previous chapter (chapter n-1) to maintain story consistency
+- **Formatted Information**: Continuity information includes character locations/status, object locations, visited locations, and open plot threads
+- **Empty State Handling**: When no specific continuity exists, includes message "No specific continuity state to maintain"
+- **Section Positioning**: Continuity section appears after story configuration and before target chapter information
+
 #### Chapter Generation Templates
 - **chapter_pre.txt**: Contains instructions and context for chapter writing (~1000 words prose)
 - **chapter_post.txt**: Contains output format specifications requiring chapter_text, chapter_summary, and continuity_state
 - **Story Context**: Filtered story configuration provides necessary background without spoilers
+- **Continuity Context**: Automated continuity section ensures consistency with previous chapter state
 
 #### Chapter Generation UI Flow
 - **Generate Buttons**: "📝 Generate chapter {n}" buttons appear in left panel for chapters without chapter_text
