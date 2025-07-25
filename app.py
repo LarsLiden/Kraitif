@@ -21,7 +21,7 @@ from objects.style import StyleRegistry
 from prompt import Prompt
 from objects.plot_line import PlotLine, parse_plot_lines_from_ai_response
 from objects.character_parser import parse_characters_from_ai_response
-from objects.chapter_parser import parse_chapters_from_ai_response, validate_chapter_character_names
+from objects.chapter_parser import parse_chapters_from_ai_response, validate_chapter_character_names, parse_single_chapter_from_ai_response
 from ai.ai_client import get_ai_response
 from prompt_types import PromptType
 import os
@@ -69,6 +69,16 @@ def arrow_format(arc_list):
     if not arc_list or not isinstance(arc_list, list):
         return ""
     return " → ".join(arc_list)
+
+
+# Custom Jinja2 filter for converting newlines to HTML line breaks
+@app.template_filter('nl2br')
+def nl2br(text):
+    """Convert newlines to HTML line breaks."""
+    if not text:
+        return ""
+    from markupsafe import Markup
+    return Markup(text.replace('\n', '<br>'))
 
 
 def get_story_id():
@@ -1259,6 +1269,82 @@ def generate_chapters():
         return jsonify({
             'success': True,
             'chapters': [chapter.to_dict() for chapter in chapters],
+            'ai_response': ai_response  # Include for debugging if needed
+        })
+    
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        })
+
+
+@app.route('/generate-chapter/<int:chapter_number>', methods=['POST'])
+def generate_chapter(chapter_number):
+    """Generate a single chapter using AI based on the current story configuration."""
+    story = get_story_from_session()
+    
+    # Check if we have the required data
+    if not story.expanded_plot_line or not story.characters:
+        return jsonify({'error': 'Please generate characters first.'}), 400
+    
+    if not story.chapters:
+        return jsonify({'error': 'Please generate a chapter plan first.'}), 400
+    
+    # Check if the requested chapter number exists in the story
+    existing_chapter = story.get_chapter(chapter_number)
+    if not existing_chapter:
+        return jsonify({'error': f'Chapter {chapter_number} does not exist in the story plan.'}), 400
+    
+    # Check if chapter already has chapter_text (already generated)
+    if existing_chapter.chapter_text:
+        return jsonify({'error': f'Chapter {chapter_number} has already been generated.'}), 400
+    
+    try:
+        # Generate the prompt text using chapter prompt
+        prompt_text = prompt_generator.generate_chapter_prompt(story, chapter_number)
+        
+        # Get AI response
+        ai_response = get_ai_response(prompt_text, PromptType.CHAPTER)
+        
+        # Parse chapter from the response
+        generated_chapter = parse_single_chapter_from_ai_response(ai_response, chapter_number)
+        
+        if not generated_chapter:
+            return jsonify({
+                'success': False,
+                'error': 'Failed to parse chapter from AI response'
+            })
+        
+        # Validate that all character names in chapter exist in story
+        story_character_names = [char.name for char in story.characters]
+        chapter_missing_chars = []
+        
+        # Check continuity state for character references
+        if generated_chapter.continuity_state:
+            for cont_char in generated_chapter.continuity_state.characters:
+                if cont_char.name.lower() not in [name.lower() for name in story_character_names]:
+                    chapter_missing_chars.append(cont_char.name)
+        
+        if chapter_missing_chars:
+            return jsonify({
+                'success': False,
+                'error': 'character_validation',
+                'missing_characters': chapter_missing_chars,
+                'message': f'Some characters referenced in chapter do not exist in the story: {", ".join(chapter_missing_chars)}'
+            })
+        
+        # Update the existing chapter with generated content
+        existing_chapter.chapter_text = generated_chapter.chapter_text
+        existing_chapter.summary = generated_chapter.summary
+        existing_chapter.continuity_state = generated_chapter.continuity_state
+        
+        # Save to session
+        save_story_to_session(story)
+        
+        return jsonify({
+            'success': True,
+            'chapter': existing_chapter.to_dict(),
             'ai_response': ai_response  # Include for debugging if needed
         })
     

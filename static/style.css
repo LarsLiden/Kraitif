@@ -613,6 +613,29 @@ h3 {
     background-color: #357abd;
 }
 
+.generate-chapter-button {
+    background-color: #e57373;
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background-color 0.2s ease;
+    margin-bottom: 1rem;
+    width: 100%;
+    text-align: center;
+}
+
+.generate-chapter-button:hover {
+    background-color: #d32f2f;
+}
+
+.generate-chapter-section {
+    margin-bottom: 1rem;
+}
+
 /* Chapter Summary Styles */
 .chapter-summary {
     padding: 0.75rem 0;

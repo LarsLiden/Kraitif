@@ -26,6 +26,7 @@ class Chapter:
     scene_highlights: Optional[str] = None
     summary: Optional[str] = None
     continuity_state: ContinuityState = field(default_factory=ContinuityState)
+    chapter_text: Optional[str] = None
     
     def __post_init__(self):
         """Validate the chapter data after initialization."""
@@ -104,7 +105,8 @@ class Chapter:
             'foreshadow_or_echo': self.foreshadow_or_echo,
             'scene_highlights': self.scene_highlights,
             'summary': self.summary,
-            'continuity_state': self.continuity_state.to_dict()
+            'continuity_state': self.continuity_state.to_dict(),
+            'chapter_text': self.chapter_text
         }
     
     @classmethod
@@ -154,6 +156,11 @@ class Chapter:
             summary = data.get('summary')
             if summary:
                 chapter.summary = str(summary)
+            
+            # Set chapter_text (optional)
+            chapter_text = data.get('chapter_text')
+            if chapter_text:
+                chapter.chapter_text = str(chapter_text)
             
             # Set continuity state (optional)
             continuity_data = data.get('continuity_state', {})
