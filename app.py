@@ -286,6 +286,11 @@ def get_next_incomplete_step(story):
     if not story.characters:
         return 'plot_line_selected'
     
+    # Step 11: Chapter plan
+    # If characters are generated and chapters exist, go to chapter plan
+    if story.chapters:
+        return 'chapter_plan'
+    
     # If all steps are complete, go to story completion
     return 'complete_story_selection'
 
@@ -933,6 +938,8 @@ def load_story():
                     return redirect(url_for('secondary_archetype_selection'))
                 elif next_step == 'plot_line_selected':
                     return redirect(url_for('plot_line_selected'))
+                elif next_step == 'chapter_plan':
+                    return redirect(url_for('chapter_plan'))
                 elif next_step == 'complete_story_selection':
                     return redirect(url_for('complete_story_selection'))
                 else:
