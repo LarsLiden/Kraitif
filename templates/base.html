@@ -432,7 +432,7 @@
                                 <!-- Generate Characters button - appears only when plot line is selected and no characters generated yet -->
                                 {% if story and story.selected_plot_line and not story.expanded_plot_line %}
                                 <div class="generate-characters-section" id="generate-characters-section">
-                                    <button class="generate-characters-button" id="generate-characters-button" onclick="handleGenerateCharacters(event)">
+                                    <button class="generate-button" id="generate-characters-button" onclick="handleGenerateCharacters(event)">
                                         👥 Generate characters
                                     </button>
                                 </div>
@@ -482,7 +482,7 @@
                                 <!-- Generate Chapter Plan button - appears only when expanded story exists and no chapters generated yet -->
                                 {% if story and story.expanded_plot_line and story.characters and not story.chapters %}
                                 <div class="generate-chapters-section" id="generate-chapters-section">
-                                    <button class="generate-chapters-button" id="generate-chapters-button" onclick="handleGenerateChapters(event)">
+                                    <button class="generate-button" id="generate-chapters-button" onclick="handleGenerateChapters(event)">
                                         📚 Generate chapter plan
                                     </button>
                                 </div>
@@ -535,7 +535,7 @@
                                         {% if not chapter.chapter_text and chapter.chapter_number == first_chapter_without_text.chapter_number %}
                                         <!-- Generate Chapter button for the first chapter without text -->
                                         <div class="generate-chapter-section" id="generate-chapter-{{ chapter.chapter_number }}-section">
-                                            <button class="generate-chapter-button" id="generate-chapter-{{ chapter.chapter_number }}-button" onclick="handleGenerateChapter(event, {{ chapter.chapter_number }})">
+                                            <button class="generate-button compact" id="generate-chapter-{{ chapter.chapter_number }}-button" onclick="handleGenerateChapter(event, {{ chapter.chapter_number }})">
                                                 📝 Generate chapter {{ chapter.chapter_number }}
                                             </button>
                                         </div>
@@ -572,7 +572,7 @@
                                     </div>
                                 </div>
                                 <div class="generate-plotlines-section" id="generate-plotlines-section">
-                                    <button class="generate-plotlines-button" id="generate-plotlines-button" onclick="handleGeneratePlotLines(event)">
+                                    <button class="generate-button" id="generate-plotlines-button" onclick="handleGeneratePlotLines(event)">
                                         📋 Generate plot lines
                                     </button>
                                 </div>

@@ -538,98 +538,47 @@ h3 {
     color: rgba(255, 255, 255, 0.9);
 }
 
-/* Generate plot lines button */
+/* Unified Generate Button Styles */
+.generate-button {
+    display: block;
+    width: 100%;
+    background-color: #4a90e2;
+    color: white;
+    border: none;
+    text-align: center;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    margin: 0;
+}
+
+.generate-button:hover {
+    background-color: #357abd;
+}
+
+/* Generate button variations */
+.generate-button.compact {
+    padding: 0.75rem 1.5rem;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    margin-bottom: 1rem;
+}
+
+/* Section containers for generate buttons */
 .generate-plotlines-section {
     margin-top: 0;
 }
 
-.generate-plotlines-button {
-    display: block;
-    width: 100%;
-    background-color: #4a90e2;
-    color: white;
-    border: none;
-    text-align: center;
-    padding: 12px 20px;
-    border-radius: 8px;
-    font-size: 1.1rem;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-    margin: 0;
-}
-
-.generate-plotlines-button:hover {
-    background-color: #357abd;
-}
-
-/* Generate Characters Button Styles */
 .generate-characters-section {
     margin-top: 1rem;
 }
 
-.generate-characters-button {
-    display: block;
-    width: 100%;
-    background-color: #4a90e2;
-    color: white;
-    border: none;
-    text-align: center;
-    padding: 12px 20px;
-    border-radius: 8px;
-    font-size: 1.1rem;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-    margin: 0;
-}
-
-.generate-characters-button:hover {
-    background-color: #357abd;
-}
-
-/* Generate Chapters Button Styles */
 .generate-chapters-section {
     margin-top: 1rem;
-}
-
-.generate-chapters-button {
-    display: block;
-    width: 100%;
-    background-color: #4a90e2;
-    color: white;
-    border: none;
-    text-align: center;
-    padding: 12px 20px;
-    border-radius: 8px;
-    font-size: 1.1rem;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-    margin: 0;
-}
-
-.generate-chapters-button:hover {
-    background-color: #357abd;
-}
-
-.generate-chapter-button {
-    background-color: #4a90e2;
-    color: white;
-    border: none;
-    padding: 0.75rem 1.5rem;
-    border-radius: 6px;
-    font-size: 0.95rem;
-    cursor: pointer;
-    font-weight: 500;
-    transition: background-color 0.2s ease;
-    margin-bottom: 1rem;
-    width: 100%;
-    text-align: center;
-}
-
-.generate-chapter-button:hover {
-    background-color: #357abd;
 }
 
 .generate-chapter-section {

@@ -1220,7 +1220,8 @@ def chapter_plan():
                          writing_style_obj=writing_style_obj,
                          genre_registry=genre_registry,
                          archetype_registry=archetype_registry,
-                         style_registry=style_registry)
+                         style_registry=style_registry,
+                         is_chapter_plan_page=True)
 
 
 @app.route('/generate-chapters', methods=['POST'])
