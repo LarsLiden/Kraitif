@@ -88,9 +88,10 @@ Kraitif/
 - **Imports**: Uses `from objects.*` imports to access story models and registries
 
 **Key Functions**:
-- `get_story_from_session()` - Reconstruct Story object from session data
-- `save_story_to_session()` - Persist Story object to session
+- `get_story_from_session()` - Reconstruct Story object from file-based storage and maintain minimal session data for templates
+- `save_story_to_session()` - **Dual persistence**: Save complete story to temporary files and minimal display data to session for cookie optimization
 - `get_next_incomplete_step()` - Determine the next incomplete step in story creation process for smart post-load navigation. Logic checks in order: story type → subtype → key theme → core arc → genre → sub-genre → writing style → protagonist archetype → plot line selection → character generation → **chapter plan (if chapters exist)** → complete story
+- **Cookie Size Management**: Session stores only essential display data (~314 bytes) while complete story data (40KB+) saved to files
 - Route handlers for each step in the user flow including individual chapter generation
 - `/generate-chapter/<int:chapter_number>` POST route for individual chapter generation with chapter_text
 - Navigation handler for edit button functionality
@@ -466,9 +467,16 @@ All step forms follow consistent pattern:
 - Immutable data structures prevent thread safety issues
 - In-memory lookups for fast access during requests
 
-### Session Management
-- Minimal session data (selections only, not full objects)
-- Lazy object reconstruction from registries
+### Session Management and Cookie Optimization
+- **Dual Storage Architecture**: Complete story data saved to temporary files while minimal session data prevents large cookies
+- **Cookie Size Optimization**: Session data limited to essential display fields (~314 bytes vs 40KB+ full data) to prevent browser cookie warnings
+- **Minimal Session Fields**: Only store story selections needed for left panel templates:
+  - Basic story metadata (type, theme, arc, genre, style)  
+  - Archetype names only (excludes full character objects)
+  - Excludes large objects: characters, chapters, plot lines, expanded content
+- **File-Based Persistence**: Full story data including characters, chapters, and AI-generated content stored in temporary files
+- **Template Compatibility**: Session provides all data needed for left panel display without performance impact
+- Lazy object reconstruction from registries when needed
 - Session cleanup on fresh application visits
 
 ### Template Rendering
