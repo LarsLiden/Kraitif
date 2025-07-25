@@ -432,7 +432,7 @@
                                 <!-- Generate Characters button - appears only when plot line is selected and no characters generated yet -->
                                 {% if story and story.selected_plot_line and not story.expanded_plot_line %}
                                 <div class="generate-characters-section" id="generate-characters-section">
-                                    <button class="generate-characters-button" id="generate-characters-button" onclick="handleGenerateCharacters(event)">
+                                    <button class="generate-button" id="generate-characters-button" onclick="handleGenerateCharacters(event)">
                                         👥 Generate characters
                                     </button>
                                 </div>
@@ -482,7 +482,7 @@
                                 <!-- Generate Chapter Plan button - appears only when expanded story exists and no chapters generated yet -->
                                 {% if story and story.expanded_plot_line and story.characters and not story.chapters %}
                                 <div class="generate-chapters-section" id="generate-chapters-section">
-                                    <button class="generate-chapters-button" id="generate-chapters-button" onclick="handleGenerateChapters(event)">
+                                    <button class="generate-button" id="generate-chapters-button" onclick="handleGenerateChapters(event)">
                                         📚 Generate chapter plan
                                     </button>
                                 </div>
@@ -522,6 +522,50 @@
                                 </div>
                                 {% endif %}
                                 
+                                <!-- Individual Chapter Generation - appears on chapter plan page -->
+                                {% if is_chapter_plan_page and story and story.chapters %}
+                                    {% set chapters_ordered = story.get_chapters_ordered() %}
+                                    {% set first_chapter_without_text = namespace(value=none) %}
+                                    {% for chapter in chapters_ordered %}
+                                        {% if not chapter.chapter_text and first_chapter_without_text.value is none %}
+                                            {% set first_chapter_without_text.value = chapter %}
+                                        {% endif %}
+                                    {% endfor %}
+                                    {% for chapter in story.get_chapters_ordered() %}
+                                        {% if not chapter.chapter_text and first_chapter_without_text.value and chapter.chapter_number == first_chapter_without_text.value.chapter_number %}
+                                        <!-- Generate Chapter button for the first chapter without text -->
+                                        <div class="generate-chapter-section" id="generate-chapter-{{ chapter.chapter_number }}-section">
+                                            <button class="generate-button compact" id="generate-chapter-{{ chapter.chapter_number }}-button" onclick="handleGenerateChapter(event, {{ chapter.chapter_number }})">
+                                                📝 Generate chapter {{ chapter.chapter_number }}
+                                            </button>
+                                        </div>
+                                        {% elif chapter.chapter_text %}
+                                        <!-- Expandable Chapter panel for generated chapters -->
+                                        <div class="selection-wrapper">
+                                            <span class="edit-button-invisible">✏️</span>
+                                            <div class="expandable-panel">
+                                                <div class="expandable-panel-header" onclick="toggleChapterDetails({{ chapter.chapter_number }})">
+                                                    <div class="expandable-panel-label">
+                                                        <strong>Chapter {{ chapter.chapter_number }}:</strong> {{ chapter.title }}
+                                                    </div>
+                                                    <div class="panel-controls">
+                                                        <span class="expand-arrow" id="chapter-{{ chapter.chapter_number }}-expand-arrow">▶</span>
+                                                    </div>
+                                                </div>
+                                                <div class="expandable-panel-content" id="chapter-{{ chapter.chapter_number }}-details-content">
+                                                    <div class="section">
+                                                        <div class="section-title">Chapter Summary</div>
+                                                        <div class="section-content">{{ chapter.summary or chapter.overview }}</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {% endif %}
+                                    {% endfor %}
+                                {% else %}
+                                    <!-- Chapter generation logic not executed - missing requirements -->
+                                {% endif %}
+                                
                                 <!-- Note and Generate plot lines button - appears only on secondary character selection page -->
                                 {% if is_secondary_selection_page and story_data and story_data.get('protagonist_archetype') %}
                                 <div class="secondary-notes-section" id="secondary-notes-section">
@@ -530,7 +574,7 @@
                                     </div>
                                 </div>
                                 <div class="generate-plotlines-section" id="generate-plotlines-section">
-                                    <button class="generate-plotlines-button" id="generate-plotlines-button" onclick="handleGeneratePlotLines(event)">
+                                    <button class="generate-button" id="generate-plotlines-button" onclick="handleGeneratePlotLines(event)">
                                         📋 Generate plot lines
                                     </button>
                                 </div>
@@ -1477,6 +1521,268 @@
             }
             
             return false;
+        }
+        
+        function handleGenerateChapter(event, chapterNumber) {
+            event.preventDefault();
+            
+            // Hide the generate chapter button for this chapter
+            const generateChapterSection = document.getElementById(`generate-chapter-${chapterNumber}-section`);
+            if (generateChapterSection) {
+                generateChapterSection.style.display = 'none';
+            }
+            
+            // Replace right panel content with generating chapter page
+            const rightPanel = document.querySelector('.right-panel');
+            if (rightPanel) {
+                // Store original content
+                const originalContent = rightPanel.innerHTML;
+                
+                // Replace with generating chapter page
+                rightPanel.innerHTML = `
+                <div class="generating-page">
+                    <div class="page-header">
+                        <h1>Generating Chapter ${chapterNumber}</h1>
+                        <p class="page-subtitle">Creating full chapter text with narrative prose...</p>
+                    </div>
+                    
+                    <div class="generating-content">
+                        <div class="loading-indicator">
+                            <div class="loading-spinner"></div>
+                            <h2>Writing Chapter ${chapterNumber}</h2>
+                            <p>This could take a few moments while we generate approximately 1000 words of prose along with continuity tracking.</p>
+                            
+                            <div class="progress-steps">
+                                <div class="step active">
+                                    <span class="step-number">1</span>
+                                    <span class="step-text">Analyzing story context</span>
+                                </div>
+                                <div class="step active">
+                                    <span class="step-number">2</span>
+                                    <span class="step-text">Writing chapter prose</span>
+                                </div>
+                                <div class="step">
+                                    <span class="step-number">3</span>
+                                    <span class="step-text">Tracking continuity</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <style>
+                .generating-page {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    justify-content: center;
+                    min-height: 60vh;
+                    text-align: center;
+                    padding: 2rem;
+                }
+
+                .page-header h1 {
+                    color: #4CAF50;
+                    font-size: 2.5rem;
+                    margin-bottom: 1rem;
+                }
+
+                .page-subtitle {
+                    color: #64B5F6;
+                    font-size: 1.2rem;
+                    margin-bottom: 3rem;
+                }
+
+                .generating-content {
+                    max-width: 600px;
+                    width: 100%;
+                }
+
+                .loading-indicator h2 {
+                    color: #ffffff;
+                    font-size: 1.8rem;
+                    margin-bottom: 1rem;
+                }
+
+                .loading-indicator p {
+                    color: #cccccc;
+                    font-size: 1.1rem;
+                    margin-bottom: 2rem;
+                    line-height: 1.6;
+                }
+
+                .loading-spinner {
+                    width: 60px;
+                    height: 60px;
+                    border: 4px solid #333333;
+                    border-top: 4px solid #4CAF50;
+                    border-radius: 50%;
+                    animation: spin 1s linear infinite;
+                    margin: 0 auto 2rem;
+                }
+
+                @keyframes spin {
+                    0% { transform: rotate(0deg); }
+                    100% { transform: rotate(360deg); }
+                }
+
+                .progress-steps {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    max-width: 500px;
+                    margin: 0 auto;
+                    padding: 0 1rem;
+                }
+
+                .step {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    flex: 1;
+                    position: relative;
+                    color: #666666;
+                }
+
+                .step.active {
+                    color: #4CAF50;
+                }
+
+                .step-number {
+                    width: 40px;
+                    height: 40px;
+                    border-radius: 50%;
+                    background-color: #333333;
+                    color: #ffffff;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-weight: bold;
+                    margin-bottom: 0.5rem;
+                    font-size: 1.1rem;
+                }
+
+                .step.active .step-number {
+                    background-color: #4CAF50;
+                    color: #ffffff;
+                }
+
+                .step-text {
+                    font-size: 0.9rem;
+                    text-align: center;
+                    max-width: 120px;
+                    line-height: 1.3;
+                }
+
+                .step:not(:last-child)::after {
+                    content: '';
+                    position: absolute;
+                    top: 20px;
+                    left: 60%;
+                    right: -40%;
+                    height: 2px;
+                    background-color: #333333;
+                    z-index: -1;
+                }
+
+                .step.active:not(:last-child)::after {
+                    background-color: #4CAF50;
+                }
+                </style>
+                `;
+                
+                // Animate the third step after a delay
+                setTimeout(() => {
+                    const steps = rightPanel.querySelectorAll('.step');
+                    if (steps[2]) {
+                        steps[2].classList.add('active');
+                    }
+                }, 2000);
+                
+                // Make API call to generate the chapter
+                fetch(`/generate-chapter/${chapterNumber}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Reload the page to show the generated chapter
+                        window.location.reload();
+                    } else {
+                        // Restore original content and show error
+                        rightPanel.innerHTML = originalContent;
+                        
+                        // Restore the generate chapter button
+                        if (generateChapterSection) {
+                            generateChapterSection.style.display = 'block';
+                        }
+                        
+                        // Check if it's a character validation error
+                        if (data.error === 'character_validation') {
+                            showCharacterValidationError(data.missing_characters, data.message);
+                        } else {
+                            alert('Error generating chapter: ' + (data.error || 'Unknown error'));
+                        }
+                    }
+                })
+                .catch(error => {
+                    // Restore original content and show error
+                    rightPanel.innerHTML = originalContent;
+                    
+                    // Restore the generate chapter button
+                    if (generateChapterSection) {
+                        generateChapterSection.style.display = 'block';
+                    }
+                    
+                    alert('Error generating chapter: ' + error.message);
+                });
+            }
+            
+            return false;
+        }
+        
+        function showCharacterValidationError(missingCharacters, message) {
+            // Create or update error bubble at top of page
+            let errorBubble = document.getElementById('character-validation-error');
+            if (!errorBubble) {
+                errorBubble = document.createElement('div');
+                errorBubble.id = 'character-validation-error';
+                errorBubble.className = 'error-bubble';
+                
+                // Insert at the top of the right panel
+                const rightPanel = document.querySelector('.right-panel');
+                if (rightPanel && rightPanel.firstChild) {
+                    rightPanel.insertBefore(errorBubble, rightPanel.firstChild);
+                }
+            }
+            
+            errorBubble.innerHTML = `
+                <div class="error-content">
+                    <span class="error-icon">⚠️</span>
+                    <span class="error-text">${message}</span>
+                    <button class="error-close" onclick="this.parentElement.parentElement.remove()">×</button>
+                </div>
+            `;
+            
+            errorBubble.style.display = 'block';
+        }
+        
+        function toggleChapterDetails(chapterNumber) {
+            const content = document.getElementById(`chapter-${chapterNumber}-details-content`);
+            const arrow = document.getElementById(`chapter-${chapterNumber}-expand-arrow`);
+            
+            if (content && arrow) {
+                if (content.style.display === 'none' || content.style.display === '') {
+                    content.style.display = 'block';
+                    arrow.textContent = '▼';
+                } else {
+                    content.style.display = 'none';
+                    arrow.textContent = '▶';
+                }
+            }
         }
         
         function toggleChapterPlanDetails() {

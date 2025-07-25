@@ -48,6 +48,32 @@ def parse_chapters_from_ai_response(ai_response: str) -> List[Chapter]:
         return chapters
 
 
+def parse_single_chapter_from_ai_response(ai_response: str, chapter_number: int) -> Optional[Chapter]:
+    """
+    Parse a single chapter with chapter_text from AI response JSON.
+    
+    Args:
+        ai_response: Raw AI response containing structured JSON with chapter_text
+        chapter_number: The chapter number being generated
+        
+    Returns:
+        Chapter object with chapter_text, summary, and continuity_state, or None if parsing fails
+    """
+    try:
+        # Extract JSON from the response
+        json_data = _extract_json_from_response(ai_response)
+        if not json_data:
+            return None
+        
+        # Create a chapter object from the response
+        chapter = _create_single_chapter_from_dict(json_data, chapter_number)
+        return chapter
+    
+    except (json.JSONDecodeError, ValueError, TypeError) as e:
+        print(f"Error parsing single chapter from AI response: {e}")
+        return None
+
+
 def _extract_json_from_response(ai_response: str) -> Optional[Dict[str, Any]]:
     """Extract JSON data from AI response."""
     if not ai_response:
@@ -124,6 +150,46 @@ def _create_chapter_from_dict(chapter_data: Dict[str, Any]) -> Optional[Chapter]
         
     except (ValueError, TypeError) as e:
         print(f"Error creating chapter from dict: {e}")
+        return None
+
+
+def _create_single_chapter_from_dict(data: Dict[str, Any], chapter_number: int) -> Optional[Chapter]:
+    """Create a Chapter object with chapter_text from dictionary data."""
+    try:
+        if not isinstance(data, dict):
+            return None
+        
+        # Get required fields from the response
+        chapter_text = data.get('chapter_text', '').strip()
+        chapter_summary = data.get('chapter_summary', '').strip()
+        
+        if not chapter_text:
+            return None
+        
+        # Create chapter with minimal required fields - we'll get title and overview from existing chapter
+        # For now, use placeholder values that will be updated when merging with existing chapter
+        chapter = Chapter(
+            chapter_number=chapter_number,
+            title=f"Chapter {chapter_number}",  # Placeholder, will be updated
+            overview="Generated chapter content"  # Placeholder, will be updated
+        )
+        
+        # Set the generated fields
+        chapter.chapter_text = chapter_text
+        chapter.summary = chapter_summary
+        
+        # Parse continuity state if present
+        continuity_data = data.get('continuity_state', {})
+        if continuity_data and isinstance(continuity_data, dict):
+            from .continuity_state import ContinuityState
+            continuity_state = ContinuityState.from_dict(continuity_data)
+            if continuity_state:
+                chapter.continuity_state = continuity_state
+        
+        return chapter
+        
+    except (ValueError, TypeError) as e:
+        print(f"Error creating single chapter from dict: {e}")
         return None
 
 

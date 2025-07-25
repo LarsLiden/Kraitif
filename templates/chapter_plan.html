@@ -28,6 +28,85 @@
                         <p>{{ chapter.overview }}</p>
                     </div>
                     
+                    {% if chapter.chapter_text %}
+                    <div class="chapter-text">
+                        <strong>Chapter Text:</strong>
+                        <div class="chapter-text-content">{{ chapter.chapter_text | nl2br }}</div>
+                    </div>
+                    {% endif %}
+                    
+                    {% if chapter.summary %}
+                    <div class="chapter-summary">
+                        <strong>Chapter Summary:</strong>
+                        <p>{{ chapter.summary }}</p>
+                    </div>
+                    {% endif %}
+                    
+                    {% if chapter.continuity_state %}
+                    <div class="continuity-state">
+                        <strong>Continuity State:</strong>
+                        <div class="continuity-content">
+                            {% if chapter.continuity_state.characters %}
+                            <div class="continuity-section">
+                                <strong>Characters:</strong>
+                                <div class="continuity-characters">
+                                    {% for char in chapter.continuity_state.characters %}
+                                    <div class="continuity-character">
+                                        <span class="char-name">{{ char.name }}</span>
+                                        <span class="char-location">Location: {{ char.current_location }}</span>
+                                        <span class="char-status">Status: {{ char.status }}</span>
+                                        {% if char.inventory %}
+                                        <span class="char-inventory">Inventory: {{ char.inventory | join(', ') }}</span>
+                                        {% endif %}
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            {% endif %}
+                            
+                            {% if chapter.continuity_state.objects %}
+                            <div class="continuity-section">
+                                <strong>Objects:</strong>
+                                <div class="continuity-objects">
+                                    {% for obj in chapter.continuity_state.objects %}
+                                    <div class="continuity-object">
+                                        <span class="obj-name">{{ obj.name }}</span>
+                                        {% if obj.holder %}
+                                        <span class="obj-holder">Held by: {{ obj.holder }}</span>
+                                        {% else %}
+                                        <span class="obj-location">Location: {{ obj.location }}</span>
+                                        {% endif %}
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            {% endif %}
+                            
+                            {% if chapter.continuity_state.locations_visited %}
+                            <div class="continuity-section">
+                                <strong>Locations Visited:</strong>
+                                <div class="continuity-locations">{{ chapter.continuity_state.locations_visited | join(', ') }}</div>
+                            </div>
+                            {% endif %}
+                            
+                            {% if chapter.continuity_state.open_plot_threads %}
+                            <div class="continuity-section">
+                                <strong>Open Plot Threads:</strong>
+                                <div class="continuity-threads">
+                                    {% for thread in chapter.continuity_state.open_plot_threads %}
+                                    <div class="continuity-thread">
+                                        <span class="thread-id">{{ thread.id }}:</span>
+                                        <span class="thread-desc">{{ thread.description }}</span>
+                                        <span class="thread-status">({{ thread.status }})</span>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endif %}
+                    
                     {% if chapter.character_impact %}
                     <div class="chapter-characters">
                         <strong>Character Impact:</strong>
@@ -140,6 +219,9 @@
 }
 
 .chapter-overview,
+.chapter-text,
+.chapter-summary,
+.continuity-state,
 .chapter-characters,
 .chapter-pov,
 .chapter-foreshadow,
@@ -148,6 +230,9 @@
 }
 
 .chapter-overview strong,
+.chapter-text strong,
+.chapter-summary strong,
+.continuity-state strong,
 .chapter-characters strong,
 .chapter-pov strong,
 .chapter-foreshadow strong,
@@ -158,11 +243,91 @@
 }
 
 .chapter-overview p,
+.chapter-summary p,
 .chapter-foreshadow p,
 .chapter-highlights p {
     margin: 0;
     line-height: 1.5;
     font-size: 0.95rem;
+}
+
+/* Chapter Text Styles */
+.chapter-text-content {
+    background-color: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    padding: 1rem;
+    line-height: 1.6;
+    font-size: 0.95rem;
+    max-height: 400px;
+    overflow-y: auto;
+    white-space: pre-wrap;
+}
+
+/* Continuity State Styles */
+.continuity-content {
+    background-color: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    padding: 1rem;
+}
+
+.continuity-section {
+    margin-bottom: 1rem;
+}
+
+.continuity-section:last-child {
+    margin-bottom: 0;
+}
+
+.continuity-section strong {
+    color: #64B5F6;
+    display: block;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.continuity-characters,
+.continuity-objects,
+.continuity-threads {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.continuity-character,
+.continuity-object,
+.continuity-thread {
+    background-color: rgba(255, 255, 255, 0.05);
+    border-radius: 4px;
+    padding: 0.5rem;
+    font-size: 0.85rem;
+}
+
+.char-name,
+.obj-name,
+.thread-id {
+    color: #4CAF50;
+    font-weight: 500;
+}
+
+.char-location,
+.char-status,
+.char-inventory,
+.obj-holder,
+.obj-location,
+.thread-desc {
+    color: rgba(255, 255, 255, 0.8);
+    margin-left: 0.5rem;
+}
+
+.thread-status {
+    color: #64B5F6;
+    font-style: italic;
+    margin-left: 0.5rem;
+}
+
+.continuity-locations {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.85rem;
 }
 
 .character-impacts {
@@ -199,6 +364,11 @@
     
     .chapter-title {
         font-size: 1.2rem;
+    }
+    
+    .chapter-text-content {
+        max-height: 300px;
+        font-size: 0.9rem;
     }
 }
 
