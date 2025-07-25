@@ -99,8 +99,9 @@ The `Chapter` class represents a complete chapter with:
 - **scene_highlights** (str, optional): Notable imagery, dialogue, emotion, or tension
 - **summary** (str, optional): Recap of what happened in the chapter
 - **continuity_state** (ContinuityState, optional): Detailed state tracking for story elements
+- **chapter_text** (str, optional): Full prose text of the chapter (approximately 1000 words)
 
-Each chapter provides methods for managing character impact entries, setting narrative functions, and comprehensive JSON serialization/deserialization support for all fields including continuity tracking.
+Each chapter provides methods for managing character impact entries, setting narrative functions, comprehensive JSON serialization/deserialization support for all fields including continuity tracking, and full chapter text generation.
 
 ### Continuity Tracking System
 The application includes a comprehensive continuity tracking system that is integrated into the Chapter objects:
@@ -261,27 +262,37 @@ Each AI-generated character includes:
 - **Story Depth**: Provides comprehensive foundation for story writing with character-driven narrative
 
 ### Chapter Generation System
-The application includes a comprehensive chapter generation system that enables creation of individual story chapters:
+The application includes a comprehensive chapter generation system that enables creation of individual story chapters with full prose text:
 
 #### Chapter Generation Process
-1. **Prerequisites**: User must have defined story configuration including chapters 1 through n-1
-2. **Chapter Generation Function**: `generate_chapter_prompt(story: Story, n: int)` creates chapter-specific prompts
+1. **Prerequisites**: User must have defined story configuration and generated a chapter plan
+2. **Individual Chapter Generation**: `generate_chapter_prompt(story: Story, n: int)` creates chapter-specific prompts for individual chapters
 3. **Data Filtering**: Uses filtered story configuration that excludes protagonist_archetype, secondary_archetypes, and selected_plot_line
 4. **Previous Chapter Context**: Includes only chapters 1 to n-1 to provide context for the new chapter
 5. **Template Integration**: Combines "chapter_pre.txt" and "chapter_post.txt" templates with filtered story data
-6. **AI-Ready Output**: Generates complete prompts ready for LLM consumption to create full chapter content
+6. **AI Integration**: Generates complete chapter text (~1000 words) with continuity tracking
+7. **Chapter Text Parsing**: `parse_single_chapter_from_ai_response()` extracts chapter_text, chapter_summary, and continuity_state
+8. **Character Validation**: Validates that all character names in continuity state exist in the story's character list
+9. **UI Integration**: Shows "Generate chapter {n}" buttons in left panel, wait page during generation, and expandable chapter panels after completion
 
 #### Chapter Generation Data Filtering
-The chapter generation system uses a specialized data filtering approach:
+The chapter generation system uses specialized data filtering:
 - **Excluded Fields**: protagonist_archetype, secondary_archetypes, selected_plot_line are not included
 - **Chapter Filtering**: Only chapters 1 to n-1 are included in the prompt (no future chapters)
 - **Preserved Data**: All other story configuration including genre, writing style, characters, and expanded plot line
 - **First Chapter Handling**: When generating chapter 1, no previous chapters are included
 
 #### Chapter Generation Templates
-- **chapter_pre.txt**: Contains instructions and context for chapter writing
-- **chapter_post.txt**: Contains output format specifications and requirements
+- **chapter_pre.txt**: Contains instructions and context for chapter writing (~1000 words prose)
+- **chapter_post.txt**: Contains output format specifications requiring chapter_text, chapter_summary, and continuity_state
 - **Story Context**: Filtered story configuration provides necessary background without spoilers
+
+#### Chapter Generation UI Flow
+- **Generate Buttons**: "📝 Generate chapter {n}" buttons appear in left panel for chapters without chapter_text
+- **Wait Page**: Shows "Generating Chapter {n}" page with progress steps during AI processing
+- **Error Handling**: Character validation errors show red error bubble; other errors restore generate button
+- **Success State**: Generate button is replaced by expandable "Chapter {n}" panel showing chapter summary
+- **Chapter Display**: Right panel shows full chapter_text, chapter_summary, and detailed continuity_state
 
 ### Story Configuration Output
 The `to_prompt_text()` method generates comprehensive story configuration that includes:

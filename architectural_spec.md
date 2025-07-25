@@ -91,7 +91,8 @@ Kraitif/
 - `get_story_from_session()` - Reconstruct Story object from session data
 - `save_story_to_session()` - Persist Story object to session
 - `get_next_incomplete_step()` - Determine the next incomplete step in story creation process for smart post-load navigation. Logic checks in order: story type → subtype → key theme → core arc → genre → sub-genre → writing style → protagonist archetype → plot line selection → character generation → **chapter plan (if chapters exist)** → complete story
-- Route handlers for each step in the user flow
+- Route handlers for each step in the user flow including individual chapter generation
+- `/generate-chapter/<int:chapter_number>` POST route for individual chapter generation with chapter_text
 - Navigation handler for edit button functionality
 
 #### 2. Story Model (`objects/story.py`)
@@ -250,6 +251,7 @@ Chapter:
     - scene_highlights: Optional[str]   # Notable imagery, dialogue, emotion, tension
     - summary: Optional[str]            # Recap of what happened in the chapter
     - continuity_state: ContinuityState # Detailed state tracking for story elements
+    - chapter_text: Optional[str]       # Full prose text of the chapter (~1000 words)
 ```
 
 #### Continuity Tracking Models
@@ -307,6 +309,7 @@ PromptType(Enum):
     - PLOT_LINES = "plot_lines"
     - CHARACTERS = "characters"
     - CHAPTER_OUTLINE = "chapter_outline"
+    - CHAPTER = "chapter"
 ```
 
 #### Emotional Function Model
