@@ -136,6 +136,10 @@ def get_story_from_session():
     story_id = get_story_id()
     story_data = load_story_from_file(story_id)
     
+    # If no file data exists, try to get from session (backward compatibility)
+    if not story_data:
+        story_data = session.get('story_data', {})
+    
     if story_data:
         story.story_type_name = story_data.get('story_type_name')
         story.subtype_name = story_data.get('subtype_name')
@@ -190,6 +194,11 @@ def get_story_from_session():
             chapter = Chapter.from_dict(chapter_data)
             if chapter:
                 story.add_chapter(chapter)
+        
+        # Ensure session story_data is populated for template access
+        if 'story_data' not in session:
+            session['story_data'] = story_data
+            session.modified = True
     
     return story
 
