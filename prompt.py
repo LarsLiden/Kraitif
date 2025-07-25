@@ -172,7 +172,7 @@ Point of View: {target_chapter.point_of_view or 'Not specified'}
             if target_chapter.character_impact:
                 chapter_info += "\nCharacter Impact:\n"
                 for impact in target_chapter.character_impact:
-                    chapter_info += f"- {impact.character}: {impact.effect}\n"
+                    chapter_info += f"- {impact['character']}: {impact['effect']}\n"
             
             if target_chapter.foreshadow_or_echo:
                 chapter_info += f"\nForeshadow/Echo: {target_chapter.foreshadow_or_echo}\n"
