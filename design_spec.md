@@ -303,6 +303,8 @@ The chapter generation includes automatic continuity tracking:
 - **Error Handling**: Character validation errors show red error bubble; other errors restore generate button
 - **Success State**: Generate button is replaced by expandable "Chapter {n}" panel showing chapter summary
 - **Chapter Display**: Right panel shows full chapter_text, chapter_summary, and detailed continuity_state
+- **Individual Chapter Navigation**: After successful generation, user is redirected to dedicated "Chapter {n}" page
+- **Chapter Panel Icons**: Generated chapters show eyeball icons (👁️) in left panel for quick navigation to individual chapter pages
 
 ### Story Configuration Output
 The `to_prompt_text()` method generates comprehensive story configuration that includes:

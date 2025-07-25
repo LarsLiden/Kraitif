@@ -56,7 +56,9 @@ Kraitif/
 │   ├── protagonist_archetype_selection.html
 │   ├── secondary_archetype_selection.html
 │   ├── story_completion.html
-│   └── expanded_story.html # Character generation results and expanded plot display
+│   ├── expanded_story.html # Character generation results and expanded plot display
+│   ├── chapter_plan.html   # Chapter plan overview page
+│   └── chapter_detail.html # Individual chapter viewing page
 ├── static/                  # CSS, JavaScript, images
 │   └── style.css           # Main stylesheet (black theme, UI disable states, left panel scrolling)
 └── tests/                   # Test suite
@@ -94,6 +96,7 @@ Kraitif/
 - **Cookie Size Management**: Session stores only essential display data (~314 bytes) while complete story data (40KB+) saved to files
 - Route handlers for each step in the user flow including individual chapter generation
 - `/generate-chapter/<int:chapter_number>` POST route for individual chapter generation with chapter_text
+- `/chapter/<int:chapter_number>` GET route for viewing individual chapters with detailed navigation
 - Navigation handler for edit button functionality
 
 #### 2. Story Model (`objects/story.py`)
