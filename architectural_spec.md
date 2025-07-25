@@ -58,7 +58,7 @@ Kraitif/
 │   ├── story_completion.html
 │   └── expanded_story.html # Character generation results and expanded plot display
 ├── static/                  # CSS, JavaScript, images
-│   └── style.css           # Main stylesheet (black theme, UI disable states)
+│   └── style.css           # Main stylesheet (black theme, UI disable states, left panel scrolling)
 └── tests/                   # Test suite
     ├── test_story_types.py
     ├── test_emotional_function.py

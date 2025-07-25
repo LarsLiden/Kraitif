@@ -458,6 +458,7 @@ The UI has a left and right panel
 **Left Panel**: 
 - Shows save and load buttons at the top
 - Displays the choices that the user has made so far (choices are stored in the story class)
+- **Scrolling Capability**: When content exceeds viewport height, the left panel provides vertical scrolling while maintaining its sticky positioning. The panel is constrained to `max-height: calc(100vh - 40px)` with `overflow-y: auto` for optimal user experience.
 
 - Contains separate expandable details panels inside the "Your Story Selections" section:
   - **Story Type Panel**: Shows story type name with expandable details including description, examples, emotional arc, key moments, and common elements. Includes edit button to return to story type selection.
