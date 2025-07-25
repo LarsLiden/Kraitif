@@ -440,35 +440,38 @@
                                 
                                 <!-- Expanded Plot Line and Characters - appears when characters are generated -->
                                 {% if story and story.expanded_plot_line %}
-                                <div class="expandable-panel">
-                                    <div class="expandable-panel-header" onclick="toggleExpandedStoryDetails()">
-                                        <div class="expandable-panel-label">
-                                            <strong>Expanded Story:</strong> Plot & Characters Generated
-                                        </div>
-                                        <div class="panel-controls">
-                                            <a href="{{ url_for('expanded_story') }}" class="edit-button" title="View Full Expanded Story">👁️</a>
-                                            <span class="expand-arrow" id="expanded-story-expand-arrow">▶</span>
-                                        </div>
-                                    </div>
-                                    <div class="expandable-panel-content" id="expanded-story-details-content">
-                                        <div class="section">
-                                            <div class="section-title">Characters ({{ story.characters|length }})</div>
-                                            <div class="section-content">
-                                                {% for character in story.characters %}
-                                                <div class="character-summary">
-                                                    <strong>{{ character.name }}</strong> - {{ character.archetype.value }}
-                                                    <div class="character-roles-summary">
-                                                        {{ character.functional_role.value }} | {{ character.emotional_function.value }}
-                                                    </div>
-                                                </div>
-                                                {% endfor %}
+                                <div class="selection-wrapper">
+                                    <span class="edit-button-invisible">✏️</span>
+                                    <div class="expandable-panel">
+                                        <div class="expandable-panel-header" onclick="toggleExpandedStoryDetails()">
+                                            <div class="expandable-panel-label">
+                                                <strong>Expanded Story:</strong> Plot & Characters Generated
+                                            </div>
+                                            <div class="panel-controls">
+                                                <a href="{{ url_for('expanded_story') }}" class="edit-button" title="View Full Expanded Story">👁️</a>
+                                                <span class="expand-arrow" id="expanded-story-expand-arrow">▶</span>
                                             </div>
                                         </div>
-                                        <div class="section">
-                                            <div class="section-title">Expanded Plot</div>
-                                            <div class="section-content">
-                                                <div class="expanded-plot-summary">
-                                                    {{ story.expanded_plot_line[:200] }}{% if story.expanded_plot_line|length > 200 %}...{% endif %}
+                                        <div class="expandable-panel-content" id="expanded-story-details-content">
+                                            <div class="section">
+                                                <div class="section-title">Characters ({{ story.characters|length }})</div>
+                                                <div class="section-content">
+                                                    {% for character in story.characters %}
+                                                    <div class="character-summary">
+                                                        <strong>{{ character.name }}</strong> - {{ character.archetype.value }}
+                                                        <div class="character-roles-summary">
+                                                            {{ character.functional_role.value }} | {{ character.emotional_function.value }}
+                                                        </div>
+                                                    </div>
+                                                    {% endfor %}
+                                                </div>
+                                            </div>
+                                            <div class="section">
+                                                <div class="section-title">Expanded Plot</div>
+                                                <div class="section-content">
+                                                    <div class="expanded-plot-summary">
+                                                        {{ story.expanded_plot_line[:200] }}{% if story.expanded_plot_line|length > 200 %}...{% endif %}
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -487,29 +490,32 @@
                                 
                                 <!-- Chapter Plan - appears when chapters are generated -->
                                 {% if story and story.chapters %}
-                                <div class="expandable-panel">
-                                    <div class="expandable-panel-header" onclick="toggleChapterPlanDetails()">
-                                        <div class="expandable-panel-label">
-                                            <strong>Chapter Plan:</strong> {{ story.chapters|length }} Chapters Generated
+                                <div class="selection-wrapper">
+                                    <span class="edit-button-invisible">✏️</span>
+                                    <div class="expandable-panel">
+                                        <div class="expandable-panel-header" onclick="toggleChapterPlanDetails()">
+                                            <div class="expandable-panel-label">
+                                                <strong>Chapter Plan:</strong> {{ story.chapters|length }} Chapters Generated
+                                            </div>
+                                            <div class="panel-controls">
+                                                <a href="{{ url_for('chapter_plan') }}" class="edit-button" title="View Full Chapter Plan">👁️</a>
+                                                <span class="expand-arrow" id="chapter-plan-expand-arrow">▶</span>
+                                            </div>
                                         </div>
-                                        <div class="panel-controls">
-                                            <a href="{{ url_for('chapter_plan') }}" class="edit-button" title="View Full Chapter Plan">👁️</a>
-                                            <span class="expand-arrow" id="chapter-plan-expand-arrow">▶</span>
-                                        </div>
-                                    </div>
-                                    <div class="expandable-panel-content" id="chapter-plan-details-content">
-                                        <div class="section">
-                                            <div class="section-title">Chapter Overview</div>
-                                            <div class="section-content">
-                                                {% for chapter in story.get_chapters_ordered() %}
-                                                <div class="chapter-summary">
-                                                    <strong>Chapter {{ chapter.chapter_number }}: {{ chapter.title }}</strong>
-                                                    {% if chapter.narrative_function %}
-                                                    <div class="chapter-function">{{ chapter.narrative_function.value }}</div>
-                                                    {% endif %}
-                                                    <div class="chapter-overview-text">{{ chapter.overview[:150] }}{% if chapter.overview|length > 150 %}...{% endif %}</div>
+                                        <div class="expandable-panel-content" id="chapter-plan-details-content">
+                                            <div class="section">
+                                                <div class="section-title">Chapter Overview</div>
+                                                <div class="section-content">
+                                                    {% for chapter in story.get_chapters_ordered() %}
+                                                    <div class="chapter-summary">
+                                                        <strong>Chapter {{ chapter.chapter_number }}: {{ chapter.title }}</strong>
+                                                        {% if chapter.narrative_function %}
+                                                        <div class="chapter-function">{{ chapter.narrative_function.value }}</div>
+                                                        {% endif %}
+                                                        <div class="chapter-overview-text">{{ chapter.overview[:150] }}{% if chapter.overview|length > 150 %}...{% endif %}</div>
+                                                    </div>
+                                                    {% endfor %}
                                                 </div>
-                                                {% endfor %}
                                             </div>
                                         </div>
                                     </div>
