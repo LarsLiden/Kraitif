@@ -2,14 +2,14 @@
 Tests for Chapter functionality
 """
 
-import pytest
+import unittest
 import json
 from objects.chapter import Chapter
 from objects.narrative_function import NarrativeFunctionEnum
 from objects.story import Story
 
 
-class TestChapter:
+class TestChapter(unittest.TestCase):
     """Test cases for Chapter class."""
     
     def test_chapter_creation(self):
@@ -20,27 +20,27 @@ class TestChapter:
             overview="The story starts here."
         )
         
-        assert chapter.chapter_number == 1
-        assert chapter.title == "The Beginning"
-        assert chapter.overview == "The story starts here."
-        assert chapter.character_impact == []
-        assert chapter.point_of_view is None
-        assert chapter.narrative_function is None
-        assert chapter.foreshadow_or_echo is None
-        assert chapter.scene_highlights is None
+        self.assertchapter.chapter_number == 1
+        self.assertchapter.title == "The Beginning"
+        self.assertchapter.overview == "The story starts here."
+        self.assertchapter.character_impact == []
+        self.assertchapter.point_of_view is None
+        self.assertchapter.narrative_function is None
+        self.assertchapter.foreshadow_or_echo is None
+        self.assertchapter.scene_highlights is None
     
     def test_chapter_validation(self):
         """Test chapter validation."""
         # Test invalid chapter number
-        with pytest.raises(ValueError, match="Chapter number must be >= 1"):
+        with self.assertRaises(ValueError):
             Chapter(chapter_number=0, title="Test", overview="Test")
         
         # Test empty title
-        with pytest.raises(ValueError, match="Chapter title cannot be empty"):
+        with self.assertRaises(ValueError):
             Chapter(chapter_number=1, title="", overview="Test")
         
         # Test empty overview
-        with pytest.raises(ValueError, match="Chapter overview cannot be empty"):
+        with self.assertRaises(ValueError):
             Chapter(chapter_number=1, title="Test", overview="")
     
     def test_chapter_character_impact(self):
@@ -53,26 +53,26 @@ class TestChapter:
         
         # Add character impact
         success = chapter.add_character_impact("Alice", "Discovers her destiny")
-        assert success
-        assert len(chapter.character_impact) == 1
-        assert chapter.character_impact[0]["character"] == "Alice"
-        assert chapter.character_impact[0]["effect"] == "Discovers her destiny"
+        self.assertTrue(success)
+        self.assertEqual(len(chapter.character_impact), 1)
+        self.assertEqual(chapter.character_impact[0]["character"], "Alice")
+        self.assertEqual(chapter.character_impact[0]["effect"], "Discovers her destiny")
         
         # Add another character impact
         success = chapter.add_character_impact("Bob", "Learns about magic")
-        assert success
-        assert len(chapter.character_impact) == 2
+        self.assertsuccess
+        self.assertlen(chapter.character_impact) == 2
         
         # Update existing character impact
         success = chapter.add_character_impact("Alice", "Embraces her destiny")
-        assert success
-        assert len(chapter.character_impact) == 2  # Should not add duplicate
-        assert chapter.get_character_impact("Alice") == "Embraces her destiny"
+        self.assertsuccess
+        self.assertlen(chapter.character_impact) == 2  # Should not add duplicate
+        self.assertchapter.get_character_impact("Alice") == "Embraces her destiny"
         
         # Test invalid inputs
-        assert not chapter.add_character_impact("", "Effect")
-        assert not chapter.add_character_impact("Character", "")
-        assert not chapter.add_character_impact(None, "Effect")
+        self.assertnot chapter.add_character_impact("", "Effect")
+        self.assertnot chapter.add_character_impact("Character", "")
+        self.assertnot chapter.add_character_impact(None, "Effect")
     
     def test_chapter_get_character_impact(self):
         """Test getting character impact."""
@@ -86,19 +86,19 @@ class TestChapter:
         
         # Test getting existing impact
         impact = chapter.get_character_impact("Alice")
-        assert impact == "Major revelation"
+        self.assertimpact == "Major revelation"
         
         # Test case insensitive
         impact = chapter.get_character_impact("alice")
-        assert impact == "Major revelation"
+        self.assertimpact == "Major revelation"
         
         # Test non-existent character
         impact = chapter.get_character_impact("Bob")
-        assert impact is None
+        self.assertimpact is None
         
         # Test invalid input
         impact = chapter.get_character_impact("")
-        assert impact is None
+        self.assertimpact is None
     
     def test_chapter_remove_character_impact(self):
         """Test removing character impact."""
@@ -113,19 +113,19 @@ class TestChapter:
         
         # Remove existing character
         success = chapter.remove_character_impact("Alice")
-        assert success
-        assert len(chapter.character_impact) == 1
-        assert chapter.get_character_impact("Alice") is None
-        assert chapter.get_character_impact("Bob") == "Effect 2"
+        self.assertsuccess
+        self.assertlen(chapter.character_impact) == 1
+        self.assertchapter.get_character_impact("Alice") is None
+        self.assertchapter.get_character_impact("Bob") == "Effect 2"
         
         # Try to remove non-existent character
         success = chapter.remove_character_impact("Charlie")
-        assert not success
+        self.assertnot success
         
         # Test case insensitive removal
         success = chapter.remove_character_impact("bob")
-        assert success
-        assert len(chapter.character_impact) == 0
+        self.assertsuccess
+        self.assertlen(chapter.character_impact) == 0
     
     def test_chapter_narrative_function(self):
         """Test narrative function setting."""
@@ -137,21 +137,21 @@ class TestChapter:
         
         # Set valid narrative function
         success = chapter.set_narrative_function("Setting Introduction")
-        assert success
-        assert chapter.narrative_function == NarrativeFunctionEnum.SETTING_INTRODUCTION
+        self.assertsuccess
+        self.assertchapter.narrative_function == NarrativeFunctionEnum.SETTING_INTRODUCTION
         
         # Set invalid narrative function
         success = chapter.set_narrative_function("Invalid Function")
-        assert not success
+        self.assertnot success
         
         # Clear narrative function
         success = chapter.set_narrative_function("")
-        assert success
-        assert chapter.narrative_function is None
+        self.assertsuccess
+        self.assertchapter.narrative_function is None
         
         success = chapter.set_narrative_function(None)
-        assert success
-        assert chapter.narrative_function is None
+        self.assertsuccess
+        self.assertchapter.narrative_function is None
     
     def test_chapter_to_dict(self):
         """Test chapter serialization to dictionary."""
@@ -168,16 +168,16 @@ class TestChapter:
         
         data = chapter.to_dict()
         
-        assert data["chapter_number"] == 1
-        assert data["title"] == "Test Chapter"
-        assert data["overview"] == "Test overview"
-        assert data["point_of_view"] == "Alice"
-        assert data["narrative_function"] == "Character Introduction"
-        assert data["foreshadow_or_echo"] == "Hints at future conflict"
-        assert data["scene_highlights"] == "Dramatic revelation"
-        assert len(data["character_impact"]) == 1
-        assert data["character_impact"][0]["character"] == "Alice"
-        assert data["character_impact"][0]["effect"] == "Discovers truth"
+        self.assertdata["chapter_number"] == 1
+        self.assertdata["title"] == "Test Chapter"
+        self.assertdata["overview"] == "Test overview"
+        self.assertdata["point_of_view"] == "Alice"
+        self.assertdata["narrative_function"] == "Character Introduction"
+        self.assertdata["foreshadow_or_echo"] == "Hints at future conflict"
+        self.assertdata["scene_highlights"] == "Dramatic revelation"
+        self.assertlen(data["character_impact"]) == 1
+        self.assertdata["character_impact"][0]["character"] == "Alice"
+        self.assertdata["character_impact"][0]["effect"] == "Discovers truth"
     
     def test_chapter_from_dict(self):
         """Test chapter deserialization from dictionary."""
@@ -197,17 +197,17 @@ class TestChapter:
         
         chapter = Chapter.from_dict(data)
         
-        assert chapter is not None
-        assert chapter.chapter_number == 2
-        assert chapter.title == "The Journey Begins"
-        assert chapter.overview == "Characters set out on their quest"
-        assert chapter.point_of_view == "Hero"
-        assert chapter.narrative_function == NarrativeFunctionEnum.INCITING_INCIDENT
-        assert chapter.foreshadow_or_echo == "Mentions ancient prophecy"
-        assert chapter.scene_highlights == "Emotional farewell scene"
-        assert len(chapter.character_impact) == 2
-        assert chapter.get_character_impact("Hero") == "Accepts the call"
-        assert chapter.get_character_impact("Mentor") == "Provides guidance"
+        self.assertchapter is not None
+        self.assertchapter.chapter_number == 2
+        self.assertchapter.title == "The Journey Begins"
+        self.assertchapter.overview == "Characters set out on their quest"
+        self.assertchapter.point_of_view == "Hero"
+        self.assertchapter.narrative_function == NarrativeFunctionEnum.INCITING_INCIDENT
+        self.assertchapter.foreshadow_or_echo == "Mentions ancient prophecy"
+        self.assertchapter.scene_highlights == "Emotional farewell scene"
+        self.assertlen(chapter.character_impact) == 2
+        self.assertchapter.get_character_impact("Hero") == "Accepts the call"
+        self.assertchapter.get_character_impact("Mentor") == "Provides guidance"
     
     def test_chapter_from_dict_minimal(self):
         """Test chapter creation from minimal dictionary data."""
@@ -219,13 +219,13 @@ class TestChapter:
         
         chapter = Chapter.from_dict(data)
         
-        assert chapter is not None
-        assert chapter.chapter_number == 1
-        assert chapter.title == "Minimal Chapter"
-        assert chapter.overview == "Basic overview"
-        assert chapter.character_impact == []
-        assert chapter.point_of_view is None
-        assert chapter.narrative_function is None
+        self.assertchapter is not None
+        self.assertchapter.chapter_number == 1
+        self.assertchapter.title == "Minimal Chapter"
+        self.assertchapter.overview == "Basic overview"
+        self.assertchapter.character_impact == []
+        self.assertchapter.point_of_view is None
+        self.assertchapter.narrative_function is None
     
     def test_chapter_from_dict_invalid(self):
         """Test chapter creation from invalid dictionary data."""
@@ -243,7 +243,7 @@ class TestChapter:
         
         for data in invalid_data:
             chapter = Chapter.from_dict(data)
-            assert chapter is None
+            self.assertchapter is None
     
     def test_chapter_string_representation(self):
         """Test chapter string representation."""
@@ -259,13 +259,13 @@ class TestChapter:
         
         string_repr = str(chapter)
         
-        assert "Chapter 1: Test Chapter" in string_repr
-        assert "Function: Setting Introduction" in string_repr
-        assert "POV: Alice" in string_repr
-        assert "Characters affected: 2" in string_repr
+        self.assert"Chapter 1: Test Chapter" in string_repr
+        self.assert"Function: Setting Introduction" in string_repr
+        self.assert"POV: Alice" in string_repr
+        self.assert"Characters affected: 2" in string_repr
 
 
-class TestStoryChapters:
+class TestStoryChapters(unittest.TestCase):
     """Test cases for Story class chapter functionality."""
     
     def test_story_add_chapter(self):
@@ -277,24 +277,24 @@ class TestStoryChapters:
         
         # Add chapters
         success = story.add_chapter(chapter1)
-        assert success
-        assert len(story.chapters) == 1
+        self.assertsuccess
+        self.assertlen(story.chapters) == 1
         
         success = story.add_chapter(chapter2)
-        assert success
-        assert len(story.chapters) == 2
+        self.assertsuccess
+        self.assertlen(story.chapters) == 2
         
         # Try to add duplicate chapter number
         duplicate_chapter = Chapter(1, "Duplicate", "Should not be added")
         success = story.add_chapter(duplicate_chapter)
-        assert not success
-        assert len(story.chapters) == 2
+        self.assertnot success
+        self.assertlen(story.chapters) == 2
         
         # Test invalid input
         success = story.add_chapter(None)
-        assert not success
+        self.assertnot success
         success = story.add_chapter("not a chapter")
-        assert not success
+        self.assertnot success
     
     def test_story_chapter_ordering(self):
         """Test that chapters are ordered correctly."""
@@ -310,10 +310,10 @@ class TestStoryChapters:
         story.add_chapter(chapter2)
         
         ordered_chapters = story.get_chapters_ordered()
-        assert len(ordered_chapters) == 3
-        assert ordered_chapters[0].chapter_number == 1
-        assert ordered_chapters[1].chapter_number == 2
-        assert ordered_chapters[2].chapter_number == 3
+        self.assertlen(ordered_chapters) == 3
+        self.assertordered_chapters[0].chapter_number == 1
+        self.assertordered_chapters[1].chapter_number == 2
+        self.assertordered_chapters[2].chapter_number == 3
     
     def test_story_get_chapter(self):
         """Test getting specific chapter from story."""
@@ -327,12 +327,12 @@ class TestStoryChapters:
         
         # Get existing chapter
         found_chapter = story.get_chapter(1)
-        assert found_chapter is not None
-        assert found_chapter.title == "First Chapter"
+        self.assertfound_chapter is not None
+        self.assertfound_chapter.title == "First Chapter"
         
         # Get non-existent chapter
         found_chapter = story.get_chapter(99)
-        assert found_chapter is None
+        self.assertfound_chapter is None
     
     def test_story_remove_chapter(self):
         """Test removing chapter from story."""
@@ -346,15 +346,15 @@ class TestStoryChapters:
         
         # Remove existing chapter
         success = story.remove_chapter(1)
-        assert success
-        assert len(story.chapters) == 1
-        assert story.get_chapter(1) is None
-        assert story.get_chapter(2) is not None
+        self.assertsuccess
+        self.assertlen(story.chapters) == 1
+        self.assertstory.get_chapter(1) is None
+        self.assertstory.get_chapter(2) is not None
         
         # Try to remove non-existent chapter
         success = story.remove_chapter(99)
-        assert not success
-        assert len(story.chapters) == 1
+        self.assertnot success
+        self.assertlen(story.chapters) == 1
     
     def test_story_update_chapter(self):
         """Test updating chapter in story."""
@@ -366,20 +366,20 @@ class TestStoryChapters:
         # Update with same chapter number
         updated_chapter = Chapter(1, "Updated Title", "Updated overview")
         success = story.update_chapter(1, updated_chapter)
-        assert success
+        self.assertsuccess
         
         found_chapter = story.get_chapter(1)
-        assert found_chapter.title == "Updated Title"
-        assert found_chapter.overview == "Updated overview"
+        self.assertfound_chapter.title == "Updated Title"
+        self.assertfound_chapter.overview == "Updated overview"
         
         # Try to update with different chapter number
         wrong_number_chapter = Chapter(2, "Wrong Number", "Wrong overview")
         success = story.update_chapter(1, wrong_number_chapter)
-        assert not success
+        self.assertnot success
         
         # Try to update non-existent chapter
         success = story.update_chapter(99, updated_chapter)
-        assert not success
+        self.assertnot success
     
     def test_story_chapters_serialization(self):
         """Test story serialization includes chapters."""
@@ -400,23 +400,23 @@ class TestStoryChapters:
         json_str = story.to_json()
         data = json.loads(json_str)
         
-        assert "chapters" in data
-        assert len(data["chapters"]) == 2
-        assert data["chapters"][0]["chapter_number"] == 1
-        assert data["chapters"][0]["title"] == "First Chapter"
-        assert data["chapters"][0]["narrative_function"] == "Setting Introduction"
+        self.assert"chapters" in data
+        self.assertlen(data["chapters"]) == 2
+        self.assertdata["chapters"][0]["chapter_number"] == 1
+        self.assertdata["chapters"][0]["title"] == "First Chapter"
+        self.assertdata["chapters"][0]["narrative_function"] == "Setting Introduction"
         
         # Test JSON deserialization
         new_story = Story()
         success = new_story.from_json(json_str)
-        assert success
-        assert len(new_story.chapters) == 2
+        self.assertsuccess
+        self.assertlen(new_story.chapters) == 2
         
         found_chapter = new_story.get_chapter(1)
-        assert found_chapter is not None
-        assert found_chapter.title == "First Chapter"
-        assert found_chapter.narrative_function == NarrativeFunctionEnum.SETTING_INTRODUCTION
-        assert found_chapter.get_character_impact("Hero") == "Introduced to world"
+        self.assertfound_chapter is not None
+        self.assertfound_chapter.title == "First Chapter"
+        self.assertfound_chapter.narrative_function == NarrativeFunctionEnum.SETTING_INTRODUCTION
+        self.assertfound_chapter.get_character_impact("Hero") == "Introduced to world"
     
     def test_story_string_includes_chapters(self):
         """Test story string representation includes chapter count."""
@@ -425,7 +425,7 @@ class TestStoryChapters:
         
         # Test without chapters
         story_str = str(story)
-        assert "Chapters:" not in story_str
+        self.assert"Chapters:" not in story_str
         
         # Test with chapters
         chapter1 = Chapter(1, "First", "Beginning")
@@ -434,7 +434,7 @@ class TestStoryChapters:
         story.add_chapter(chapter2)
         
         story_str = str(story)
-        assert "Chapters: 2" in story_str
+        self.assert"Chapters: 2" in story_str
     
     def test_story_prompt_text_includes_chapters(self):
         """Test story prompt text includes chapter information."""
@@ -458,15 +458,15 @@ class TestStoryChapters:
         
         prompt_text = story.to_prompt_text()
         
-        assert "CHAPTER STRUCTURE:" in prompt_text
-        assert "Chapter 1: The Awakening" in prompt_text
-        assert "Chapter 2: The Journey" in prompt_text
-        assert "Hero discovers powers" in prompt_text
-        assert "Quest begins" in prompt_text
-        assert "Character Introduction" in prompt_text
-        assert "Inciting Incident" in prompt_text
-        assert "Point of View: Hero" in prompt_text
-        assert "Foreshadow/Echo: Mentions ancient prophecy" in prompt_text
-        assert "Scene Highlights: Glowing eyes in the darkness" in prompt_text
-        assert "• Hero: Gains magical abilities" in prompt_text
-        assert "• Mentor: Provides guidance" in prompt_text
+        self.assert"CHAPTER STRUCTURE:" in prompt_text
+        self.assert"Chapter 1: The Awakening" in prompt_text
+        self.assert"Chapter 2: The Journey" in prompt_text
+        self.assert"Hero discovers powers" in prompt_text
+        self.assert"Quest begins" in prompt_text
+        self.assert"Character Introduction" in prompt_text
+        self.assert"Inciting Incident" in prompt_text
+        self.assert"Point of View: Hero" in prompt_text
+        self.assert"Foreshadow/Echo: Mentions ancient prophecy" in prompt_text
+        self.assert"Scene Highlights: Glowing eyes in the darkness" in prompt_text
+        self.assert"• Hero: Gains magical abilities" in prompt_text
+        self.assert"• Mentor: Provides guidance" in prompt_text
