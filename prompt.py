@@ -157,6 +157,29 @@ class Prompt:
         # Get the story configuration (excluding specified fields and filtering chapters)
         story_config = story.to_prompt_text_for_chapter(n)
         
+        # Get the specific chapter we're generating
+        target_chapter = story.get_chapter(n)
+        chapter_info = ""
+        if target_chapter:
+            chapter_info = f"""
+
+TARGET CHAPTER TO GENERATE:
+Chapter {n}: {target_chapter.title}
+Overview: {target_chapter.overview}
+Narrative Function: {target_chapter.narrative_function.value if target_chapter.narrative_function else 'Not specified'}
+Point of View: {target_chapter.point_of_view or 'Not specified'}
+"""
+            if target_chapter.character_impact:
+                chapter_info += "\nCharacter Impact:\n"
+                for impact in target_chapter.character_impact:
+                    chapter_info += f"- {impact.character}: {impact.effect}\n"
+            
+            if target_chapter.foreshadow_or_echo:
+                chapter_info += f"\nForeshadow/Echo: {target_chapter.foreshadow_or_echo}\n"
+                
+            if target_chapter.scene_highlights:
+                chapter_info += f"\nScene Highlights: {target_chapter.scene_highlights}\n"
+        
         # Combine all parts
         parts = []
         
@@ -165,6 +188,9 @@ class Prompt:
         
         if story_config.strip():
             parts.append(story_config.strip())
+            
+        if chapter_info.strip():
+            parts.append(chapter_info.strip())
         
         if post_text.strip():
             parts.append(post_text.strip())
