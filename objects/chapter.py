@@ -9,11 +9,12 @@ from dataclasses import dataclass, field
 from typing import List, Dict, Optional, Any
 import json
 from .narrative_function import NarrativeFunctionEnum
+from .continuity_state import ContinuityState
 
 
 @dataclass
 class Chapter:
-    """Represents a chapter in a story with narrative metadata."""
+    """Represents a chapter in a story with narrative metadata, summary, and continuity state."""
     
     chapter_number: int
     title: str
@@ -23,6 +24,8 @@ class Chapter:
     narrative_function: Optional[NarrativeFunctionEnum] = None
     foreshadow_or_echo: Optional[str] = None
     scene_highlights: Optional[str] = None
+    summary: Optional[str] = None
+    continuity_state: ContinuityState = field(default_factory=ContinuityState)
     
     def __post_init__(self):
         """Validate the chapter data after initialization."""
@@ -99,7 +102,9 @@ class Chapter:
             'point_of_view': self.point_of_view,
             'narrative_function': self.narrative_function.value if self.narrative_function else None,
             'foreshadow_or_echo': self.foreshadow_or_echo,
-            'scene_highlights': self.scene_highlights
+            'scene_highlights': self.scene_highlights,
+            'summary': self.summary,
+            'continuity_state': self.continuity_state.to_dict()
         }
     
     @classmethod
@@ -145,9 +150,34 @@ class Chapter:
             if scene_highlights:
                 chapter.scene_highlights = str(scene_highlights)
             
+            # Set summary (optional)
+            summary = data.get('summary')
+            if summary:
+                chapter.summary = str(summary)
+            
+            # Set continuity state (optional)
+            continuity_data = data.get('continuity_state', {})
+            if continuity_data:
+                continuity_state = ContinuityState.from_dict(continuity_data)
+                if continuity_state is not None:
+                    chapter.continuity_state = continuity_state
+            
             return chapter
             
         except (ValueError, TypeError):
+            return None
+    
+    def to_json(self) -> str:
+        """Convert to JSON string."""
+        return json.dumps(self.to_dict(), indent=2)
+    
+    @classmethod
+    def from_json(cls, json_str: str) -> Optional['Chapter']:
+        """Create chapter from JSON string. Returns None if invalid."""
+        try:
+            data = json.loads(json_str)
+            return cls.from_dict(data)
+        except json.JSONDecodeError:
             return None
     
     def __str__(self) -> str:
@@ -163,5 +193,30 @@ class Chapter:
         if self.character_impact:
             char_count = len(self.character_impact)
             parts.append(f"Characters affected: {char_count}")
+        
+        if self.summary:
+            summary_preview = self.summary[:30] + "..." if len(self.summary) > 30 else self.summary
+            parts.append(f"Summary: {summary_preview}")
+        
+        # Add continuity info
+        if self.continuity_state:
+            char_count = len(self.continuity_state.characters)
+            obj_count = len(self.continuity_state.objects)
+            loc_count = len(self.continuity_state.locations_visited)
+            thread_count = len(self.continuity_state.open_plot_threads)
+            
+            if any([char_count, obj_count, loc_count, thread_count]):
+                continuity_parts = []
+                if char_count > 0:
+                    continuity_parts.append(f"Chars: {char_count}")
+                if obj_count > 0:
+                    continuity_parts.append(f"Objs: {obj_count}")
+                if loc_count > 0:
+                    continuity_parts.append(f"Locs: {loc_count}")
+                if thread_count > 0:
+                    continuity_parts.append(f"Threads: {thread_count}")
+                
+                if continuity_parts:
+                    parts.append(f"Continuity: {', '.join(continuity_parts)}")
         
         return " | ".join(parts)
