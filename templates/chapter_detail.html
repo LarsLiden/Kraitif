@@ -1,0 +1,407 @@
+{% extends "base.html" %}
+
+{% block title %}Chapter {{ chapter_number }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>Chapter {{ chapter_number }}: {{ chapter.title }}</h1>
+    {% if chapter.narrative_function %}
+    <p class="page-subtitle">{{ chapter.narrative_function.value }}</p>
+    {% else %}
+    <p class="page-subtitle">Chapter Details</p>
+    {% endif %}
+</div>
+
+<div class="section">
+    <div class="section-content">
+        <div class="chapter-detail-container">
+            <div class="chapter-panel">
+                <div class="chapter-content">
+                    <div class="chapter-overview">
+                        <strong>Overview:</strong>
+                        <p>{{ chapter.overview }}</p>
+                    </div>
+                    
+                    {% if chapter.chapter_text %}
+                    <div class="chapter-text">
+                        <strong>Chapter Text:</strong>
+                        <div class="chapter-text-content">{{ chapter.chapter_text | nl2br }}</div>
+                    </div>
+                    {% endif %}
+                    
+                    {% if chapter.summary %}
+                    <div class="chapter-summary">
+                        <strong>Chapter Summary:</strong>
+                        <p>{{ chapter.summary }}</p>
+                    </div>
+                    {% endif %}
+                    
+                    {% if chapter.continuity_state %}
+                    <div class="continuity-state">
+                        <strong>Continuity State:</strong>
+                        <div class="continuity-content">
+                            {% if chapter.continuity_state.characters %}
+                            <div class="continuity-section">
+                                <strong>Characters:</strong>
+                                <div class="continuity-characters">
+                                    {% for char in chapter.continuity_state.characters %}
+                                    <div class="continuity-character">
+                                        <span class="char-name">{{ char.name }}</span>
+                                        <span class="char-location">Location: {{ char.current_location }}</span>
+                                        <span class="char-status">Status: {{ char.status }}</span>
+                                        {% if char.inventory %}
+                                        <span class="char-inventory">Inventory: {{ char.inventory | join(', ') }}</span>
+                                        {% endif %}
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            {% endif %}
+                            
+                            {% if chapter.continuity_state.objects %}
+                            <div class="continuity-section">
+                                <strong>Objects:</strong>
+                                <div class="continuity-objects">
+                                    {% for obj in chapter.continuity_state.objects %}
+                                    <div class="continuity-object">
+                                        <span class="obj-name">{{ obj.name }}</span>
+                                        {% if obj.holder %}
+                                        <span class="obj-holder">Held by: {{ obj.holder }}</span>
+                                        {% else %}
+                                        <span class="obj-location">Location: {{ obj.location }}</span>
+                                        {% endif %}
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            {% endif %}
+                            
+                            {% if chapter.continuity_state.locations_visited %}
+                            <div class="continuity-section">
+                                <strong>Locations Visited:</strong>
+                                <div class="continuity-locations">{{ chapter.continuity_state.locations_visited | join(', ') }}</div>
+                            </div>
+                            {% endif %}
+                            
+                            {% if chapter.continuity_state.open_plot_threads %}
+                            <div class="continuity-section">
+                                <strong>Open Plot Threads:</strong>
+                                <div class="continuity-threads">
+                                    {% for thread in chapter.continuity_state.open_plot_threads %}
+                                    <div class="continuity-thread">
+                                        <span class="thread-id">{{ thread.id }}:</span>
+                                        <span class="thread-desc">{{ thread.description }}</span>
+                                        <span class="thread-status">({{ thread.status }})</span>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    {% if chapter.character_impact %}
+                    <div class="chapter-characters">
+                        <strong>Character Impact:</strong>
+                        <div class="character-impacts">
+                            {% for impact in chapter.character_impact %}
+                            <div class="character-impact-item">
+                                <span class="impact-character">{{ impact.character }}:</span>
+                                <span class="impact-effect">{{ impact.effect }}</span>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    {% if chapter.point_of_view %}
+                    <div class="chapter-pov">
+                        <strong>Point of View:</strong> {{ chapter.point_of_view }}
+                    </div>
+                    {% endif %}
+                    
+                    {% if chapter.foreshadow_or_echo %}
+                    <div class="chapter-foreshadow">
+                        <strong>Foreshadow/Echo:</strong>
+                        <p>{{ chapter.foreshadow_or_echo }}</p>
+                    </div>
+                    {% endif %}
+                    
+                    {% if chapter.scene_highlights %}
+                    <div class="chapter-highlights">
+                        <strong>Scene Highlights:</strong>
+                        <p>{{ chapter.scene_highlights }}</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Navigation buttons -->
+<div class="chapter-navigation">
+    <a href="{{ url_for('chapter_plan') }}" class="btn btn-secondary">← Back to Chapter Plan</a>
+    
+    {% if story.get_chapter(chapter_number - 1) %}
+    <a href="{{ url_for('chapter_detail', chapter_number=chapter_number - 1) }}" class="btn btn-primary">← Chapter {{ chapter_number - 1 }}</a>
+    {% endif %}
+    
+    {% if story.get_chapter(chapter_number + 1) %}
+    <a href="{{ url_for('chapter_detail', chapter_number=chapter_number + 1) }}" class="btn btn-primary">Chapter {{ chapter_number + 1 }} →</a>
+    {% endif %}
+</div>
+
+<style>
+.page-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.page-header h1 {
+    color: #4CAF50;
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+}
+
+.page-subtitle {
+    color: #64B5F6;
+    font-size: 1.2rem;
+    margin-bottom: 0;
+}
+
+/* Chapter Detail Styles */
+.chapter-detail-container {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.chapter-panel {
+    background-color: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    padding: 2rem;
+    transition: border-color 0.2s ease;
+}
+
+.chapter-panel:hover {
+    border-color: rgba(76, 175, 80, 0.5);
+}
+
+.chapter-content {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.chapter-overview,
+.chapter-text,
+.chapter-summary,
+.continuity-state,
+.chapter-characters,
+.chapter-pov,
+.chapter-foreshadow,
+.chapter-highlights {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.chapter-overview strong,
+.chapter-text strong,
+.chapter-summary strong,
+.continuity-state strong,
+.chapter-characters strong,
+.chapter-pov strong,
+.chapter-foreshadow strong,
+.chapter-highlights strong {
+    color: #fff;
+    display: block;
+    margin-bottom: 0.75rem;
+    font-size: 1.1rem;
+}
+
+.chapter-overview p,
+.chapter-summary p,
+.chapter-foreshadow p,
+.chapter-highlights p {
+    margin: 0;
+    line-height: 1.6;
+    font-size: 1rem;
+}
+
+/* Chapter Text Styles */
+.chapter-text-content {
+    background-color: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    padding: 1.5rem;
+    line-height: 1.7;
+    font-size: 1rem;
+    max-height: 600px;
+    overflow-y: auto;
+    white-space: pre-wrap;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Continuity State Styles */
+.continuity-content {
+    background-color: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    padding: 1.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.continuity-section {
+    margin-bottom: 1.5rem;
+}
+
+.continuity-section:last-child {
+    margin-bottom: 0;
+}
+
+.continuity-section strong {
+    color: #64B5F6;
+    display: block;
+    margin-bottom: 0.75rem;
+    font-size: 1rem;
+}
+
+.continuity-characters,
+.continuity-objects,
+.continuity-threads {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.continuity-character,
+.continuity-object,
+.continuity-thread {
+    background-color: rgba(255, 255, 255, 0.05);
+    border-radius: 4px;
+    padding: 0.75rem;
+    font-size: 0.95rem;
+}
+
+.char-name,
+.obj-name,
+.thread-id {
+    color: #4CAF50;
+    font-weight: 500;
+}
+
+.char-location,
+.char-status,
+.char-inventory,
+.obj-holder,
+.obj-location,
+.thread-desc {
+    color: rgba(255, 255, 255, 0.8);
+    margin-left: 0.5rem;
+}
+
+.thread-status {
+    color: #64B5F6;
+    font-style: italic;
+    margin-left: 0.5rem;
+}
+
+.continuity-locations {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.95rem;
+}
+
+.character-impacts {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.character-impact-item {
+    background-color: rgba(255, 255, 255, 0.05);
+    border-radius: 4px;
+    padding: 0.75rem;
+    font-size: 1rem;
+}
+
+.impact-character {
+    color: #64B5F6;
+    font-weight: 500;
+}
+
+.impact-effect {
+    color: rgba(255, 255, 255, 0.85);
+    margin-left: 0.5rem;
+}
+
+/* Navigation Styles */
+.chapter-navigation {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 3rem;
+    padding: 1.5rem 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.btn {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-primary {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #45a049;
+    transform: translateY(-1px);
+}
+
+.btn-secondary {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #64B5F6;
+    border: 1px solid rgba(100, 181, 246, 0.3);
+}
+
+.btn-secondary:hover {
+    background-color: rgba(100, 181, 246, 0.1);
+    border-color: rgba(100, 181, 246, 0.5);
+    transform: translateY(-1px);
+}
+
+@media (max-width: 768px) {
+    .chapter-panel {
+        padding: 1rem;
+    }
+    
+    .page-header h1 {
+        font-size: 2rem;
+    }
+    
+    .chapter-text-content {
+        max-height: 400px;
+        font-size: 0.95rem;
+        padding: 1rem;
+    }
+    
+    .chapter-navigation {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .btn {
+        width: 100%;
+        text-align: center;
+    }
+}
+</style>
+{% endblock %}

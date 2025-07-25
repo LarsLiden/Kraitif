@@ -549,6 +549,7 @@
                                                         <strong>Chapter {{ chapter.chapter_number }}:</strong> {{ chapter.title }}
                                                     </div>
                                                     <div class="panel-controls">
+                                                        <a href="{{ url_for('chapter_detail', chapter_number=chapter.chapter_number) }}" class="edit-button" title="View Chapter {{ chapter.chapter_number }}">👁️</a>
                                                         <span class="expand-arrow" id="chapter-{{ chapter.chapter_number }}-expand-arrow">▶</span>
                                                     </div>
                                                 </div>
@@ -1709,8 +1710,13 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        // Reload the page to show the generated chapter
-                        window.location.reload();
+                        // Redirect to the individual chapter page
+                        if (data.redirect_url) {
+                            window.location.href = data.redirect_url;
+                        } else {
+                            // Fallback to reload if no redirect URL provided
+                            window.location.reload();
+                        }
                     } else {
                         // Restore original content and show error
                         rightPanel.innerHTML = originalContent;

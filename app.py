@@ -1355,6 +1355,7 @@ def generate_chapter(chapter_number):
         return jsonify({
             'success': True,
             'chapter': existing_chapter.to_dict(),
+            'redirect_url': url_for('chapter_detail', chapter_number=chapter_number),
             'ai_response': ai_response  # Include for debugging if needed
         })
     
@@ -1363,6 +1364,50 @@ def generate_chapter(chapter_number):
             'success': False,
             'error': str(e)
         })
+
+
+@app.route('/chapter/<int:chapter_number>')
+def chapter_detail(chapter_number):
+    """Show details for a specific chapter."""
+    story = get_story_from_session()
+    
+    # Check if we have the required data
+    if not story.chapters:
+        flash('Please generate a chapter plan first.', 'error')
+        return redirect(url_for('chapter_plan'))
+    
+    # Get the specific chapter
+    chapter = story.get_chapter(chapter_number)
+    if not chapter:
+        flash(f'Chapter {chapter_number} does not exist.', 'error')
+        return redirect(url_for('chapter_plan'))
+    
+    # Get additional context objects for the template
+    story_type = None
+    subtype = None
+    if story.story_type_name:
+        story_type = registry.get_story_type(story.story_type_name)
+        if story_type and story.subtype_name:
+            subtype = story_type.get_subtype(story.subtype_name)
+    
+    # Get protagonist and secondary archetype objects
+    protagonist_archetype_obj = get_protagonist_archetype_object(story)
+    secondary_archetype_objs = get_secondary_archetype_objects(story)
+    writing_style_obj = get_writing_style_object(story)
+    
+    return render_template('chapter_detail.html',
+                         story=story,
+                         chapter=chapter,
+                         chapter_number=chapter_number,
+                         story_type=story_type,
+                         subtype=subtype,
+                         protagonist_archetype_obj=protagonist_archetype_obj,
+                         secondary_archetype_objs=secondary_archetype_objs,
+                         writing_style_obj=writing_style_obj,
+                         genre_registry=genre_registry,
+                         archetype_registry=archetype_registry,
+                         style_registry=style_registry,
+                         is_chapter_detail_page=True)
 
 
 @app.route('/test-chapters')
