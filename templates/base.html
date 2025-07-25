@@ -523,7 +523,10 @@
                                 {% endif %}
                                 
                                 <!-- Individual Chapter Generation - appears on chapter plan page -->
+                                <!-- Debug: Chapter button conditions -->
+                                <!-- DEBUG: is_chapter_plan_page={{ is_chapter_plan_page|default('UNDEFINED') }}, story={{ 'exists' if story else 'MISSING' }}, story.chapters={{ story.chapters|length if story and story.chapters else 'MISSING' }} -->
                                 {% if is_chapter_plan_page and story and story.chapters %}
+                                    <!-- DEBUG: Inside chapter generation logic -->
                                     {% set first_chapter_without_text = none %}
                                     {% for chapter in story.get_chapters_ordered() %}
                                         {% if not chapter.chapter_text and first_chapter_without_text is none %}
@@ -531,9 +534,12 @@
                                         {% endif %}
                                     {% endfor %}
                                     
+                                    <!-- DEBUG: first_chapter_without_text={{ 'Chapter ' + first_chapter_without_text.chapter_number|string if first_chapter_without_text else 'NONE' }} -->
                                     {% for chapter in story.get_chapters_ordered() %}
-                                        {% if not chapter.chapter_text and chapter.chapter_number == first_chapter_without_text.chapter_number %}
+                                        <!-- DEBUG: Chapter {{ chapter.chapter_number }}: has_text={{ 'YES' if chapter.chapter_text else 'NO' }}, is_first={{ 'YES' if (not chapter.chapter_text and first_chapter_without_text and chapter.chapter_number == first_chapter_without_text.chapter_number) else 'NO' }} -->
+                                        {% if not chapter.chapter_text and first_chapter_without_text and chapter.chapter_number == first_chapter_without_text.chapter_number %}
                                         <!-- Generate Chapter button for the first chapter without text -->
+                                        <!-- DEBUG: SHOWING GENERATE BUTTON for Chapter {{ chapter.chapter_number }} -->
                                         <div class="generate-chapter-section" id="generate-chapter-{{ chapter.chapter_number }}-section">
                                             <button class="generate-button compact" id="generate-chapter-{{ chapter.chapter_number }}-button" onclick="handleGenerateChapter(event, {{ chapter.chapter_number }})">
                                                 📝 Generate chapter {{ chapter.chapter_number }}
@@ -541,6 +547,7 @@
                                         </div>
                                         {% elif chapter.chapter_text %}
                                         <!-- Expandable Chapter panel for generated chapters -->
+                                        <!-- DEBUG: SHOWING EXPANDABLE PANEL for Chapter {{ chapter.chapter_number }} -->
                                         <div class="selection-wrapper">
                                             <span class="edit-button-invisible">✏️</span>
                                             <div class="expandable-panel">
@@ -562,6 +569,9 @@
                                         </div>
                                         {% endif %}
                                     {% endfor %}
+                                {% else %}
+                                    <!-- DEBUG: Chapter generation logic NOT executed -->
+                                    <!-- DEBUG: is_chapter_plan_page={{ is_chapter_plan_page|default('UNDEFINED') }}, story={{ 'exists' if story else 'MISSING' }}, story.chapters={{ story.chapters|length if story and story.chapters else 'MISSING/EMPTY' }} -->
                                 {% endif %}
                                 
                                 <!-- Note and Generate plot lines button - appears only on secondary character selection page -->
