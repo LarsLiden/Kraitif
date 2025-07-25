@@ -26,8 +26,7 @@ Kraitif/
 │   ├── narrative_function.py # Narrative function registry, models, and NarrativeFunctionEnum
 │   ├── character.py         # Character class combining archetype, functional role, emotional function
 │   ├── character_parser.py  # Character and expanded plot line parsing from AI responses
-│   ├── chapter.py          # Chapter class for story structure and planning
-│   ├── chapter_summary.py   # Chapter summary object for recap and continuity tracking
+│   ├── chapter.py          # Chapter class for story structure, planning, summary and continuity tracking
 │   ├── continuity_character.py # ContinuityCharacter class for tracking character state
 │   ├── continuity_object.py # ContinuityObject class for tracking object state
 │   ├── continuity_state.py  # ContinuityState class for overall story state tracking
@@ -67,7 +66,7 @@ Kraitif/
     ├── test_flask_save_load.py
     ├── test_functional_role.py
     ├── test_narrative_function.py  # Narrative function tests
-    ├── test_chapter_summary.py     # Chapter summary system tests
+    ├── test_chapter_summary.py     # Chapter continuity and summary functionality tests
     ├── test_prompt_debugging.py  # AI debugging functionality tests
     └── [other test files]
 ```
@@ -243,14 +242,13 @@ Chapter:
     - narrative_function: Optional[NarrativeFunctionEnum]  # Narrative function tag
     - foreshadow_or_echo: Optional[str] # Setup or payoff description
     - scene_highlights: Optional[str]   # Notable imagery, dialogue, emotion, tension
+    - summary: Optional[str]            # Recap of what happened in the chapter
+    - continuity_state: ContinuityState # Detailed state tracking for story elements
 ```
 
-#### Chapter Summary Model
+#### Continuity Tracking Models
 ```python
 # Note: Each class below is implemented in its own file within the objects/ directory
-ChapterSummary:
-    - summary: str                      # Recap of what happened in the chapter
-    - continuity_state: ContinuityState # Detailed state tracking
 
 ContinuityState:
     - characters: List[ContinuityCharacter]  # Character states and positions

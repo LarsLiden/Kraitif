@@ -14,7 +14,6 @@ from .narrative_function import NarrativeFunctionRegistry, NarrativeFunctionEnum
 from .character import Character
 from .character_parser import parse_characters_from_ai_response
 from .chapter import Chapter
-from .chapter_summary import ChapterSummary
 from .continuity_state import ContinuityState
 from .continuity_character import ContinuityCharacter
 from .continuity_object import ContinuityObject
@@ -33,6 +32,6 @@ __all__ = [
     'Character',
     'parse_characters_from_ai_response',
     'Chapter',
-    'ChapterSummary', 'ContinuityState', 'ContinuityCharacter', 'ContinuityObject', 'PlotThread',
+    'ContinuityState', 'ContinuityCharacter', 'ContinuityObject', 'PlotThread',
     'PlotLine', 'parse_plot_lines_from_ai_response'
 ]

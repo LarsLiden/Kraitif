@@ -97,19 +97,16 @@ The `Chapter` class represents a complete chapter with:
 - **narrative_function** (NarrativeFunctionEnum, optional): Narrative function tag that must match NarrativeFunctionEnum
 - **foreshadow_or_echo** (str, optional): Description of setup or payoff elements
 - **scene_highlights** (str, optional): Notable imagery, dialogue, emotion, or tension
+- **summary** (str, optional): Recap of what happened in the chapter
+- **continuity_state** (ContinuityState, optional): Detailed state tracking for story elements
 
-Each chapter provides methods for managing character impact entries, setting narrative functions, and serialization support.
+Each chapter provides methods for managing character impact entries, setting narrative functions, and comprehensive JSON serialization/deserialization support for all fields including continuity tracking.
 
-### Chapter Summary System
-The application includes a comprehensive chapter summary system that tracks story continuity and state:
-
-#### Chapter Summary Objects
-The `ChapterSummary` class represents a complete chapter summary with:
-- **summary** (str): Recap of what happened in the chapter
-- **continuity_state** (ContinuityState): Detailed state tracking for story elements
+### Continuity Tracking System
+The application includes a comprehensive continuity tracking system that is integrated into the Chapter objects:
 
 #### Continuity State Components
-The `ContinuityState` class tracks the ongoing state of story elements:
+The `ContinuityState` class tracks the ongoing state of story elements and is embedded within each Chapter:
 - **characters** (List[ContinuityCharacter]): Character states and positions
 - **objects** (List[ContinuityObject]): Object locations and ownership
 - **locations_visited** (List[str]): Places that have been visited
@@ -134,7 +131,7 @@ The `PlotThread` class tracks ongoing story elements:
 - **description** (str): Description of the ongoing plot element
 - **status** (str): Current status (e.g., "pending", "in progress", "resolved")
 
-The chapter summary system provides comprehensive JSON serialization/deserialization, validation, and management methods for maintaining story continuity across chapters.
+The continuity tracking system provides comprehensive JSON serialization/deserialization, validation, and management methods for maintaining story continuity across chapters through the integrated Chapter objects.
 
 ### Writing Styles
 

@@ -1,14 +1,15 @@
 """
-Unit tests for ChapterSummary object and related classes.
+Unit tests for Chapter object (including former Chapter functionality) and related classes.
 """
 
 import unittest
 import json
-from objects.chapter_summary import ChapterSummary
+from objects.chapter import Chapter
 from objects.continuity_state import ContinuityState
 from objects.continuity_character import ContinuityCharacter
 from objects.continuity_object import ContinuityObject
 from objects.plot_thread import PlotThread
+from objects.narrative_function import NarrativeFunctionEnum
 
 
 class TestContinuityCharacter(unittest.TestCase):
@@ -456,36 +457,44 @@ class TestContinuityState(unittest.TestCase):
         self.assertEqual(len(empty_state.characters), 0)
 
 
-class TestChapterSummary(unittest.TestCase):
-    """Test cases for ChapterSummary class."""
+class TestChapterWithSummary(unittest.TestCase):
+    """Test cases for Chapter class with summary and continuity functionality."""
     
-    def test_chapter_summary_creation(self):
-        """Test basic chapter summary creation."""
-        summary = ChapterSummary("recap of what just happened in the chapter")
+    def test_chapter_with_summary_creation(self):
+        """Test basic chapter creation with chapter."""
+        chapter = Chapter(
+            chapter_number=1,
+            title="The Beginning",
+            overview="The story starts here.",
+            summary="recap of what just happened in the chapter"
+        )
         
-        self.assertEqual(summary.summary, "recap of what just happened in the chapter")
-        self.assertIsNotNone(summary.continuity_state)
-        self.assertEqual(len(summary.continuity_state.characters), 0)
+        self.assertEqual(chapter.chapter_number, 1)
+        self.assertEqual(chapter.title, "The Beginning")
+        self.assertEqual(chapter.overview, "The story starts here.")
+        self.assertEqual(chapter.summary, "recap of what just happened in the chapter")
+        self.assertIsNotNone(chapter.continuity_state)
+        self.assertEqual(len(chapter.continuity_state.characters), 0)
     
-    def test_chapter_summary_creation_validation(self):
-        """Test chapter summary creation validation."""
-        # Empty summary should raise ValueError
-        with self.assertRaises(ValueError):
-            ChapterSummary("")
-    
-    def test_chapter_summary_with_continuity(self):
-        """Test chapter summary with continuity state."""
+    def test_chapter_with_summary_with_continuity(self):
+        """Test chapter with summary and continuity state."""
         continuity_state = ContinuityState()
         char = ContinuityCharacter("Test", "Location", "Status")
         continuity_state.add_character(char)
         
-        summary = ChapterSummary("Test summary", continuity_state)
+        chapter = Chapter(
+            chapter_number=1,
+            title="Test Chapter",
+            overview="Test overview",
+            summary="Test summary",
+            continuity_state=continuity_state
+        )
         
-        self.assertEqual(summary.summary, "Test summary")
-        self.assertEqual(len(summary.continuity_state.characters), 1)
+        self.assertEqual(chapter.summary, "Test summary")
+        self.assertEqual(len(chapter.continuity_state.characters), 1)
     
-    def test_chapter_summary_serialization(self):
-        """Test chapter summary serialization."""
+    def test_chapter_with_summary_serialization(self):
+        """Test chapter with summary serialization."""
         # Create test data
         continuity_state = ContinuityState()
         char = ContinuityCharacter("Riven Kairo", "Eldertown—foggy main street", 
@@ -500,47 +509,61 @@ class TestChapterSummary(unittest.TestCase):
         continuity_state.add_location("Eldertown main street")
         continuity_state.add_plot_thread(thread)
         
-        summary = ChapterSummary("recap of what just happened in the chapter", continuity_state)
+        chapter = Chapter(
+            chapter_number=1,
+            title="The Beginning",
+            overview="Story starts here",
+            summary="recap of what just happened in the chapter",
+            continuity_state=continuity_state
+        )
         
         # Test to_dict
-        summary_dict = summary.to_dict()
+        chapter_dict = chapter.to_dict()
         
-        self.assertEqual(summary_dict['summary'], "recap of what just happened in the chapter")
-        self.assertIn('continuity_state', summary_dict)
-        self.assertEqual(len(summary_dict['continuity_state']['characters']), 1)
-        self.assertEqual(len(summary_dict['continuity_state']['objects']), 1)
-        self.assertEqual(len(summary_dict['continuity_state']['locations_visited']), 1)
-        self.assertEqual(len(summary_dict['continuity_state']['open_plot_threads']), 1)
+        self.assertEqual(chapter_dict['summary'], "recap of what just happened in the chapter")
+        self.assertIn('continuity_state', chapter_dict)
+        self.assertEqual(len(chapter_dict['continuity_state']['characters']), 1)
+        self.assertEqual(len(chapter_dict['continuity_state']['objects']), 1)
+        self.assertEqual(len(chapter_dict['continuity_state']['locations_visited']), 1)
+        self.assertEqual(len(chapter_dict['continuity_state']['open_plot_threads']), 1)
         
         # Test from_dict
-        restored_summary = ChapterSummary.from_dict(summary_dict)
-        self.assertIsNotNone(restored_summary)
-        self.assertEqual(restored_summary.summary, summary.summary)
-        self.assertEqual(len(restored_summary.continuity_state.characters), 1)
+        restored_chapter = Chapter.from_dict(chapter_dict)
+        self.assertIsNotNone(restored_chapter)
+        self.assertEqual(restored_chapter.summary, chapter.summary)
+        self.assertEqual(len(restored_chapter.continuity_state.characters), 1)
         
         # Verify character data
-        restored_char = restored_summary.continuity_state.characters[0]
+        restored_char = restored_chapter.continuity_state.characters[0]
         self.assertEqual(restored_char.name, "Riven Kairo")
         self.assertEqual(restored_char.current_location, "Eldertown—foggy main street")
         self.assertEqual(restored_char.status, "haunted by guilt, resolve rekindled")
         self.assertEqual(restored_char.inventory, ["town crest badge"])
     
-    def test_chapter_summary_json_serialization(self):
+    def test_chapter_with_summary_json_serialization(self):
         """Test chapter summary JSON serialization."""
-        summary = ChapterSummary("Test summary")
+        chapter = Chapter(
+            chapter_number=1,
+            title="Test Chapter",
+            overview="Test overview",
+            summary="Test summary"
+        )
         
         # Test to_json
-        json_str = summary.to_json()
+        json_str = chapter.to_json()
         self.assertIsInstance(json_str, str)
         
         # Test from_json
-        restored_summary = ChapterSummary.from_json(json_str)
-        self.assertIsNotNone(restored_summary)
-        self.assertEqual(restored_summary.summary, summary.summary)
+        restored_chapter = Chapter.from_json(json_str)
+        self.assertIsNotNone(restored_chapter)
+        self.assertEqual(restored_chapter.summary, chapter.summary)
     
-    def test_chapter_summary_from_sample_json(self):
+    def test_chapter_with_summary_from_sample_json(self):
         """Test chapter summary from the provided sample JSON."""
         sample_json = {
+            "chapter_number": 1,
+            "title": "Sample Chapter",
+            "overview": "Sample overview",
             "summary": "recap of what just happened in the chapter",
             "continuity_state": {
                 "characters": [
@@ -589,72 +612,74 @@ class TestChapterSummary(unittest.TestCase):
         }
         
         # Test creating from sample JSON
-        summary = ChapterSummary.from_dict(sample_json)
-        self.assertIsNotNone(summary)
+        chapter = Chapter.from_dict(sample_json)
+        self.assertIsNotNone(chapter)
         
         # Verify summary
-        self.assertEqual(summary.summary, "recap of what just happened in the chapter")
+        self.assertEqual(chapter.summary, "recap of what just happened in the chapter")
         
         # Verify characters
-        self.assertEqual(len(summary.continuity_state.characters), 2)
-        riven = summary.continuity_state.get_character("Riven Kairo")
+        self.assertEqual(len(chapter.continuity_state.characters), 2)
+        riven = chapter.continuity_state.get_character("Riven Kairo")
         self.assertIsNotNone(riven)
         self.assertEqual(riven.current_location, "Eldertown—foggy main street")
         self.assertEqual(riven.status, "haunted by guilt, resolve rekindled")
         self.assertEqual(riven.inventory, ["town crest badge"])
         
-        corbin = summary.continuity_state.get_character("Corbin Hale")
+        corbin = chapter.continuity_state.get_character("Corbin Hale")
         self.assertIsNotNone(corbin)
         self.assertEqual(corbin.current_location, "The Hillside Hermitage")
         self.assertEqual(corbin.status, "mysterious prophet")
         self.assertEqual(corbin.inventory, [])
         
         # Verify objects
-        self.assertEqual(len(summary.continuity_state.objects), 2)
-        seal = summary.continuity_state.get_object("Ancient Seal")
+        self.assertEqual(len(chapter.continuity_state.objects), 2)
+        seal = chapter.continuity_state.get_object("Ancient Seal")
         self.assertIsNotNone(seal)
         self.assertEqual(seal.holder, "High Priestess Merin")
         self.assertEqual(seal.location, "Eldertown Temple")
         
-        dagger = summary.continuity_state.get_object("Silver Dagger")
+        dagger = chapter.continuity_state.get_object("Silver Dagger")
         self.assertIsNotNone(dagger)
         self.assertIsNone(dagger.holder)
         self.assertEqual(dagger.location, "Riven's satchel")
         
         # Verify locations
-        self.assertEqual(len(summary.continuity_state.locations_visited), 2)
-        self.assertIn("Eldertown main street", summary.continuity_state.locations_visited)
-        self.assertIn("Hillside Hermitage", summary.continuity_state.locations_visited)
+        self.assertEqual(len(chapter.continuity_state.locations_visited), 2)
+        self.assertIn("Eldertown main street", chapter.continuity_state.locations_visited)
+        self.assertIn("Hillside Hermitage", chapter.continuity_state.locations_visited)
         
         # Verify plot threads
-        self.assertEqual(len(summary.continuity_state.open_plot_threads), 2)
-        haunter_threat = summary.continuity_state.get_plot_thread("HaunterThreat")
+        self.assertEqual(len(chapter.continuity_state.open_plot_threads), 2)
+        haunter_threat = chapter.continuity_state.get_plot_thread("HaunterThreat")
         self.assertIsNotNone(haunter_threat)
         self.assertEqual(haunter_threat.description, "The Haunter's next move after the fog-shrouded warning")
         self.assertEqual(haunter_threat.status, "pending")
         
-        riven_guilt = summary.continuity_state.get_plot_thread("RivenGuilt")
+        riven_guilt = chapter.continuity_state.get_plot_thread("RivenGuilt")
         self.assertIsNotNone(riven_guilt)
         self.assertEqual(riven_guilt.description, "Riven's reckoning with past failure")
         self.assertEqual(riven_guilt.status, "in progress")
     
-    def test_chapter_summary_from_dict_invalid(self):
-        """Test chapter summary from_dict with invalid data."""
+    def test_chapter_with_summary_from_dict_invalid(self):
+        """Test chapter with summary from_dict with invalid data."""
         # Invalid data types
-        self.assertIsNone(ChapterSummary.from_dict("not a dict"))
-        self.assertIsNone(ChapterSummary.from_dict(None))
+        self.assertIsNone(Chapter.from_dict("not a dict"))
+        self.assertIsNone(Chapter.from_dict(None))
         
-        # Missing summary
-        self.assertIsNone(ChapterSummary.from_dict({}))
-        self.assertIsNone(ChapterSummary.from_dict({'continuity_state': {}}))
+        # Missing required fields (chapter_number, title, overview)
+        self.assertIsNone(Chapter.from_dict({}))
+        self.assertIsNone(Chapter.from_dict({'summary': 'test summary'}))
+        self.assertIsNone(Chapter.from_dict({'chapter_number': 1}))
+        self.assertIsNone(Chapter.from_dict({'chapter_number': 1, 'title': 'test'}))  # Missing overview
     
-    def test_chapter_summary_from_json_invalid(self):
+    def test_chapter_with_summary_from_json_invalid(self):
         """Test chapter summary from_json with invalid JSON."""
         # Invalid JSON string
-        self.assertIsNone(ChapterSummary.from_json("invalid json"))
-        self.assertIsNone(ChapterSummary.from_json(""))
+        self.assertIsNone(Chapter.from_json("invalid json"))
+        self.assertIsNone(Chapter.from_json(""))
     
-    def test_chapter_summary_string_representation(self):
+    def test_chapter_with_summary_string_representation(self):
         """Test chapter summary string representation."""
         continuity_state = ContinuityState()
         char = ContinuityCharacter("Test", "Location", "Status")
@@ -665,14 +690,20 @@ class TestChapterSummary(unittest.TestCase):
         thread = PlotThread("TestId", "Description", "Status")
         continuity_state.add_plot_thread(thread)
         
-        summary = ChapterSummary("This is a very long summary that should be truncated in the string representation", continuity_state)
+        chapter = Chapter(
+            chapter_number=1,
+            title="Test Chapter",
+            overview="Test overview",
+            summary="This is a very long summary that should be truncated in the string representation",
+            continuity_state=continuity_state
+        )
         
-        str_repr = str(summary)
-        self.assertIn("This is a very long summary that should be truncat", str_repr)
-        self.assertIn("Characters: 1", str_repr)
-        self.assertIn("Objects: 1", str_repr)
-        self.assertIn("Locations: 1", str_repr)
-        self.assertIn("Plot Threads: 1", str_repr)
+        str_repr = str(chapter)
+        self.assertIn("This is a very long summary th", str_repr)  # Updated truncation pattern
+        self.assertIn("Chars: 1", str_repr)
+        self.assertIn("Objs: 1", str_repr)
+        self.assertIn("Locs: 1", str_repr)
+        self.assertIn("Threads: 1", str_repr)
 
 
 if __name__ == '__main__':
