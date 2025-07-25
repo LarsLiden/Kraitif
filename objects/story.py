@@ -517,6 +517,34 @@ class Story:
             include_expanded_plot_line=True
         )
     
+    def to_prompt_text_for_chapter(self, n: int) -> str:
+        """
+        Convert story selections to a formatted text suitable for chapter generation prompts.
+        This version excludes protagonist_archetype, secondary_archetypes, and selected_plot_line fields.
+        For chapters, only includes data for chapters 1 to n-1.
+        
+        Args:
+            n: The chapter number to generate. Only chapters 1 to n-1 will be included.
+        """
+        # Create a temporary copy of the story with filtered chapters
+        original_chapters = self.chapters
+        try:
+            # Filter chapters to only include 1 to n-1
+            if n > 1:
+                self.chapters = [chapter for chapter in self.chapters if chapter.chapter_number < n]
+            else:
+                self.chapters = []  # No previous chapters for chapter 1
+            
+            # Generate prompt text with exclusions
+            return self.to_prompt_text(
+                exclude_selected_plot_line=True,
+                exclude_archetype_fallbacks=True,
+                include_expanded_plot_line=True
+            )
+        finally:
+            # Restore original chapters
+            self.chapters = original_chapters
+    
     def set_selected_plot_line(self, plot_line: PlotLine) -> bool:
         """Set the selected plot line for the story."""
         if plot_line and hasattr(plot_line, 'name') and hasattr(plot_line, 'plotline'):

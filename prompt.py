@@ -136,3 +136,38 @@ class Prompt:
         
         # Join with double newlines for clear separation
         return "\n\n".join(parts)
+    def generate_chapter_prompt(self, story: Story, n: int) -> str:
+        """
+        Generate a complete chapter prompt by concatenating pre-text, story configuration, and post-text.
+        This uses a modified version of the story configuration that excludes protagonist_archetype, 
+        secondary_archetypes, and selected_plot_line fields. For chapters, only includes data for 
+        chapters 1 to n-1.
+        
+        Args:
+            story: Story object containing the configuration to include in the prompt
+            n: The chapter number to generate. Only chapters 1 to n-1 will be included in the prompt.
+            
+        Returns:
+            Complete prompt text ready for LLM consumption
+        """
+        # Read the template files
+        pre_text = self._read_template_file("chapter_pre.txt")
+        post_text = self._read_template_file("chapter_post.txt")
+        
+        # Get the story configuration (excluding specified fields and filtering chapters)
+        story_config = story.to_prompt_text_for_chapter(n)
+        
+        # Combine all parts
+        parts = []
+        
+        if pre_text.strip():
+            parts.append(pre_text.strip())
+        
+        if story_config.strip():
+            parts.append(story_config.strip())
+        
+        if post_text.strip():
+            parts.append(post_text.strip())
+        
+        # Join with double newlines for clear separation
+        return "\n\n".join(parts)
