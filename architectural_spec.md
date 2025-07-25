@@ -127,12 +127,13 @@ Kraitif/
 - **Character Prompt Generation**: `generate_character_prompt()` function for creating character development prompts
 - **Chapter Outline Prompt Generation**: `generate_chapter_outline_prompt()` function for creating chapter outline prompts with modified story configuration
 - **Chapter Prompt Generation**: `generate_chapter_prompt(story: Story, n: int)` function for creating individual chapter prompts with filtered story configuration and previous chapters only
+- **Continuity Integration**: Automatically includes continuity information from the previous chapter for chapters beyond the first to maintain story consistency
 - Template file integration from `prompts/` directory for all prompt types
 - Character generation based on selected plot line and complete story configuration
 - Chapter outline generation with excluded fields (protagonist_archetype, secondary_archetypes, selected_plot_line)
 - Chapter generation with filtered chapters (only 1 to n-1) and excluded archetype/plot fields
 - Structured JSON response parsing for expanded plot lines and character data
-- Consistent prompt structure combining pre-text, story configuration, and post-text
+- Consistent prompt structure combining pre-text, story configuration, continuity information (when applicable), and post-text
 - Whitespace handling and error resilience
 - **Imports**: Uses `from objects.story import Story` to access story models
 
@@ -263,6 +264,8 @@ ContinuityState:
     - objects: List[ContinuityObject]        # Object locations and ownership
     - locations_visited: List[str]           # Places that have been visited
     - open_plot_threads: List[PlotThread]    # Active story threads
+    # Methods:
+    - to_prompt_text() -> str                # Format continuity for chapter prompts
 
 ContinuityCharacter:
     - name: str                         # Character's name

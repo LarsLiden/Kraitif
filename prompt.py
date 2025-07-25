@@ -157,6 +157,18 @@ class Prompt:
         # Get the story configuration (excluding specified fields and filtering chapters)
         story_config = story.to_prompt_text_for_chapter(n)
         
+        # Get continuity information from the previous chapter (if not chapter 1)
+        continuity_info = ""
+        if n > 1:
+            previous_chapter = story.get_chapter(n - 1)
+            if previous_chapter and previous_chapter.continuity_state:
+                continuity_text = previous_chapter.continuity_state.to_prompt_text()
+                continuity_info = f"""
+
+CONTINUITY:
+To maintain continuity, ensure that the chapter aligns with the following state:
+{continuity_text}"""
+        
         # Get the specific chapter we're generating
         target_chapter = story.get_chapter(n)
         chapter_info = ""
@@ -188,6 +200,9 @@ Point of View: {target_chapter.point_of_view or 'Not specified'}
         
         if story_config.strip():
             parts.append(story_config.strip())
+            
+        if continuity_info.strip():
+            parts.append(continuity_info.strip())
             
         if chapter_info.strip():
             parts.append(chapter_info.strip())
