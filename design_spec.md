@@ -260,6 +260,29 @@ Each AI-generated character includes:
 - **Character Integration**: Plot expanded to show character roles, relationships, and interactions
 - **Story Depth**: Provides comprehensive foundation for story writing with character-driven narrative
 
+### Chapter Generation System
+The application includes a comprehensive chapter generation system that enables creation of individual story chapters:
+
+#### Chapter Generation Process
+1. **Prerequisites**: User must have defined story configuration including chapters 1 through n-1
+2. **Chapter Generation Function**: `generate_chapter_prompt(story: Story, n: int)` creates chapter-specific prompts
+3. **Data Filtering**: Uses filtered story configuration that excludes protagonist_archetype, secondary_archetypes, and selected_plot_line
+4. **Previous Chapter Context**: Includes only chapters 1 to n-1 to provide context for the new chapter
+5. **Template Integration**: Combines "chapter_pre.txt" and "chapter_post.txt" templates with filtered story data
+6. **AI-Ready Output**: Generates complete prompts ready for LLM consumption to create full chapter content
+
+#### Chapter Generation Data Filtering
+The chapter generation system uses a specialized data filtering approach:
+- **Excluded Fields**: protagonist_archetype, secondary_archetypes, selected_plot_line are not included
+- **Chapter Filtering**: Only chapters 1 to n-1 are included in the prompt (no future chapters)
+- **Preserved Data**: All other story configuration including genre, writing style, characters, and expanded plot line
+- **First Chapter Handling**: When generating chapter 1, no previous chapters are included
+
+#### Chapter Generation Templates
+- **chapter_pre.txt**: Contains instructions and context for chapter writing
+- **chapter_post.txt**: Contains output format specifications and requirements
+- **Story Context**: Filtered story configuration provides necessary background without spoilers
+
 ### Story Configuration Output
 The `to_prompt_text()` method generates comprehensive story configuration that includes:
 - Story type and subtype details with examples and emotional arcs
@@ -353,11 +376,12 @@ Generate structured prompt text containing:
 - Formatted for use with AI writing assistants
 
 ### Prompt Generation Functions
-The application provides three specialized prompt generation functions:
+The application provides four specialized prompt generation functions:
 - **`generate_plot_prompt()`** - For plot line generation using plot-specific templates
 - **`generate_character_prompt()`** - For character development using character-specific templates
 - **`generate_chapter_outline_prompt()`** - For chapter outline generation using chapter outline templates and a modified story configuration that excludes protagonist_archetype, secondary_archetypes, and selected_plot_line fields
-- Both functions combine pre/post template files with complete story configuration via `to_prompt_text()`
+- **`generate_chapter_prompt(story: Story, n: int)`** - For individual chapter generation using chapter templates and filtered story configuration with previous chapters only (1 to n-1)
+- All functions combine pre/post template files with story configuration via specialized `to_prompt_text()` methods
 
 ## Technical Integration Points
 
