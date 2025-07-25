@@ -195,9 +195,20 @@ def get_story_from_session():
             if chapter:
                 story.add_chapter(chapter)
         
-        # Ensure session story_data is populated for template access
+        # Ensure session story_data is populated for template access with minimal data
         if 'story_data' not in session:
-            session['story_data'] = story_data
+            minimal_story_data = {
+                'story_type_name': story.story_type_name,
+                'subtype_name': story.subtype_name,
+                'key_theme': story.key_theme,
+                'core_arc': story.core_arc,
+                'genre_name': story.genre.name if story.genre else None,
+                'sub_genre_name': story.sub_genre.name if story.sub_genre else None,
+                'writing_style_name': story.writing_style.name if story.writing_style else None,
+                'protagonist_archetype': story.protagonist_archetype.value if story.protagonist_archetype else None,
+                'secondary_archetypes': [archetype.value for archetype in story.secondary_archetypes] if story.secondary_archetypes else []
+            }
+            session['story_data'] = minimal_story_data
             session.modified = True
     
     return story
@@ -249,8 +260,20 @@ def save_story_to_session(story):
     # Save to file instead of session
     save_story_to_file(story_id, story_data)
     
-    # Also save basic story data to session for template access (left panel)
-    session['story_data'] = story_data
+    # Save only minimal data to session for template access (left panel display only)
+    # This prevents large cookies while preserving left panel functionality
+    minimal_story_data = {
+        'story_type_name': story.story_type_name,
+        'subtype_name': story.subtype_name,
+        'key_theme': story.key_theme,
+        'core_arc': story.core_arc,
+        'genre_name': story.genre.name if story.genre else None,
+        'sub_genre_name': story.sub_genre.name if story.sub_genre else None,
+        'writing_style_name': story.writing_style.name if story.writing_style else None,
+        'protagonist_archetype': story.protagonist_archetype.value if story.protagonist_archetype else None,
+        'secondary_archetypes': [archetype.value for archetype in story.secondary_archetypes] if story.secondary_archetypes else []
+    }
+    session['story_data'] = minimal_story_data
     session.modified = True
     
     # Clean up old files periodically

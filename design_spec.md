@@ -377,9 +377,15 @@ When navigating back to edit a previous step:
 
 ## Data Persistence and State Management
 
-### Session State
-Flask sessions maintain story state during user interaction:
-- All selections stored in `session['story_data']` dictionary with archetype fields as enum values converted to strings for session storage
+### Session State and Data Management
+Flask sessions maintain minimal story state for optimal performance:
+- **File-Based Storage**: Complete story data is saved to temporary files using `save_story_to_file()` and `load_story_from_file()`
+- **Minimal Session Data**: Only essential display information stored in `session['story_data']` to prevent large cookies:
+  - story_type_name, subtype_name, key_theme, core_arc
+  - genre_name, sub_genre_name, writing_style_name
+  - protagonist_archetype, secondary_archetypes (archetype names only)
+- **Cookie Size Optimization**: Session data kept under 1KB (vs 40KB+ for full story data) to prevent browser cookie size warnings
+- **Template Compatibility**: Session data provides all information needed for left panel display without including large objects like characters, chapters, or plot lines
 - Session persists across page navigation and refreshes
 - Session cleared on fresh visits from external sources
 
