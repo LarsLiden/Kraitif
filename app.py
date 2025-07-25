@@ -1484,7 +1484,9 @@ def test_chapters():
             point_of_view="Lyra",
             narrative_function=NarrativeFunctionEnum.INCITING_INCIDENT,
             foreshadow_or_echo="The glowing runes foreshadow the final ritual where Lyra must sacrifice her ego to save the realm.",
-            scene_highlights="The dramatic moment when the runes first glow, the festival crowd's reaction, and Aldric's mystical entrance."
+            scene_highlights="The dramatic moment when the runes first glow, the festival crowd's reaction, and Aldric's mystical entrance.",
+            chapter_text="The harvest festival was in full swing when it happened. Lyra had been laughing with her friends, the golden wheat swaying in the evening breeze, when the burning sensation began. It started as a tingling in her palms, then spread up her arms like fire racing through her veins.\n\nShe gasped, stumbling backward as intricate runes blazed to life across her skin—silver lines that pulsed with an otherworldly light. The music stopped. The laughter died. Every eye in the village square turned to her.\n\n'The Chosen One,' whispered an old woman, falling to her knees.\n\nThat was when Aldric appeared, as if stepping from the very shadows themselves. His ancient eyes held both sorrow and hope as he looked upon her glowing marks.\n\n'It is time,' he said simply.",
+            summary="Lyra discovers her destiny as the Chosen One when ancient runes appear on her skin during the harvest festival, and the sage Aldric arrives to guide her."
         ),
         Chapter(
             chapter_number=2,
@@ -1497,7 +1499,9 @@ def test_chapters():
             point_of_view="Lyra",
             narrative_function=NarrativeFunctionEnum.RISING_TENSION,
             foreshadow_or_echo="The corruption patterns echo the ancient texts Aldric carries, hinting at the cyclical nature of this threat.",
-            scene_highlights="A haunting scene of a corrupted forest, Lyra's first attempts at magic, and refugees fleeing the blight."
+            scene_highlights="A haunting scene of a corrupted forest, Lyra's first attempts at magic, and refugees fleeing the blight.",
+            chapter_text="Three days had passed since leaving Thornfield, and the world around them grew darker with each mile. Where once green fields had stretched toward the horizon, now twisted black veins spider-webbed across the earth—the unmistakable mark of the Shadowblight.\n\nLyra watched in horror as a once-proud oak tree crumbled to ash at their approach, its bark having turned an unnatural shade of violet. 'How long has it been spreading?' she asked, her voice barely above a whisper.\n\nAldric's weathered face was grim. 'Faster than ever before. The barrier between realms grows thin.' He knelt beside a corrupted stream, its waters running black as midnight. 'We must find the Sunstone before the blight reaches the capital.'",
+            summary="Lyra and Aldric witness the devastating spread of the Shadowblight as they begin their quest for the Sunstone."
         ),
         Chapter(
             chapter_number=3,

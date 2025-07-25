@@ -522,8 +522,8 @@
                                 </div>
                                 {% endif %}
                                 
-                                <!-- Individual Chapter Generation - appears on chapter plan page -->
-                                {% if is_chapter_plan_page and story and story.chapters %}
+                                <!-- Individual Chapter Generation - appears on chapter plan page and chapter detail page -->
+                                {% if (is_chapter_plan_page or is_chapter_detail_page) and story and story.chapters %}
                                     {% set chapters_ordered = story.get_chapters_ordered() %}
                                     {% set first_chapter_without_text = namespace(value=none) %}
                                     {% for chapter in chapters_ordered %}
