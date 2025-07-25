@@ -21,6 +21,7 @@ body {
     min-height: calc(100vh - 60px);
 }
 
+/* Left panel with vertical scrolling capability */
 .left-panel {
     flex: 0 0 350px;
     background-color: #1a1a1a;
@@ -28,6 +29,8 @@ body {
     border-radius: 8px;
     padding: 20px;
     height: fit-content;
+    max-height: calc(100vh - 40px);
+    overflow-y: auto;
     position: sticky;
     top: 20px;
 }
