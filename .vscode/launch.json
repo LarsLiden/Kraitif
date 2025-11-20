@@ -2,7 +2,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Start Flask App",
+            "name": "Kraitif",
             "type": "node-terminal",
             "request": "launch",
             "command": "pwsh -File ${workspaceFolder}/start.ps1 -Quickstart",
