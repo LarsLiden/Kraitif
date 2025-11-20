@@ -2,28 +2,11 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Flask App (app.py)",
-            "type": "python",
+            "name": "Start Flask App",
+            "type": "node-terminal",
             "request": "launch",
-            "program": "${workspaceFolder}/app.py",
-            "console": "integratedTerminal",
-            "justMyCode": true,
-            "env": {
-                "FLASK_ENV": "development",
-                "FLASK_DEBUG": "1"
-            }
-        },
-        {
-            "name": "Flask App (launch.py)",
-            "type": "python",
-            "request": "launch",
-            "program": "${workspaceFolder}/launch.py",
-            "console": "integratedTerminal",
-            "justMyCode": true,
-            "env": {
-                "FLASK_ENV": "development",
-                "FLASK_DEBUG": "1"
-            }
+            "command": "pwsh -File ${workspaceFolder}/start.ps1 -Quickstart",
+            "cwd": "${workspaceFolder}"
         },
         {
             "name": "Demo Script",

@@ -2,6 +2,36 @@
 
 A Python implementation of the seven classical story types and their subtypes based on narrative theory, plus character archetypes and writing styles.
 
+## Getting Started
+
+Use the startup script, which automatically:
+- Creates and activates the virtual environment
+- Installs dependencies
+- Configures Flask settings
+- Starts the server
+
+**Windows PowerShell:**
+```powershell
+# First run (sets up everything)
+.\start.ps1
+
+# Subsequent runs (skip installation for faster startup)
+.\start.ps1 -Quickstart
+```
+
+**Linux/Mac/Git Bash:**
+```bash
+# First run (sets up everything)
+./start.sh
+
+# Subsequent runs (skip installation for faster startup)
+./start.sh --quickstart
+```
+
+**VS Code:** Press `F5` and select "Start Flask App"
+
+Then open your web browser to [http://localhost:8005](http://localhost:8005)
+
 ## Story Types
 
 This library implements the seven fundamental story types identified in narrative theory:
@@ -96,21 +126,11 @@ print(f"Style Description: {concise.description}")
 print(f"Style Characteristics: {concise.characteristics}")
 ```
 
-## Files
-
 ## Running the Demo
 
 ```bash
 python3 demo.py
 ```
-
-## Running the Flask Web Interface
-
-```bash
-python3 launch.py
-```
-
-Then open your web browser to [http://localhost:5000](http://localhost:5000)
 
 ## Running Tests
 
