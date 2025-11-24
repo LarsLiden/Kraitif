@@ -12,9 +12,13 @@ from azure.identity import (
     get_bearer_token_provider,
 )
 from prompt_types import PromptType
+from ai.ai_cache import get_cache
 
 # Global client instance
 _client = None
+
+# Enable/disable caching (set to False to bypass cache)
+USE_CACHE = True
 
 
 def get_ai_client():
@@ -63,6 +67,18 @@ def get_ai_response(prompt, prompt_type, chat_history=None, context_data=None, s
     """
 
     try:
+        # Check cache first (if enabled and no chat history)
+        if USE_CACHE and not chat_history:
+            cache = get_cache()
+            cached_response = cache.get(prompt)
+            if cached_response:
+                print(f"[CACHE HIT] Using cached response for {prompt_type.value}")
+                print("===============PROMPT (CACHED)=================")
+                print(prompt)
+                print("===============RESPONSE (CACHED)==============")
+                print(cached_response)
+                return cached_response
+
         client = get_ai_client()
         deployment_name = "gpt-4o_2024-08-06"
 
@@ -95,6 +111,12 @@ def get_ai_response(prompt, prompt_type, chat_history=None, context_data=None, s
         print("===============RESPONSE=================")
         print(response)
 
+        # Save to cache (if enabled and no chat history)
+        if USE_CACHE and not chat_history:
+            cache = get_cache()
+            cache.set(prompt, response)
+            print(f"[CACHE SAVE] Saved response for {prompt_type.value}")
+
         # Save prompt and response to debug files
         _save_debug_files(prompt, response, prompt_type)
 
@@ -114,7 +136,7 @@ def get_ai_response(prompt, prompt_type, chat_history=None, context_data=None, s
 def _save_debug_files(prompt, response, prompt_type):
     """
     Save prompt and response to debug files for debugging purposes.
-    
+
     Args:
         prompt (str): The prompt text sent to AI
         response (str): The response received from AI
@@ -125,11 +147,11 @@ def _save_debug_files(prompt, response, prompt_type):
         debug_dir = "debug"
         if not os.path.exists(debug_dir):
             os.makedirs(debug_dir)
-        
+
         # Use prompt type value for filename
         filename = f"{prompt_type.value}.txt"
         filepath = os.path.join(debug_dir, filename)
-        
+
         # Create content with timestamp, prompt, and response
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         content = f"""Timestamp: {timestamp}
@@ -141,13 +163,12 @@ Prompt Type: {prompt_type.value}
 ===============RESPONSE=================
 {response}
 """
-        
+
         # Write to file (overwrite existing)
-        with open(filepath, 'w', encoding='utf-8') as f:
+        with open(filepath, "w", encoding="utf-8") as f:
             f.write(content)
-            
+
     except Exception as e:
         # Don't let debug file saving errors break the main flow
         print(f"Warning: Could not save debug files: {e}")
         pass
-

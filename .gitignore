@@ -71,3 +71,6 @@ Thumbs.db
 
 # Debug files
 debug/
+
+# AI Cache
+data/ai_cache/
