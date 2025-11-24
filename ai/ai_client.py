@@ -3,6 +3,7 @@
 # Required packages
 import base64
 import os
+import time
 from datetime import datetime
 from openai import AzureOpenAI
 from azure.identity import (
@@ -19,6 +20,9 @@ _client = None
 
 # Enable/disable caching (set to False to bypass cache)
 USE_CACHE = True
+
+# Delay for cached responses (in seconds) to simulate AI processing
+CACHE_DELAY_SECONDS = 3
 
 
 def get_ai_client():
@@ -72,6 +76,9 @@ def get_ai_response(prompt, prompt_type, chat_history=None, context_data=None, s
             cache = get_cache()
             cached_response = cache.get(prompt)
             if cached_response:
+                # Add delay to simulate AI processing for better UX
+                time.sleep(CACHE_DELAY_SECONDS)
+
                 print(f"[CACHE HIT] Using cached response for {prompt_type.value}")
                 print("===============PROMPT (CACHED)=================")
                 print(prompt)
